@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Sign Up</h2>
+            
+            <% if @user.errors.any? %>
+                <div id="error_explanation">
+                    <h3><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h3>
+                    <ul>
+                    <% @user.errors.to_hash.each do |attribute, messages| %>
+                        <% if attribute == :password_confirmation %>
+                        <!-- For password_confirmation, show only the message -->
+                            <% messages.each do |message| %>
+                                <li><%= message %></li>
+                            <% end %>
+                        <% else %>
+                        <!-- For all other attributes, include the attribute name -->
+                            <% messages.each do |message| %>
+                                <li><%= attribute.to_s.humanize + " " %><%= message %><br></li>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                    </ul>
+                </div>
+            <% end %>
+
+            <%= form_with(model: @user, url: signup_path, local: true, data: { turbo: false}) do |form| %>
+            <div class="form-group">
+                <%= form.label :name %>
+                <%= form.text_field :name, required: true %>
+            </div>
+
+            <div class="form-group">
+                <%= form.label :email %>
+                <%= form.email_field :email, required: true %>
+            </div>
+
+            <div class="form-group">
+                <label for="password">
+                    Password
+                    <span class="tooltip">❓
+                        <span class="tooltip-text">
+                            Your password must:
+                            <ul>
+                                <li>Be at least 8 characters long</li>
+                                <li>Include at least one uppercase letter</li>
+                                <li>Include at least one lowercase letter</li>
+                                <li>Include at least one special character</li>
+                            </ul>
+                        </span>
+                    </span>
+                </label>
+            
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="user[password]" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <%= form.label :password_confirmation %>
+                <%= form.password_field :password_confirmation, required: true %>
+            </div>
+
+            <div class="actions">
+                <%= form.submit "Sign Up", class: "btn" %>
+            </div>
+            <% end %>
+
+            <p>Already have an account? <a href="/login">Login here</a></p>
+        </div>
+    </div>
+</body>
+</html>
