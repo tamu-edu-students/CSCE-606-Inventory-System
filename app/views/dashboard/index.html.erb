@@ -1,0 +1,11 @@
+<h1>Welcome, <%= @user.name %>!</h1>
+
+<p>You have <strong><%= @bins_count %></strong> bins.</p>
+
+
+<div class= "dashboard-buttons">
+<%= link_to "View My Bins", bins_path, class: "btn btn-primary" %>
+<%= link_to "View My Items", items_path, class: "btn btn-primary" %>
+<%= button_to "Logout", logout_path, method: :delete, class: "btn btn-danger", 
+    data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to log out?" } %>
+</div>

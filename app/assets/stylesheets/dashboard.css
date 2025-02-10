@@ -1,0 +1,22 @@
+/* Dashboard styles */
+h1 {
+    color: #333;
+  }
+  
+  .btn {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .dashboard-buttons {
+    display: flex;
+    gap: 15px; /* Adds spacing between buttons */
+  }
+  
