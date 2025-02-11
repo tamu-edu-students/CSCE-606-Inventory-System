@@ -1,0 +1,32 @@
+<%= form_with(model: bin) do |form| %>
+  <% if bin.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(bin.errors.count, "error") %> prohibited this bin from being saved:</h2>
+
+      <ul>
+        <% bin.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :location, style: "display: block" %>
+    <%= form.text_field :location %>
+  </div>
+
+  <div>
+    <%= form.label :category_name, style: "display: block" %>
+    <%= form.text_field :category_name %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

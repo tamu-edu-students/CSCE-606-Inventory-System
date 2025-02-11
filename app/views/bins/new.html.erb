@@ -1,0 +1,11 @@
+<% content_for :title, "New bin" %>
+
+<h1>New bin</h1>
+
+<%= render "form", bin: @bin %>
+
+<br>
+
+<div>
+  <%= link_to "Back to bins", bins_path %>
+</div>

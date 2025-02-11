@@ -1,0 +1,12 @@
+<% content_for :title, "Editing bin" %>
+
+<h1>Editing bin</h1>
+
+<%= render "form", bin: @bin %>
+
+<br>
+
+<div>
+  <%= link_to "Show this bin", @bin %> |
+  <%= link_to "Back to bins", bins_path %>
+</div>

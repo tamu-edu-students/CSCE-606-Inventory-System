@@ -1,0 +1,31 @@
+<h1>My Bins</h1>
+
+<% if @bins.any? %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Category</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @bins.each do |bin| %>
+        <tr>
+          <td><%= link_to bin.name, bin_path(bin) %></td>
+          <td><%= bin.location %></td>
+          <td><%= bin.category_name %></td>
+          <td>
+            <%= link_to "Edit", edit_bin_path(bin), class: "btn btn-warning btn-sm" %>
+            <%= button_to "Delete", bin, method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>You have no bins yet.</p>
+<% end %>
+
+<%= link_to "Create New Bin", new_bin_path, class: "btn btn-primary" %>
