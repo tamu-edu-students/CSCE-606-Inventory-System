@@ -2,10 +2,50 @@
 
 <h1>New item</h1>
 
-<%= render "form", item: @item %>
+<%= form_with(model: @item, local: true) do |form| %>
+  <% if @item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@item.errors.count, "error") %> prohibited this item from being saved:</h2>
+
+      <ul>
+        <% @item.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :value %>
+    <%= form.number_field :value %>
+  </div>
+
+  <div class="field">
+    <%= form.label :bin_id, "Select Bin" %>
+    <%= form.collection_select :bin_id, @bins, :id, :name, prompt: "Choose a bin" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :item_pictures %>
+    <%= form.file_field :item_pictures, multiple: true %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
 
 <br>
 
 <div>
   <%= link_to "Back to items", items_path %>
+</div>
+
+<div>
+  <p>You can create an item without selecting a bin. If no bin is selected, it will be marked as unassigned.</p>
 </div>

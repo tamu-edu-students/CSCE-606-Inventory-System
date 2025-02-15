@@ -1,8 +1,15 @@
-<p style="color: green"><%= notice %></p>
-
 <% content_for :title, "Items" %>
 
 <h1>Items</h1>
+
+<!-- Display the notice and alert messages -->
+<% if notice %>
+  <p style="color: green"><%= notice %></p>
+<% end %>
+
+<% if alert %>
+  <p style="color: red"><%= alert %></p>
+<% end %>
 
 <div id="items">
   <% @items.each do |item| %>
@@ -15,4 +22,3 @@
 
 <%= link_to "New item", new_item_path %>
 <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary mt-3" %>
-

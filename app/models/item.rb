@@ -1,5 +1,5 @@
 class Item < ApplicationRecord
-  belongs_to :bin
+  belongs_to :bin, optional: true  # Allow bin_id to be nil
   has_many_attached :item_pictures # Allow multiple pictures
 
   validates :name, presence: true

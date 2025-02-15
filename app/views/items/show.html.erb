@@ -1,10 +1,27 @@
 <p style="color: green"><%= notice %></p>
 
+<!-- Display the alert messages -->
+<% if alert %>
+  <p style="color: red"><%= alert %></p>
+<% end %>
+
 <%= render @item %>
 
+<!-- Display item details -->
+<h2><%= @item.name %></h2>
+<p><%= @item.description %></p>
+<p>Value: <%= @item.value %></p>
+
+<% if @item.bin.nil? %>
+  <p><strong>This item is not assigned to any bin.</strong></p>
+<% else %>
+  <p>Bin: <%= @item.bin.name %></p>
+<% end %>
+
+<!-- Links and actions for editing and destroying the item -->
 <div>
   <%= link_to "Edit this item", edit_item_path(@item) %> |
   <%= link_to "Back to items", items_path %>
 
-  <%= button_to "Destroy this item", @item, method: :delete %>
+  <%= button_to "Destroy this item", @item, method: :delete, data: { confirm: "Are you sure you want to remove this item from the bin?" } %>
 </div>
