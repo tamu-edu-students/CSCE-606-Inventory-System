@@ -1,7 +1,7 @@
 class Item < ApplicationRecord
   belongs_to :bin, optional: true
-  has_many_attached :item_pictures, dependent: :destroy
-  
+  has_one :picture, dependent: :destroy
+
   validates :name, presence: true
   validates :value, numericality: { greater_than_or_equal_to: 0 }
   validate :validate_no_bin_status

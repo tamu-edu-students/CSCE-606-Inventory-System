@@ -46,8 +46,8 @@ gem "thruster", require: false  # HTTP asset caching/compression
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
   gem "brakeman", require: false  # Security analysis
-  gem "rubocop-rails-omakase", require: false  # Style guide 
-  
+  gem "rubocop-rails-omakase", require: false  # Style guide
+
   # Testing
   gem "rspec-rails"      # RSpec for unit testing
   gem "cucumber-rails", require: false  # Cucumber for BDD
@@ -57,7 +57,7 @@ group :development, :test do
   gem "capybara"         # Capybara for feature tests
   gem "selenium-webdriver"  # Selenium for browser automation
 
-  gem 'dotenv-rails'
+  gem "dotenv-rails"
 end
 
 # Console on error pages in development
@@ -68,7 +68,7 @@ end
 # Benchmarking and interactive Ruby console (included explicitly)
 gem "benchmark", "0.4.0"
 gem "irb", "1.15.1"
-gem 'devise'
+gem "devise"
 
 # QR code generator
 gem "rqrcode"
@@ -78,19 +78,23 @@ group :test do
   gem "simplecov", require: false
 end
 
-gem "image_processing", ">= 1.2"
+gem "image_processing", "~> 1.14"
 
-#factory
+# factory
 group :test do
-  gem 'factory_bot_rails'
+  gem "factory_bot_rails"
 end
 
-#faker
+# faker
 group :development, :test do
-  gem 'faker'
+  gem "faker"
 end
 
 # rails-controller -testing
 group :test do
-  gem 'rails-controller-testing'
+  gem "rails-controller-testing"
+end
+
+group :test do
+  gem "shoulda-matchers", "~> 5.0"
 end

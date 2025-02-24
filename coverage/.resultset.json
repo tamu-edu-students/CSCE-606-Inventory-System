@@ -1,43 +1,43 @@
 {
   "RSpec": {
     "coverage": {
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/helpers/application_helper.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/helpers/application_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/helpers/bins_helper.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/helpers/bins_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/helpers/dashboard_helper.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/helpers/dashboard_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/helpers/items_helper.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/helpers/items_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/helpers/sessions_helper.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/helpers/sessions_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/helpers/users_helper.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/helpers/users_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/controllers/password_controller.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/controllers/password_controller.rb": {
         "lines": [
           1,
           1,
@@ -139,7 +139,7 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/controllers/application_controller.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/controllers/application_controller.rb": {
         "lines": [
           1,
           1,
@@ -181,7 +181,7 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/controllers/sessions_controller.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/controllers/sessions_controller.rb": {
         "lines": [
           1,
           1,
@@ -227,7 +227,7 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/mailers/user_mailer.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/mailers/user_mailer.rb": {
         "lines": [
           1,
           1,
@@ -245,7 +245,7 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/mailers/application_mailer.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/mailers/application_mailer.rb": {
         "lines": [
           1,
           1,
@@ -253,7 +253,7 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/models/bin.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/models/bin.rb": {
         "lines": [
           1,
           null,
@@ -297,14 +297,14 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/models/application_record.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/models/application_record.rb": {
         "lines": [
           1,
           1,
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/models/user.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/models/user.rb": {
         "lines": [
           1,
           null,
@@ -333,7 +333,7 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/models/item.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/models/item.rb": {
         "lines": [
           1,
           1,
@@ -368,7 +368,20 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/controllers/bins_controller.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/models/picture.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          1,
+          null
+        ]
+      },
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/controllers/bins_controller.rb": {
         "lines": [
           1,
           1,
@@ -455,7 +468,7 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/controllers/items_controller.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/controllers/items_controller.rb": {
         "lines": [
           1,
           1,
@@ -558,7 +571,7 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/controllers/dashboard_controller.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/controllers/dashboard_controller.rb": {
         "lines": [
           1,
           1,
@@ -574,7 +587,7 @@
           null
         ]
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/controllers/users_controller.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/controllers/users_controller.rb": {
         "lines": [
           0,
           0,
@@ -600,7 +613,7 @@
         ],
         "branches": {}
       },
-      "/Users/rafael/Desktop/Texas_A&M/606_SE/Project_Git_Hub/CSCE-606-Inventory-System/app/jobs/application_job.rb": {
+      "/home/saba/CSCE-606/CSCE-606-Inventory-System/app/jobs/application_job.rb": {
         "lines": [
           0,
           null,
@@ -613,7 +626,7 @@
         "branches": {}
       }
     },
-    "timestamp": 1740356272
+    "timestamp": 1740370168
   },
   "Cucumber Features": {
     "coverage": {

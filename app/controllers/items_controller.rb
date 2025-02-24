@@ -1,12 +1,12 @@
 class ItemsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_item, only: %i[ show edit update destroy ]
-  before_action :authorize_user, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_user, only: [ :show, :edit, :update, :destroy ]
 
   # GET /items or /items.json
   def index
     @items = Item.left_joins(:bin)
-                 .where('bins.user_id = ? OR items.bin_id IS NULL', current_user.id)
+                 .where("bins.user_id = ? OR items.bin_id IS NULL", current_user.id)
   end
 
   # GET /items/1 or /items/1.json
@@ -69,10 +69,10 @@ class ItemsController < ApplicationController
   def destroy
     @item.update!(bin_id: nil, no_bin: true)  # Combine both updates into one call
     respond_to do |format|
-      format.html { 
-        redirect_to items_path, 
-        status: :see_other, 
-        alert: "Warning: This item is not in any bin" 
+      format.html {
+        redirect_to items_path,
+        status: :see_other,
+        alert: "Warning: This item is not in any bin"
       }
       format.json { render json: { status: :ok, message: "Item unassigned from bin" } }
     end
@@ -89,11 +89,39 @@ class ItemsController < ApplicationController
         redirect_to items_path, alert: "Not authorized"
       end
     end
-    
+
 
     # Only allow a list of trusted parameters through.
     def item_params
       # params.expect(item: [ :name, :description, :created_date, :value, :bin_id ])
-      params.require(:item).permit(:name, :description, :value, :bin_id, :no_bin, item_pictures: [])
+      params.require(:item).permit(:name, :description, :value, :bin_id, :no_bin, :image)
+    end
+
+    def update_picture
+      @item = Item.find(params[:id])
+
+      if @item.picture.present?
+        @item.picture.destroy # Remove the old picture before adding a new one
+      end
+
+      @picture = @item.build_picture(picture_params)
+      @picture.user = current_user
+
+      if @picture.save
+        redirect_to @item, notice: "Picture updated!"
+      else
+        render :show
+      end
+    end
+
+    def destroy_picture
+      @item = Item.find(params[:id])
+
+      if @item.picture.present?
+        @item.picture.destroy
+        redirect_to @item, notice: "Picture removed successfully."
+      else
+        redirect_to @item, alert: "No picture to remove."
+      end
     end
 end

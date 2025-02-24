@@ -16,6 +16,7 @@ class BinsController < ApplicationController
   # GET /bins/1 or /bins/1.json
   def show
     @bin = Bin.find(params[:id])
+    @pictures = @bin.pictures # Fetch all pictures for this bin
   end
 
   # GET /bins/new

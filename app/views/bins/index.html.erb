@@ -25,6 +25,28 @@
             <%= button_to "Delete", bin, method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
           </td>
         </tr>
+        <!-- ✅ New Code: Show Items Inside Each Bin -->
+        <% if bin.items_in_bin.any? %>
+          <tr>
+            <td colspan="4">
+              <strong>Items in this Bin:</strong>
+              <ul>
+                <% bin.items_in_bin.each do |item| %>
+                  <li>
+                    <%= link_to item.name, item_path(item) %> 
+                    (<%= item.description %>, <%= number_to_currency(item.value) %>)
+                  </li>
+                <% end %>
+              </ul>
+            </td>
+          </tr>
+        <% else %>
+          <tr>
+            <td colspan="4"><em>No items in this bin.</em></td>
+          </tr>
+        <% end %>
+        <!-- ✅ End of Item Display -->
+
       <% end %>
     </tbody>
   </table>
