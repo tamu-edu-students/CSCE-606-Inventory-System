@@ -1,7 +1,7 @@
 class ItemsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_item, only: %i[ show edit update destroy ]
-  before_action :authorize_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_item, only: %i[show edit update destroy]
+  before_action :authorize_user, only: %i[show edit update destroy]
 
   # GET /items or /items.json
   def index
@@ -11,8 +11,7 @@ class ItemsController < ApplicationController
 
   # GET /items/1 or /items/1.json
   def show
-    # list all possible bins for the item
-    @bins = Bin.where(user_id: current_user.id)
+    @bins = Bin.where(user_id: current_user.id) # List all possible bins for the item
   end
 
   # GET /items/new
@@ -23,77 +22,65 @@ class ItemsController < ApplicationController
 
   # GET /items/1/edit
   def edit
-    @bins = current_user.bins  # Add this line to set @bins
+    @bins = current_user.bins  # Ensure bins are available for selection
   end
 
-  # POST /items or /items.json
-  # modify to ensure only can create items in bin
-  # modify later for standalone items
+  # ✅ **Log movements when items are created**
   def create
     @item = Item.new(item_params)
-
-    # Set no_bin to true if no bin is selected
-    @item.no_bin = @item.bin_id.nil?
+    @item.no_bin = @item.bin_id.nil?  # Set no_bin flag
 
     if @item.save
-      flash[:notice] = "Item was successfully created"  # ✅ Ensure this is set
+      log_movement("Created Item", @item)  # ✅ Log item creation
+      flash[:notice] = "Item was successfully created"
       redirect_to items_path
     else
-      @bins = current_user.bins  # Fetch bins again in case of error
+      @bins = current_user.bins
       render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /items/1 or /items/1.json
+  # ✅ **Log movements when items are updated**
   def update
-    # Set no_bin to true if bin_id is being removed/set to nil
-    if params[:item][:bin_id].blank?
-      params[:item][:no_bin] = true
+    if @item.update(item_params)
+      log_movement("Updated Item", @item)  # ✅ Log item update
+      redirect_to @item, notice: "Item was successfully updated."
     else
-      params[:item][:no_bin] = false
-    end
-
-    respond_to do |format|
-      if @item.update(item_params)
-        format.html { redirect_to @item, notice: "Item was successfully updated." }
-        format.json { render :show, status: :ok, location: @item }
-      else
-        @bins = current_user.bins
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @item.errors, status: :unprocessable_entity }
-      end
+      @bins = current_user.bins
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  # DELETE /items/1 or /items/1.json
+  # ✅ **Log movements when items are deleted**
   def destroy
-    @item.update!(bin_id: nil, no_bin: true)  # Combine both updates into one call
-    respond_to do |format|
-      format.html { 
-        redirect_to items_path, 
-        status: :see_other, 
-        alert: "Warning: This item is not in any bin" 
-      }
-      format.json { render json: { status: :ok, message: "Item unassigned from bin" } }
+    item_name = @item.name  # Store item name before deletion
+    if @item.destroy
+      log_movement("Deleted Item", item_name)  # ✅ Log item deletion
+      redirect_to items_path, status: :see_other, notice: "Item was successfully removed."
+    else
+      redirect_to items_path, alert: "Failed to delete item."
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_item
-      @item = Item.find(params.expect(:id))
-    end
 
-    def authorize_user
-      if @item.bin.present? && @item.bin.user != current_user
-        redirect_to items_path, alert: "Not authorized"
-      end
-    end
-    
+  def set_item
+    @item = Item.find(params[:id])
+  end
 
-    # Only allow a list of trusted parameters through.
-    def item_params
-      # params.expect(item: [ :name, :description, :created_date, :value, :bin_id ])
-      params.require(:item).permit(:name, :description, :value, :bin_id, :no_bin, item_pictures: [])
+  def authorize_user
+    if @item.bin.present? && @item.bin.user != current_user
+      redirect_to items_path, alert: "Not authorized"
     end
+  end
+
+  def item_params
+    params.require(:item).permit(:name, :description, :value, :bin_id, :no_bin, item_pictures: [])
+  end
+
+  # ✅ **Log Movements in the Session**
+  def log_movement(action, item)
+    session_record = Session.find_by(id: session[:session_id]) || Session.create(user: current_user, login_time: Time.current)
+    session_record.log_movement(action, item)
+  end
 end

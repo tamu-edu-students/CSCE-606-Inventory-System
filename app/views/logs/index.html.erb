@@ -1,0 +1,38 @@
+<h1>Session Log History</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Login Time</th>
+      <th>Logout Time</th>
+      <th>Actions Performed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @sessions.each do |session| %>
+      <tr>
+        <td><%= session.login_time.strftime("%Y-%m-%d %H:%M:%S") %></td>
+        <td>
+          <% if session.logout_time.present? %>
+            <%= session.logout_time.strftime("%Y-%m-%d %H:%M:%S") %>
+          <% else %>
+            Active Session
+          <% end %>
+        </td>
+        <td>
+          <% if session.movements.present? %>
+            <ul>
+              <% session.movements.each do |movement| %>
+                <li><%= movement %></li>
+              <% end %>
+            </ul>
+          <% else %>
+            No actions recorded.
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to "Back to Dashboard", dashboard_path, class: "btn" %>

@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     get "signup", to: "users#new", as: "signup"
     post "signup", to: "users#create"
   end
-
+  
   # Dashboard route
   get "dashboard", to: "dashboard#index", as: "dashboard"
 

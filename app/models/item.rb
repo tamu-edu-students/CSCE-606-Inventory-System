@@ -30,4 +30,22 @@ class Item < ApplicationRecord
       errors.add(:no_bin, "must be false when item is assigned to a bin")
     end
   end
+
+  def log_creation
+    log_movement("created")
+  end
+
+  def log_update
+    log_movement("updated")
+  end
+
+  def log_deletion
+    log_movement("deleted")
+  end
+
+  def log_movement(action)
+    return unless user.sessions.last  # Ensure session exists
+
+    user.sessions.last.log_movement(action, self)
+  end
 end

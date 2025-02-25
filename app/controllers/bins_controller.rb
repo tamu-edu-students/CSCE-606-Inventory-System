@@ -27,12 +27,13 @@ class BinsController < ApplicationController
   def edit
   end
 
-  # POST /bins or /bins.json
+  # ✅ **Log movements when bins are created**
   def create
     @bin = current_user.bins.build(bin_params)
 
     respond_to do |format|
       if @bin.save
+        log_movement("Created Bin", @bin)  # ✅ Log bin creation
         format.html { redirect_to @bin, notice: "Bin was successfully created." }
         format.json { render :show, status: :created, location: @bin }
       else
@@ -42,10 +43,11 @@ class BinsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /bins/1 or /bins/1.json
+  # ✅ **Log movements when bins are updated**
   def update
     respond_to do |format|
       if @bin.update(bin_params)
+        log_movement("Updated Bin", @bin)  # ✅ Log bin update
         format.html { redirect_to @bin, notice: "Bin was successfully updated." }
         format.json { render :show, status: :ok, location: @bin }
       else
@@ -55,13 +57,14 @@ class BinsController < ApplicationController
     end
   end
 
-  # DELETE /bins/1 or /bins/1.json
+  # ✅ **Log movements when bins are deleted**
   def destroy
-    @bin.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to bins_path, status: :see_other, notice: "Bin was successfully destroyed." }
-      format.json { head :no_content }
+    bin_name = @bin.name  # Store bin name before deletion
+    if @bin.destroy
+      log_movement("Deleted Bin", @bin)  # ✅ Log bin deletion
+      redirect_to bins_path, status: :see_other, notice: "Bin was successfully destroyed."
+    else
+      redirect_to bins_path, alert: "Failed to delete bin."
     end
   end
 
@@ -69,15 +72,20 @@ class BinsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_bin
-    @bin = Bin.find(params[:id]) # Fixed issue: params.expect → params[:id]
+    @bin = Bin.find(params[:id])
   end
 
   def authorize_user
     redirect_to bins_path, alert: "Not authorized" if @bin.user != current_user
   end
 
-  # Only allow a list of trusted parameters through.
   def bin_params
-    params.require(:bin).permit(:name, :location, :category_name) # Fixed params.expect → params.require & permit
+    params.require(:bin).permit(:name, :location, :category_name)
+  end
+
+  # ✅ **Log Movements in the Session**
+  def log_movement(action, bin)
+    session_record = Session.find_by(id: session[:session_id]) || Session.create(user: current_user, login_time: Time.current)
+    session_record.log_movement(action, bin)
   end
 end

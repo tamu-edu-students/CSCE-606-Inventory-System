@@ -7,17 +7,18 @@ class SessionsController < Devise::SessionsController
   end
 
   def create
-    #puts params.inspect
     user = User.find_by(email: params[:user][:email]) # Ensure correct parameter format
 
     if user && user.valid_password?(params[:user][:password]) # Devise method to check password
-      sign_in(:user, user) # ✅ Fix: Specify the scope
-      #sign_in(user)
+      sign_in(:user, user)  # ✅ Fix: Specify the scope
 
-      # ✅ Track Login Event
-      Session.create(user: user, login_time: Time.current)
+      # ✅ Create a session record for this login with empty movements
+      session_record = Session.create(user: user, login_time: Time.current, movements: [])
 
-      # Retrieve the stored location BEFORE redirecting
+      # Store session ID in Rails session storage
+      session[:session_id] = session_record.id
+
+      # Redirect after sign-in
       redirect_to after_sign_in_path_for(user), notice: "Signed in successfully!"
     else
       flash.now[:alert] = "Invalid Email or password."
@@ -28,13 +29,18 @@ class SessionsController < Devise::SessionsController
 
   def destroy
     if current_user
-    # ✅ Find last session & update logout time
-    user_session = Session.where(user_id: current_user.id).last
-    user_session.update(logout_time: Time.current) if user_session.present?
+      # ✅ Find last session & update logout time
+      session_record = Session.find_by(id: session[:session_id])
+      if session_record
+        session_record.update(logout_time: Time.current)
+        session_record.movements << "User logged out"
+        session_record.save
+      end
 
-    sign_out(current_user)# Devise method to log out
-    reset_session  # ✅ Clears all session data (including stored locations)
-    redirect_to new_user_session_path, notice: "Logged out successfully"
+      sign_out(current_user)  # ✅ Devise method to log out
+      reset_session  # ✅ Clears all session data (including stored locations)
+
+      redirect_to new_user_session_path, notice: "Logged out successfully"
     end
   end
 
@@ -42,11 +48,10 @@ class SessionsController < Devise::SessionsController
 
   # Prevent already logged-in users from accessing login/signup pages
   def redirect_if_authenticated
-    if user_signed_in? 
+    if user_signed_in?
       flash[:console_alert] = "You are already signed in."
       flash.keep(:console_alert)
       redirect_to dashboard_path
     end
   end
-
 end
