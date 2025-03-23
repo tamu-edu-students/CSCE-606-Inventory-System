@@ -7,4 +7,4 @@
 ### **Code Climate report**
 
 Temporary Report link :
-[Code Climate Report](https://codeclimate.com/github/kxusx/123)
+[Code Climate Report](https://codeclimate.com/github/kxusx/CSCE-606-Inventory-System)
