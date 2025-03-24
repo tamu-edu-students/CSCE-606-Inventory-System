@@ -10,6 +10,12 @@ class ItemsController < ApplicationController
     else
       @items = current_user.items # Show only bins for the logged-in user
     end
+
+    # Filter by created_at if sale_date is provided
+    if params[:sale_date].present?
+      @items = @items.where("created_at <= ?", params[:sale_date])
+    end
+    
     # Apply search filtering if a name is provided
     @items = @items.search_by_name(params[:name])
   end

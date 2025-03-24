@@ -34,7 +34,7 @@
             <th scope="col" class="sortable" data-column="description">Description</th>
             <th scope="col" class="sortable" data-column="value">Value</th>
             <th scope="col" class="sortable" data-column="bin">Bin</th>
-            <th scope="col" class="sortable" data-column="created_date">Created Date</th>
+            <th scope="col" class="sortable" data-column="created_at">Created Date</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
@@ -69,7 +69,7 @@
                   </span>
                 <% end %>
               </td>
-              <td data-column="created_date"><%= item.created_date&.strftime("%Y-%m-%d") %></td>
+              <td data-column="created_date"><%= item.created_at&.strftime("%Y-%m-%d") %></td>
               <td>
                 <div class="action-buttons">
                   <%= link_to item, class: "btn btn-primary view-btn" do %>

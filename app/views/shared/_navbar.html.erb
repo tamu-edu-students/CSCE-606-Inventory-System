@@ -21,18 +21,19 @@
       </div>
     </div>
     <div class="sale-dropdown">
-      <span><%= link_to "SALE", "", class: "nav-link", id: "sale-trigger" %></span>
-      <div class="sale-dropdown-content" id="sale-dropdown-content">
-        <div class="sale-input-group">
-          <input type="number" 
-                 id="sale-amount" 
-                 name="sale-amount" 
-                 placeholder="Enter amount..."
-                 min="0"
-                 step="0.01">
-        </div>
-        <button class="sale-search-btn">Search Sales</button>
-      </div>
+  <span><%= link_to "SALE", "", class: "nav-link", id: "sale-trigger" %></span>
+  <div class="sale-dropdown-content" id="sale-dropdown-content">
+    <div class="sale-input-group">
+      <%= form_with url: items_path, method: :get, local: true do %>
+        <input type="date" 
+               id="sale-date" 
+               name="sale_date" 
+               placeholder="Select a date...">
+        <button type="submit" class="sale-search-btn">Search Items</button>
+      <% end %>
+    </div>
+  </div>
+</div>
     </div>
 
   </div>
