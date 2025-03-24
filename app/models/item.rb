@@ -8,7 +8,6 @@ class Item < ApplicationRecord
   validates :value, numericality: { greater_than_or_equal_to: 0 }
   validate :validate_no_bin_status
 
-  before_destroy :prevent_deletion_and_unassign
 
   # Scope for searching items by name
   scope :search_by_name, ->(query) {
@@ -19,23 +18,23 @@ class Item < ApplicationRecord
     bin_id.nil? && no_bin?
   end
 
+    # Custom delete handler
+    def safe_destroy
+      if unassigned?
+        destroy
+      else
+        update_columns(bin_id: nil, no_bin: true)
+        false
+      end
+    end
+
   private
 
   def inherit_bin_location
     self.location_id = bin.location_id if bin.present?
   end
 
-  def prevent_deletion_and_unassign
-    if Thread.current[:deletion_context] == :from_locations
-      return true
-    end
-    # Instead of allowing destruction, unassign from bin
-    self.update(bin_id: nil, no_bin: true)
-    # Add an error message that will be available in the flash
-    errors.add(:base, "Item was unassigned instead of deleted")
-    # Prevent the actual destruction
-    throw :abort
-  end
+
 
   def validate_no_bin_status
     if bin_id.nil? && !no_bin?

@@ -76,18 +76,20 @@ class ItemsController < ApplicationController
     end
   end
 
-  # DELETE /items/1 or /items/1.json
+  # DESTROY
   def destroy
-    @item.update!(bin_id: nil, no_bin: true)  # Combine both updates into one call
-    respond_to do |format|
-      format.html { 
-        redirect_to items_path, 
-        status: :see_other, 
-        alert: "Warning: This item is not in any bin" 
-      }
-      format.json { render json: { status: :ok, message: "Item unassigned from bin" } }
+    if @item.safe_destroy
+      flash[:notice] = "Item deleted"
+    else
+      flash[:alert] = "Item was unassigned instead of deleted"
     end
+  
+    redirect_to items_path
   end
+  
+  
+  
+  
 
   private
     # Use callbacks to share common setup or constraints between actions.
