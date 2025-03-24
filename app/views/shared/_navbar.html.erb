@@ -28,7 +28,7 @@
         <input type="date" 
                id="sale-date" 
                name="sale_date" 
-               placeholder="Select a date...">
+               value="<%= params[:sale_date] || Date.today.strftime('%Y-%m-%d') %>">
         <button type="submit" class="sale-search-btn">Search Items</button>
       <% end %>
     </div>
