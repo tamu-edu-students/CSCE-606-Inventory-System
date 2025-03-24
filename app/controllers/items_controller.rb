@@ -34,7 +34,7 @@ class ItemsController < ApplicationController
 
   # GET /items/1/edit
   def edit
-    @bins = current_user.bins  # Add this line to set @bins
+    @bins = current_user.bins  # Add this line to set @bins and have bin available for dropdown menu
   end
 
   # POST /items or /items.json
@@ -57,6 +57,8 @@ class ItemsController < ApplicationController
 
   # PATCH/PUT /items/1 or /items/1.json
   def update
+    puts "===== DEBUG ITEM PARAMS ====="
+    pp params[:item]
     # Set no_bin to true if bin_id is being removed/set to nil
     if params[:item][:bin_id].blank?
       params[:item][:no_bin] = true
@@ -104,8 +106,21 @@ class ItemsController < ApplicationController
     end
     
     
-    # Only allow a list of trusted parameters through.
     def item_params
-      params.require(:item).permit(:name, :description, :value, :bin_id, :no_bin, item_pictures: [])
+      permitted = params.require(:item).permit(
+        :name,
+        :description,
+        :value,
+        :bin_id,
+        :no_bin,
+        item_pictures: []
+      )
+    
+      if permitted[:item_pictures]&.all?(&:blank?)
+        permitted.delete(:item_pictures)
+      end
+    
+      permitted
     end
+    
 end

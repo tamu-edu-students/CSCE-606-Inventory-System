@@ -1,25 +1,24 @@
 document.addEventListener("turbo:load", function () {
-  //console.log("Flash script is running after Turbo load!"); // Debugging log
-
+  // Small delay to ensure DOM is updated
   setTimeout(() => {
-    let flashPopup = document.getElementById("flash-popup");
+    // ⛏ Select ALL elements with class .flash-popup (in case of multiple flash messages)
+    const flashPopups = document.querySelectorAll(".flash-popup");
 
-    if (flashPopup) {
-      console.log(
-        "Flash message found after Turbo load:",
-        flashPopup.innerText
-      ); // Debugging log
+    flashPopups.forEach((flashPopup) => {
+      console.log("Flash message found:", flashPopup.innerText); // Optional debugging
 
-      let flashModal = document.createElement("div");
+      // 🔧 Create the modal container
+      const flashModal = document.createElement("div");
       flashModal.classList.add("flash-modal");
 
-      let flashContent = document.createElement("div");
+      // 🔧 Create the modal content
+      const flashContent = document.createElement("div");
       flashContent.classList.add("flash-content");
 
-      let message = document.createElement("p");
+      const message = document.createElement("p");
       message.innerText = flashPopup.innerText;
 
-      let closeButton = document.createElement("button");
+      const closeButton = document.createElement("button");
       closeButton.innerText = "OK";
       closeButton.classList.add("flash-close-btn");
       closeButton.addEventListener("click", function () {
@@ -31,12 +30,8 @@ document.addEventListener("turbo:load", function () {
       flashModal.appendChild(flashContent);
       document.body.appendChild(flashModal);
 
-      //console.log("Pop-up should now be visible after Turbo load."); // Debugging log
-
-      // Remove the original flash message from the page
+      // ✅ Remove the original hidden flash element from the DOM
       flashPopup.remove();
-    } else {
-      //console.log("No flash message found after Turbo load.");
-    }
-  }, 300); // Small delay to allow Turbo to update the DOM
+    });
+  }, 300);
 });
