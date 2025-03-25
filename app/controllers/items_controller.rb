@@ -91,8 +91,12 @@ class ItemsController < ApplicationController
     else
       flash[:alert] = "Item was unassigned, click delete again to permanently delete it"
     end
-  
-    redirect_to items_path
+
+    if params[:bin_id].present?
+      redirect_to bin_path(params[:bin_id])
+    else
+      redirect_to items_path
+    end
   end
   
   
