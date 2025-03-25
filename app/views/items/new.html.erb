@@ -3,6 +3,7 @@
 <h1>New item</h1>
 
 <%= form_with(model: @item, local: true) do |form| %>
+  <%= hidden_field_tag :bin_id, params[:bin_id] if params[:bin_id].present? %>
   <% if @item.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@item.errors.count, "error") %> prohibited this item from being saved:</h2>

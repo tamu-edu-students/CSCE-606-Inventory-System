@@ -12,6 +12,7 @@
 <% end %>
 
 <h2>Items in This Bin</h2>
+<%= link_to "➕ Add New Item", new_item_path(bin_id: @bin.id), class: "btn btn-success mb-3" %>
 <% if @bin.items_in_bin.any? %>
   <table class="table">
     <thead>

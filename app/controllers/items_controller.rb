@@ -30,6 +30,7 @@ class ItemsController < ApplicationController
   def new
     @item = Item.new
     @bins = current_user.bins
+    @item.bin_id = params[:bin_id] if params[:bin_id].present? # for new items on bin page
   end
 
   # GET /items/1/edit
@@ -47,8 +48,13 @@ class ItemsController < ApplicationController
     @item.no_bin = @item.bin_id.nil?
 
     if @item.save
-      flash[:notice] = "Item was successfully created"  # ✅ Ensure this is set
-      redirect_to items_path
+      if params[:bin_id].present?
+        flash[:notice] = "Item added to bin." 
+        redirect_to bin_path(params[:bin_id])
+      else
+        flash[:notice] = "Item was successfully created"  # ✅ Ensure this is set
+        redirect_to items_path
+      end
     else
       @bins = current_user.bins  # Fetch bins again in case of error
       render :new, status: :unprocessable_entity
