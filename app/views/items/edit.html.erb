@@ -2,7 +2,8 @@
 
 <h1>Editing item</h1>
 
-<%= form_with(model: @item, local: true, html: { multipart: true }) do |form| %>
+<%= form_with(model: @item, local: true) do |form| %>
+  <%= hidden_field_tag :bin_id, params[:bin_id] if params[:bin_id].present? %>
   <% if @item.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@item.errors.count, "error") %> prohibited this item from being saved:</h2>
@@ -21,22 +22,27 @@
   </div>
 
   <div class="field">
+    <%= form.label :description %>
+    <%= form.text_area :description, rows: 3 %>
+  </div>
+
+  <div class="field">
     <%= form.label :value %>
     <%= form.number_field :value %>
   </div>
 
-  <div class="field">
+    <div class="field">
     <%= form.label :bin_id, "Select Bin" %>
-    <%= form.collection_select :bin_id, 
-                             @bins, 
-                             :id, 
-                             :name, 
-                             { 
-                               include_blank: "No Bin (Unassigned)",
-                               selected: @item.bin_id 
-                             }, 
-                             class: "form-select" %>
+    <%= form.collection_select :bin_id, @bins, :id, :name, { prompt: "Choose a bin" }, { id: "binSelect", class: "form-select" } %>
   </div>
+
+  <div class="field" id="locationField">
+    <%= form.label :location_id, "Location" %>
+    <%= form.collection_select :location_id, @locations, :id, :name,
+        { include_blank: true },
+        { class: "form-select", id: "locationSelect", disabled: @item.bin_id.present? } %>
+  </div>
+
 
   <div class="field">
     <%= form.label :item_pictures %>
@@ -122,3 +128,30 @@
     }
   </style>
 <% end %>
+
+<script>
+  const binLocationMap = <%= raw @bin_location_map.to_json %>;
+</script>
+
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    const binSelect = document.getElementById("binSelect");
+    const locationSelect = document.getElementById("locationSelect");
+
+    function toggleLocation() {
+      const selectedBinId = binSelect.value;
+
+      if (!selectedBinId) {
+        locationSelect.disabled = false;
+      } else {
+        const locationId = binLocationMap[selectedBinId];
+        locationSelect.value = locationId || "";
+        locationSelect.disabled = true;
+      }
+    }
+
+    binSelect.addEventListener("change", toggleLocation);
+    toggleLocation();
+  });
+</script>

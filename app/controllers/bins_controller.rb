@@ -12,6 +12,9 @@ class BinsController < ApplicationController
     # Apply filtering by category
     @bins = @bins.where(category_name: params[:category]) if params[:category].present?
 
+     # ✅ Apply filtering by location
+    @bins = @bins.where(location_id: params[:location_id]) if params[:location_id].present?
+
     # Apply sorting by name
     @bins = @bins.order(:name) if params[:sort] == "name"
   end

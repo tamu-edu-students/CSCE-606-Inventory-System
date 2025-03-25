@@ -2,7 +2,10 @@
 <% content_for :title, "Bins" %>
 
 <h1>My Bins</h1>
-
+<!-- Create new bin buttom -->
+<div class="d-flex justify-content-start mb-3">
+  <%= link_to "➕ Create New Bin", new_bin_path, class: "btn btn-primary" %>
+</div>
 <!-- Sorting & Filtering -->
 <div class="d-flex justify-content-between mb-3">
   <!-- Filter by Category -->
@@ -25,14 +28,15 @@
           <h2 class="bin-title">
           <%= link_to bin.name, bin_path(bin), class: "bin-link" %>
           </h2>
-              <%= button_to "❌", bin,
+          <%= button_to bin_path(bin),
               method: :delete,
               form: {
                 class: "d-inline-block",
                 data: { custom_confirm: "Are you sure you want to delete this bin?" }
               },
-              class: "delete-btn" %>
-
+              class: "border-0 bg-transparent text-danger p-0 m-0" do %>
+            <i class="fa-solid fa-trash"></i>
+          <% end %>
         </div>
         
         <p class="bin-info">📍 <%= bin.location.name %></p>
@@ -59,7 +63,12 @@
           <% else %>
             <%= image_tag "default-bin.jpg", class: "bin-image", alt: "Default Bin Picture" %>
           <% end %>
-          <%= link_to "✏️", edit_bin_path(bin), class: "edit-btn" %>
+
+          <%= link_to edit_bin_path(bin),
+            class: "text-primary p-0 m-0 border-0 bg-transparent d-inline-block" do %>
+            <i class="fa-solid fa-pen-to-square"></i>
+          <% end %>
+
         </div>
       </div>
     <% end %>
@@ -69,7 +78,6 @@
 <% end %>
 
 <div class="actions">
-  <%= link_to "Create New Bin", new_bin_path, class: "btn btn-primary" %>
   <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
 </div>
 

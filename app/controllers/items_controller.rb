@@ -31,11 +31,15 @@ class ItemsController < ApplicationController
     @item = Item.new
     @bins = current_user.bins
     @item.bin_id = params[:bin_id] if params[:bin_id].present? # for new items on bin page
+    @locations = current_user.locations
+    @bin_location_map = @bins.includes(:location).map { |b| [b.id, b.location_id] }.to_h
   end
 
   # GET /items/1/edit
   def edit
     @bins = current_user.bins  # Add this line to set @bins and have bin available for dropdown menu
+    @locations = current_user.locations
+    @bin_location_map = @bins.includes(:location).map { |b| [b.id.to_s, b.location_id] }.to_h
   end
 
   # POST /items or /items.json
@@ -47,6 +51,14 @@ class ItemsController < ApplicationController
     # Set no_bin to true if no bin is selected
     @item.no_bin = @item.bin_id.nil?
 
+     # Set the item's location:
+    if @item.bin_id.present?
+      # If a bin is selected, inherit the location from the bin
+      @item.location_id = Bin.find(@item.bin_id).location_id
+    else
+      #let hte user summited the location id
+    end
+
     if @item.save
       if params[:bin_id].present?
         flash[:notice] = "Item added to bin." 
@@ -57,32 +69,38 @@ class ItemsController < ApplicationController
       end
     else
       @bins = current_user.bins  # Fetch bins again in case of error
+      @locations = current_user.locations
       render :new, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /items/1 or /items/1.json
   def update
-    puts "===== DEBUG ITEM PARAMS ====="
     pp params[:item]
-    # Set no_bin to true if bin_id is being removed/set to nil
-    if params[:item][:bin_id].blank?
-      params[:item][:no_bin] = true
-    else
-      params[:item][:no_bin] = false
-    end
-
+  
     respond_to do |format|
       if @item.update(item_params)
+        # Set no_bin flag
+        if params[:item][:bin_id].blank?
+          @item.update(no_bin: true)
+        else
+          @item.update(no_bin: false)
+  
+          # Inherit location from bin if bin is selected
+          bin = Bin.find_by(id: @item.bin_id)
+          @item.update(location_id: bin.location_id) if bin&.location_id
+        end
+  
         format.html { redirect_to @item, notice: "Item was successfully updated." }
         format.json { render :show, status: :ok, location: @item }
       else
         @bins = current_user.bins
+        @locations = current_user.locations
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @item.errors, status: :unprocessable_entity }
       end
     end
   end
+  
 
   # DESTROY
   def destroy
@@ -123,6 +141,7 @@ class ItemsController < ApplicationController
         :value,
         :bin_id,
         :no_bin,
+        :location_id,
         item_pictures: []
       )
     
