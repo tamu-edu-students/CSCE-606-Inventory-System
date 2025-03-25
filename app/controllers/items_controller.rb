@@ -83,7 +83,7 @@ class ItemsController < ApplicationController
     if @item.safe_destroy
       flash[:notice] = "Item deleted"
     else
-      flash[:alert] = "Item was unassigned instead of deleted"
+      flash[:alert] = "Item was unassigned, click delete again to permanently delete it"
     end
   
     redirect_to items_path
