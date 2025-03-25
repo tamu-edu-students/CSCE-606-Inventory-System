@@ -94,7 +94,7 @@ class BinsController < ApplicationController
     @bin.destroy!
 
     respond_to do |format|
-      format.html { redirect_to bins_path, status: :see_other, notice: "Bin was successfully destroyed." }
+      format.html { redirect_to bins_path, status: :see_other, notice: "Bin was successfully destroyed. The items Inside were Unassigned" }
       format.json { head :no_content }
     end
   end
