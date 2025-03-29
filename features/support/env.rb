@@ -10,26 +10,41 @@ SimpleCov.start 'rails' do
   add_filter '/features/'
 end
 
-
 # Ensures that Rails path helpers like `new_user_session_path` work in your steps
 World(Rails.application.routes.url_helpers)
+
+Capybara.default_driver = :selenium_chrome
+Capybara.javascript_driver = :selenium_chrome
 
 # Set whether Rails should rescue exceptions and display error pages.
 ActionController::Base.allow_rescue = false
 
+# Enable Warden test mode for Devise session persistence
+require 'warden'
+World(Warden::Test::Helpers)
+Warden.test_mode!
+
 # Database cleaner setup to ensure clean state before each scenario
 require 'database_cleaner/active_record'
 
-# Use transactions for non-JS tests and truncation for JS tests
-DatabaseCleaner.strategy = :transaction
-Cucumber::Rails::Database.javascript_strategy = :truncation
+# Ensure session persistence before each scenario
+Before do |scenario|
+  Rails.logger.info "==== TEST STARTED ===="
+  
+  Warden.test_mode! # ✅ Ensures login_as works
+  
+  if scenario.source_tag_names.include?('@javascript')
+    DatabaseCleaner.strategy = :truncation # ✅ Needed for JavaScript tests
+  else
+    DatabaseCleaner.strategy = :transaction
+  end
 
-# Start/clean the database before and after each scenario
-Before do
   DatabaseCleaner.start
 end
 
-After do
+# Ensure Warden resets after each test to prevent cross-test contamination
+After do |scenario|
+  Warden.test_reset!
   DatabaseCleaner.clean
 end
 

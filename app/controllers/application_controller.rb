@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :debug_session
   before_action :store_location
   before_action :authenticate_user!, except: [:new, :create]
   
@@ -32,6 +33,12 @@ class ApplicationController < ActionController::Base
     if request.get? && !request.xhr? && !devise_controller? && !ignored_paths.include?(request.fullpath)
       store_location_for(:user, request.fullpath) 
     end
+  end
+
+  def debug_session
+    Rails.logger.info "🔵 Session ID: #{session.id}"
+    Rails.logger.info "🔵 Session Data: #{session.to_hash}"
+    Rails.logger.info "🔵 Current User: #{current_user&.email}"
   end
   
 end
