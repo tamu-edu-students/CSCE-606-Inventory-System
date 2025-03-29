@@ -97,6 +97,8 @@ Rails.application.configure do
     user_name: "inventorycontrol83@gmail.com",  
     password: "pgzr wkge mwug ysuy",
   }
+
+  #config.hosts << "192.168.0.47"
   
 
   

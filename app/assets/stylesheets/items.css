@@ -1,73 +1,140 @@
-/* Table styles */
+/* ================= TABLE STYLING ================= */
+
+/* General Table Styling */
 .table {
-  --bs-table-striped-bg: rgba(0, 0, 0, 0.02);
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #dee2e6;
+  font-size: 16px;
+  background-color: white;
 }
 
+/* Table Headers */
 .table th {
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
+  background-color: #f8f9fa;
+  font-weight: bold;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 2px solid #dee2e6;
+  cursor: pointer;
+  position: relative;
 }
 
+/* Table Cells */
 .table td {
-  vertical-align: middle;
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
 }
 
-.badge {
-  font-weight: 500;
-  padding: 0.5em 0.7em;
+/* Table Row Hover Effect */
+.table tbody tr:hover {
+  background-color: #f9f9f9;
 }
 
-.btn-group .btn {
-  padding: 0.25rem 0.5rem;
-}
-
-.btn-group .btn i {
-  width: 1em;
-  text-align: center;
-}
-
-.img-thumbnail {
-  padding: 0.25rem;
-  background-color: #fff;
+/* Bordered Table Cells */
+.table, .table th, .table td {
   border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .table-responsive {
-    border: 0;
-  }
-  
-  .table thead {
-    display: none;
-  }
-  
-  .table tr {
-    margin-bottom: 1rem;
-    display: block;
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-  }
-  
-  .table td {
-    display: block;
-    text-align: right;
-    padding: 0.5rem;
-    border: none;
-  }
-  
-  .table td::before {
-    content: attr(data-label);
-    float: left;
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-  }
-  
-  .table td:last-child {
-    border-bottom: 0;
-  }
+/* ================= SORTING ICONS ================= */
+
+.sortable {
+  position: relative;
+  cursor: pointer;
+  padding-right: 20px;
+}
+
+.sortable::after {
+  content: " ⬍";
+  position: absolute;
+  right: 10px;
+  color: gray;
+  font-size: 12px;
+}
+
+.sortable.asc::after {
+  content: " ▲";
+  color: black;
+}
+
+.sortable.desc::after {
+  content: " ▼";
+  color: black;
+}
+
+/* ================= SEARCH & FILTER INPUTS ================= */
+
+/* Search & Filter Inputs */
+#filterInput,
+#valueFilter {
+  width: 250px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Reset Button */
+#resetFilters {
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#resetFilters:hover {
+  background-color: #e2e6ea;
+}
+
+/* ================= ACTION BUTTONS ================= */
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Standard Button Styling */
+.btn {
+  display: inline-block;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  border: none;
+  transition: background-color 0.2s ease-in-out;
+  min-width: 80px;
+}
+
+/* View Button (Blue) */
+.view-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Edit Button (Orange) */
+.edit-btn {
+  background-color: #ff9800;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #e68900;
+}
+
+/* Delete Button (Red) */
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #b02a37;
 }

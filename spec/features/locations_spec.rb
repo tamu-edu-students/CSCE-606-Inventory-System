@@ -17,6 +17,7 @@ RSpec.feature "Locations", type: :feature do
     expect(page).to have_content("Tech Lab")
     expect(page).to have_content("Living Room")
     expect(page).to have_content("Office Desk")
+    puts "✅ Test Passed: Render location table"
   end
   
   scenario "typing in search input fetches results", js: true do
@@ -25,6 +26,7 @@ RSpec.feature "Locations", type: :feature do
   
     expect(page).to have_content("Tech Lab")
     expect(page).not_to have_content("Living Room")
+    puts "✅ Test Passed: Search input fetch right results"
   end
 
   scenario "adds a new location" do
@@ -34,6 +36,7 @@ RSpec.feature "Locations", type: :feature do
     end
     click_button "Add Location"
     expect(page).to have_content("New Location")
+    puts "✅ Test Passed: Add new location"
   end
 
   scenario "updates a location", js: true do
@@ -41,12 +44,14 @@ RSpec.feature "Locations", type: :feature do
     fill_in "location_name", with: "Updated Location"
     click_button "Update Location"
     expect(page).to have_content("Updated Location")
+    puts "✅ Test Passed: Update Location"
   end
 
   scenario "deletes a location", js: true do
     find(".deleteLocationBtn", match: :first).click
     click_button "Yes"
     expect(page).not_to have_content(location1.name)
+    puts "✅ Test Passed: Delete Location"
   end
 
 end

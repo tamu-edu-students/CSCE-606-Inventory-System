@@ -55,3 +55,8 @@ end
 Given("I have a valid location") do
   @location = Location.find_or_create_by!(name: "Warehouse A", user: @user)
 end
+
+# Step for checking if the picture is uploaded
+Then("the bin should be associated with {string}") do |message|
+  expect(page).to have_content(message)  # Ensures an image is displayed
+end

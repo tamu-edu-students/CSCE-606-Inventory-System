@@ -12,18 +12,18 @@ h1 {
   width: 100%;
 }
 
-/* Individual search box container */
 .search-box {
   display: flex;
   align-items: center;
+  justify-content: center; /* NEW: center contents horizontally */
   width: 50%;
   max-width: 500px;
   position: relative;
+  margin: 0 auto; /* NEW: center the box itself */
 }
 
-/* Input field styling */
 .search-box input {
-  flex: 1;
+  flex: 0 1 88%;
   padding: 12px 20px;
   font-size: 16px;
   border: 1px solid #ccc;

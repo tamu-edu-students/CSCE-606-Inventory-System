@@ -57,3 +57,9 @@ end
 Then('I should see items matching {string}') do |query|
   expect(page).to have_content(query)  
 end
+
+Then('I should be redirected to the log-in page') do
+  expected_login_path = Rails.application.routes.url_helpers.new_user_session_path  # Correct path for login
+  expect(page).to have_current_path(expected_login_path, wait: 5)
+  #expect(current_path).to eq(expected_login_path) # Check if user was redirected to login
+end

@@ -16,6 +16,7 @@ RSpec.describe LocationsController, type: :controller do
       it "assigns all locations to @locations" do
         get :index
         expect(assigns(:locations)).to match_array([location1, location2, location3])
+        puts "✅ Test Passed: GET /index Location Controller"
       end
     end
 
@@ -23,6 +24,7 @@ RSpec.describe LocationsController, type: :controller do
       it "assigns filtered locations to @locations" do
         get :index, params: { name: "Tech" }
         expect(assigns(:locations)).to match_array([location1])
+        puts "✅ Test Passed: Search params"
       end
     end
   end
@@ -35,6 +37,7 @@ RSpec.describe LocationsController, type: :controller do
         }.to change(Location, :count).by(1)
         expect(flash[:notice]).to eq("Location created successfully!")
         expect(response).to redirect_to(locations_path)
+        puts "✅ Test Passed: POST Create Location Controller"
       end
     end
 
@@ -45,6 +48,7 @@ RSpec.describe LocationsController, type: :controller do
         }.not_to change(Location, :count)
         expect(flash.now[:alert]).to eq("Failed to create location")
         expect(response).to redirect_to(locations_path)
+        puts "✅ Test Passed: Invalid Attributes"
       end
     end
   end
@@ -57,6 +61,7 @@ RSpec.describe LocationsController, type: :controller do
         expect(location1.name).to eq("Updated Location")
         expect(flash[:notice]).to eq("Location updated successfully!")
         expect(response).to redirect_to(locations_path)
+        puts "✅ Test Passed: PATCH Update Location Controller"
       end
     end
 
@@ -67,6 +72,7 @@ RSpec.describe LocationsController, type: :controller do
         expect(location1.name).to eq("Tech Lab")
         expect(flash[:alert]).to eq("Failed to update location")
         expect(response).to redirect_to(locations_path)
+        puts "✅ Test Passed: Invalid Atributes"
       end
     end
   end
@@ -78,6 +84,7 @@ RSpec.describe LocationsController, type: :controller do
       }.to change(Location, :count).by(-1)
       expect(flash[:notice]).to eq("Location deleted successfully!")
       expect(response).to redirect_to(locations_path)
+      puts "✅ Test Passed: DELETE  Location Controller"
     end
 
     it "handles errors during deletion" do
@@ -85,6 +92,7 @@ RSpec.describe LocationsController, type: :controller do
       delete :destroy, params: { id: location1.id }
       expect(flash[:alert]).to eq("Failed to delete location")
       expect(response).to redirect_to(locations_path)
+      puts "✅ Test Passed: handle error during deletion"
     end
   end
 end

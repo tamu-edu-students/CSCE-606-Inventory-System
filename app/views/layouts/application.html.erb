@@ -9,6 +9,8 @@
     <%= javascript_include_tag 'copy_to_clipboard' %>
     <%= javascript_include_tag "flash" %>
     <%= javascript_include_tag "search" %>
+    <%= javascript_include_tag "profile_dropdown" %>
+    <%= javascript_include_tag "log_dropdown" %>
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -19,7 +21,10 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css", media: "all", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "bins", media: "all", "data-turbo-track": "reload" %>  <%# 🚀 NEW LINE TO FORCE-LOAD bins.css %>
+    <%= stylesheet_link_tag "items", media: "all", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -32,7 +37,7 @@
     <% end %>
 
     <% flash.each do |key, message| %>
-  <div class="flash-message" id="flash-popup" data-flash-type="<%= key %>">
+  <div class="flash-message flash-popup" data-flash-type="<%= key %>" style="display: none;">
     <%= message %>
   </div>
   <% end %>

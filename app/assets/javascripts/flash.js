@@ -1,22 +1,19 @@
 document.addEventListener("turbo:load", function () {
-  console.log("Flash script is running after Turbo load!"); // Debugging log
-
+  // 🟢 (1) Existing flash popup logic (you already have this)
   setTimeout(() => {
-    let flashPopup = document.getElementById("flash-popup");
+    const flashPopups = document.querySelectorAll(".flash-popup");
 
-    if (flashPopup) {
-      console.log("Flash message found after Turbo load:", flashPopup.innerText); // Debugging log
-
-      let flashModal = document.createElement("div");
+    flashPopups.forEach((flashPopup) => {
+      const flashModal = document.createElement("div");
       flashModal.classList.add("flash-modal");
 
-      let flashContent = document.createElement("div");
+      const flashContent = document.createElement("div");
       flashContent.classList.add("flash-content");
 
-      let message = document.createElement("p");
+      const message = document.createElement("p");
       message.innerText = flashPopup.innerText;
 
-      let closeButton = document.createElement("button");
+      const closeButton = document.createElement("button");
       closeButton.innerText = "OK";
       closeButton.classList.add("flash-close-btn");
       closeButton.addEventListener("click", function () {
@@ -28,12 +25,55 @@ document.addEventListener("turbo:load", function () {
       flashModal.appendChild(flashContent);
       document.body.appendChild(flashModal);
 
-      console.log("Pop-up should now be visible after Turbo load."); // Debugging log
-
-      // Remove the original flash message from the page
       flashPopup.remove();
-    } else {
-      console.log("No flash message found after Turbo load.");
-    }
-  }, 300); // Small delay to allow Turbo to update the DOM
+    });
+  }, 300);
+
+  // 🛑 (2) MISSING: Intercept delete form submissions!
+  document.querySelectorAll("form[data-custom-confirm]").forEach((form) => {
+    form.addEventListener("submit", function (event) {
+      event.preventDefault(); // stop default behavior
+
+      const message = form.dataset.customConfirm;
+
+      showConfirmationModal(message, () => {
+        form.submit(); // resume after confirmation
+      });
+    });
+  });
 });
+
+// === SHARED CONFIRMATION MODAL FUNCTION ===
+function showConfirmationModal(message, onConfirm) {
+  console.log("Showing confirmation modal", message); // Optional debugging
+  const confirmModal = document.createElement("div");
+  confirmModal.classList.add("flash-modal");
+
+  const confirmContent = document.createElement("div");
+  confirmContent.classList.add("flash-content");
+
+  const msg = document.createElement("p");
+  msg.innerText = message;
+
+  const btnConfirm = document.createElement("button");
+  btnConfirm.innerText = "Yes";
+  btnConfirm.classList.add("flash-close-btn");
+  btnConfirm.style.marginRight = "10px";
+  btnConfirm.addEventListener("click", () => {
+    confirmModal.remove();
+    onConfirm(); // Proceed with form submit
+  });
+
+  const btnCancel = document.createElement("button");
+  btnCancel.innerText = "Cancel";
+  btnCancel.classList.add("flash-close-btn");
+  btnCancel.addEventListener("click", () => {
+    confirmModal.remove();
+  });
+
+  confirmContent.appendChild(msg);
+  confirmContent.appendChild(btnConfirm);
+  confirmContent.appendChild(btnCancel);
+  confirmModal.appendChild(confirmContent);
+  document.body.appendChild(confirmModal);
+}

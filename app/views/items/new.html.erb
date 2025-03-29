@@ -3,10 +3,11 @@
 <h1>New item</h1>
 
 <%= form_with(model: @item, local: true) do |form| %>
+  <%= hidden_field_tag :bin_id, params[:bin_id] if params[:bin_id].present? %>
+
   <% if @item.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@item.errors.count, "error") %> prohibited this item from being saved:</h2>
-
       <ul>
         <% @item.errors.full_messages.each do |message| %>
           <li><%= message %></li>
@@ -21,13 +22,25 @@
   </div>
 
   <div class="field">
+    <%= form.label :description %>
+    <%= form.text_area :description, rows: 3 %>
+  </div>
+
+  <div class="field">
     <%= form.label :value %>
     <%= form.number_field :value %>
   </div>
 
   <div class="field">
     <%= form.label :bin_id, "Select Bin" %>
-    <%= form.collection_select :bin_id, @bins, :id, :name, prompt: "Choose a bin" %>
+    <%= form.collection_select :bin_id, @bins, :id, :name, { prompt: "Choose a bin" }, { id: "binSelect", class: "form-select" } %>
+  </div>
+
+  <div class="field" id="locationField">
+    <%= form.label :location_id, "Location" %>
+    <%= form.collection_select :location_id, @locations, :id, :name,
+        { include_blank: true },
+        { class: "form-select", id: "locationSelect", disabled: @item.bin_id.present? } %>
   </div>
 
   <div class="field">
@@ -49,3 +62,40 @@
 <div>
   <p>You can create an item without selecting a bin. If no bin is selected, it will be marked as unassigned.</p>
 </div>
+
+
+<script>
+  const binLocationMap = <%= raw @bin_location_map.to_json %>;
+</script>
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    const binSelect = document.getElementById("binSelect");
+    const locationSelect = document.getElementById("locationSelect");
+
+    function toggleLocation() {
+      console.log("🔧 turbo:load fired!");
+      if (!binSelect || !locationSelect) return;
+
+      const selectedBinId = binSelect.value;
+
+      if (selectedBinId === "") {
+        // No bin selected → user can pick a location
+        locationSelect.disabled = false;
+      } else {
+        // Bin selected → set and disable location
+        const locationId = binLocationMap[selectedBinId];
+        if (locationId && locationSelect) {
+          locationSelect.value = locationId;
+        } else {
+          locationSelect.value = "";
+        }
+        locationSelect.disabled = true;
+      }
+    }
+
+    binSelect.addEventListener("change", toggleLocation);
+    toggleLocation(); // run once on page load
+  });
+</script>
+

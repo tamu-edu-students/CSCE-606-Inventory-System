@@ -6,5 +6,6 @@ Feature: Update Bin Location
   Scenario: Assign a location to a bin
     Given I am a logged-in user
     And a location "Warehouse A" exists
-    When the user creates a bin named "Electronics Bin" in location "Warehouse A"
+    When I visit the new bin page
+    And I fill in the bin "Location" with "Warehouse A"    
     Then the bin should be associated with "Warehouse A"

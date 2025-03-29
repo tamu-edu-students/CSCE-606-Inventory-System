@@ -1,15 +1,12 @@
 <% content_for :title, "Items" %>
 
 <div class="container mt-4">
-  <% if notice %>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <%= notice %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
 
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="mb-0">My Items</h1>
+    <h1 class="mb-0">
+      <%= params[:sale_date].present? ? "Items to Sale" : "My Items" %>
+    </h1>
+
     <div>
       <%= link_to new_item_path, class: "btn btn-primary" do %>
         <i class="fas fa-plus me-1"></i> New Item
@@ -17,18 +14,26 @@
     </div>
   </div>
 
+  <!-- 🔹 Filter & Sorting Options -->
+  <div class="d-flex justify-content-between mb-3">
+    <input type="text" id="filterInput" class="form-control w-50" placeholder="🔍 Search items...">
+    <input type="number" id="valueFilter" class="form-control w-25" placeholder="Filter by value...">
+    <button id="resetFilters" class="btn btn-outline-secondary">Reset</button>
+  </div>
+
   <% if @items.any? %>
     <div class="table-responsive">
-      <table class="table table-hover table-striped align-middle">
+      <table class="table table-bordered table-hover table-striped align-middle" id="itemsTable">
         <thead class="table-light">
           <tr>
             <th scope="col">Image</th>
-            <th scope="col">Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Value</th>
-            <th scope="col">Bin</th>
-            <th scope="col">Created Date</th>
-            <th scope="col" style="min-width: 200px;">Actions</th>
+            <th scope="col" class="sortable" data-column="name">Name</th>
+            <th scope="col" class="sortable" data-column="description">Description</th>
+            <th scope="col" class="sortable" data-column="value">Value</th>
+            <th scope="col" class="sortable" data-column="bin">Bin</th>
+            <th scope="col" class="sortable" data-column="location">Location</th>
+            <th scope="col" class="sortable" data-column="created_at">Created Date</th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -46,10 +51,10 @@
                   </div>
                 <% end %>
               </td>
-              <td><%= item.name %></td>
-              <td><%= truncate(item.description, length: 50) if item.description %></td>
-              <td><span class="badge bg-primary"><%= number_to_currency(item.value) %></span></td>
-              <td>
+              <td data-column="name"><%= item.name %></td>
+              <td data-column="description"><%= truncate(item.description, length: 50) if item.description %></td>
+              <td data-column="value"><span class="badge bg-primary"><%= number_to_currency(item.value) %></span></td>
+              <td data-column="bin">
                 <% if item.bin %>
                   <span class="badge bg-info text-dark">
                     <i class="fas fa-archive me-1"></i>
@@ -62,27 +67,36 @@
                   </span>
                 <% end %>
               </td>
-              <td><%= item.created_date&.strftime("%Y-%m-%d") %></td>
+              <td data-column="location">
+                <% if item.bin&.location %>
+                  <%= item.bin.location.name %>
+                <% elsif item.location %>
+                  <%= item.location.name %>
+                <% else %>
+                  <span class="text-muted">–</span>
+                <% end %>
+              </td>
+              <td data-column="created_date"><%= item.created_at&.strftime("%Y-%m-%d") %></td>
               <td>
-  <div class="btn-group" role="group">
-    <%= link_to item, class: "btn btn-primary" do %>
-      <i class="fas fa-eye me-1"></i> View
-    <% end %>
-    <%= link_to edit_item_path(item), class: "btn btn-warning" do %>
-      <i class="fas fa-edit me-1"></i> Edit
-    <% end %>
-    <%= button_to item_path(item), 
-        method: :delete,
-        class: "btn btn-danger",
-        form: { class: 'd-inline-block' },
-        data: { 
-          turbo_confirm: "Are you sure you want to delete this item?",
-          turbo_method: :delete
-        } do %>
-      <i class="fas fa-trash me-1"></i> Delete
-    <% end %>
-  </div>
-</td>
+                <div class="action-buttons">
+                  <%= link_to item, class: "btn btn-primary view-btn" do %>
+                    <i class="fas fa-eye me-1"></i> View
+                  <% end %>
+                  <%= link_to edit_item_path(item), class: "btn btn-warning edit-btn" do %>
+                    <i class="fas fa-edit me-1"></i> Edit
+                  <% end %>
+                  <%= button_to item_path(item), 
+                      method: :delete,
+                      class: "btn btn-danger delete-btn",
+                      form: { 
+                        class: 'd-inline-block', 
+                        data: { custom_confirm: "Are you sure you want to delete this item?" } 
+                      } do %>
+                    <i class="fas fa-trash me-1"></i> Delete
+                  <% end %>
+
+                </div>
+              </td>
             </tr>
           <% end %>
         </tbody>
@@ -103,3 +117,5 @@
     <% end %>
   </div>
 </div>
+
+<script src="<%= asset_path 'items.js' %>"></script>

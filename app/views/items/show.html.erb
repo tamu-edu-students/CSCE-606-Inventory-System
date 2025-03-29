@@ -1,19 +1,6 @@
 <% content_for :title, @item.name %>
 
 <div class="container mt-4">
-  <% if notice %>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <%= notice %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
-
-  <% if alert %>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <%= alert %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% end %>
 
   <div class="card">
     <div class="card-body">
@@ -46,7 +33,7 @@
             </dd>
 
             <dt class="col-sm-4">Created Date</dt>
-            <dd class="col-sm-8"><%= @item.created_date&.strftime("%B %d, %Y") %></dd>
+            <dd class="col-sm-8"><%= @item.created_at&.strftime("%B %d, %Y") %></dd>
 
             <dt class="col-sm-4">Storage Location</dt>
             <dd class="col-sm-8">

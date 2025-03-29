@@ -3,9 +3,10 @@ require "rqrcode"
 class Bin < ApplicationRecord
   belongs_to :user, counter_cache: true # counter cache for bin counts
   belongs_to :location
-  has_many :items, dependent: :destroy # reference to items
+  has_many :items
   has_one_attached :bin_picture, dependent: :destroy # bin with multiple pictures
   after_create :update_qr_code
+  before_destroy :unassign_all_items
 
   validates :name, presence: true
   
@@ -21,6 +22,10 @@ class Bin < ApplicationRecord
   end
 
   private
+
+  def unassign_all_items
+    items.find_each(&:safe_destroy)
+  end
 
   # function to update the qr code after create bin object
   def update_qr_code
