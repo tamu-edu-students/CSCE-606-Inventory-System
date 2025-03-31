@@ -64,7 +64,6 @@
 
 /* ================= SEARCH & FILTER INPUTS ================= */
 
-/* Search & Filter Inputs */
 #filterInput,
 #valueFilter {
   width: 250px;
@@ -73,7 +72,6 @@
   border-radius: 5px;
 }
 
-/* Reset Button */
 #resetFilters {
   background-color: #f8f9fa;
   border: 1px solid #ccc;
@@ -90,12 +88,12 @@
 
 .action-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   justify-content: center;
   align-items: center;
 }
 
-/* Standard Button Styling */
 .btn {
   display: inline-block;
   padding: 10px 15px;
@@ -109,7 +107,6 @@
   min-width: 80px;
 }
 
-/* View Button (Blue) */
 .view-btn {
   background-color: #007bff;
   color: white;
@@ -119,7 +116,6 @@
   background-color: #0056b3;
 }
 
-/* Edit Button (Orange) */
 .edit-btn {
   background-color: #ff9800;
   color: white;
@@ -129,7 +125,6 @@
   background-color: #e68900;
 }
 
-/* Delete Button (Red) */
 .delete-btn {
   background-color: #dc3545;
   color: white;
@@ -137,4 +132,58 @@
 
 .delete-btn:hover {
   background-color: #b02a37;
+}
+
+/* ================= MOBILE CARD LAYOUT ================= */
+
+.card {
+  border-radius: 10px;
+  border: 1px solid #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+
+.card .btn-sm {
+  padding: 5px 10px;
+  font-size: 0.875rem;
+}
+
+.card .card-body {
+  padding-bottom: 3.5rem; /* space for footer buttons/images */
+}
+
+.card .card-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.card .card-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #ddd;
+}
+
+/* Responsive Layout Tweaks */
+@media (max-width: 767.98px) {
+  .action-buttons .btn {
+    min-width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .form-control {
+    font-size: 16px;
+  }
+
+  #filterInput,
+  #valueFilter {
+    width: 100%;
+  }
+
+  .btn {
+    font-size: 16px;
+  }
+
+  .card .img-thumbnail {
+    width: 80px;
+    height: 80px;
+  }
 }
