@@ -1,111 +1,162 @@
-<h1 class="center">Your Locations</h1>
+<% content_for :title, "Your Locations" %>
+<%= stylesheet_link_tag 'locations', media: 'all', 'data-turbo-track': 'reload' %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-  <div class="button-container">
-    <button class="button addLocationBtn">Add New Location</button>
-    <%= link_to "Back to Dashboard", dashboard_path, class: "button" %>
+<div class="container mt-4">
+
+  <!-- Header Title + Add Button -->
+  <div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+      
+      <!-- Centered Title -->
+      <div class="flex-grow-1 text-center" >
+        <h1 class="mb-0" style="margin-left: 90px;">Your Locations</h1>
+      </div>
+
+      <!-- Right-Aligned Button -->
+      <div class="d-flex justify-content-end mt-3 mt-md-0">
+        <button class="btn btn-primary addLocationBtn">
+          <i class="fas fa-plus me-1"></i> New Location
+        </button>
+      </div>
+      
+    </div>
   </div>
 
-  <%= stylesheet_link_tag 'locations', media: 'all', 'data-turbo-track': 'reload' %> 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> 
 
-  <table>
-    <thead>
-      <tr>
-        <th id="name-header">
-          Name
-          <i class="fa fa-search" id="search-icon" style="cursor: pointer; margin-left: 10px;"></i>
-        </th>
-        <th class="center">Total Bins</th>
-        <th class="center">Total Items</th>
-        <th class="center">View Bins</th>
-        <th class="center">View Items</th>
-        <th class="center">Actions</th>
-      </tr>
-    </thead>
-    <tbody id="locations-table">
-      <%= render partial: "locations_table", locals: { locations: @locations } %>
-    </tbody>
-  </table>
+  <!-- Search Bar -->
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    <input type="text" id="locationSearch" class="form-control w-100 w-md-50" placeholder="🔍 Search locations by name...">
+  </div>
+
+  <!-- Location Cards -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+    <% @locations.each do |location| %>
+      <div class="col location-card" data-name="<%= location.name.downcase %>">
+        <div class="card h-100 position-relative shadow-sm p-3">
+
+          <!-- 🔺 Delete Button (Top-right) -->
+          <div class="position-absolute top-0 end-0 mt-2 me-2">
+            <button 
+              class="btn btn-sm btn-danger deleteLocationBtn" 
+              data-location-id="<%= location.id %>" 
+              data-bins="<%= location.bins.count %>" 
+              data-items="<%= location.items.count %>">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+
+          <!-- ✏️ Edit Button (Bottom-right) -->
+          <div class="position-absolute bottom-0 end-0 mb-2 me-2">
+            <button class="btn btn-sm btn-warning editLocationBtn" data-location-id="<%= location.id %>">
+              <i class="fas fa-pen"></i>
+            </button>
+          </div>
+
+          <!-- Dummy Image -->
+          <div class="position-absolute bottom-0 start-0 mb-2 ms-2">
+            <%= image_tag("default-bin.jpg", width: 50, height: 50, class: "rounded shadow-sm") %>
+          </div>
+
+          <!-- Card Body -->
+          <div class="card-body pb-5">
+            <h5 class="fw-bold">📍 <%= location.name %></h5>
+
+            <p class="mb-2">
+            🗃 
+              <% if location.bins.count > 0 %>
+                <%= link_to pluralize(location.bins.count, "Bin"), bins_path(location_id: location.id), class: "text-decoration-none text-info fw-semibold" %>
+              <% else %>
+                <%= pluralize(location.bins.count, "Bin") %>
+              <% end %>
+            </p>
+
+            <p class="mb-2">
+              📦 
+              <% if location.items.count > 0 %>
+                <%= link_to pluralize(location.items.count, "Items"), items_path(location_id: location.id), class: "text-decoration-none text-success fw-semibold" %>
+              <% else %>
+                <%= pluralize(location.items.count, "Items") %>
+              <% end %>
+            </p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+<!-- No Results Message -->
+<div id="noLocationsMessage" class="text-center text-muted mt-3" style="display: none;">
+  <i class="fas fa-map-marker-alt fa-2x mb-2 d-block"></i>
+  <h5>No locations to display</h5>
+</div>
+
+  <!-- 🔙 Back Button -->
+  <div class="mt-4">
+    <%= link_to dashboard_path, class: "btn btn-outline-secondary" do %>
+      <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+    <% end %>
+  </div>
+</div>
 
 <!-- Add Modal -->
-<div id="addLocationModal" class="modal">
+<div id="addLocationModal" class="modal" style="display: none;">
   <div class="modal-content-add">
     <span class="close">&times;</span>
     <%= form_with model: @location, local: true, id: "addLocationForm", data: { turbo: false } do |form| %>
       <%= hidden_field_tag :_method, 'post' %> 
       <div class="form-group">
-        <h3>Enter the location name:</h3>
+        <h6>Enter the location name:</h6>
         <%= form.text_field :name, required: true, class: "name-input" %>
       </div>
-      <%= form.submit "Add Location", class: "button update-location" %>
+      <%= form.submit "Add Location", class: "btn btn-primary update-location" %>
     <% end %>
   </div>
 </div>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-  const searchIcon = document.getElementById("search-icon");
-  const locationsTable = document.getElementById("locations-table");
-  const addModal = document.getElementById("addLocationModal");
-  const addForm = document.getElementById('addLocationForm');
-  const addSpan = addModal.getElementsByClassName("close")[0];
-  const addLocationBtn = document.querySelector('.addLocationBtn');
+<!-- Edit Modal -->
+<div id="editLocationModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <%= form_with model: @location, local: true, id: "editLocationForm", data: { turbo: false } do |form| %>
+      <%= hidden_field_tag :_method, 'patch' %> 
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div class="form-group">
+        <h6>Enter the new name:</h6>
+        <%= form.text_field :name, required: true, class: "name-input" %>
+      </div>
+      <%= form.submit "Update Location", class: "btn btn-primary update-location" %>
+    <% end %>
+  </div>
+</div>
 
-  function openAddModal() {
-  addLocationBtn.onclick = function() {
-    addForm.action = "/locations";
-    addModal.style.display = "block";
-  };
+<!-- Delete Modal -->
+<div id="deleteLocationModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h6 class="warning-message">Are you sure you want to delete this location?</h6>
+    <%= form_with model: @location, local: true, id: "deleteLocationForm", data: { turbo: false } do |form| %>
+      <%= hidden_field_tag :_method, 'delete' %>
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div class="form-group mt-3">
+        <div class="w-100 text-end">
+          <%= form.submit "Yes", class: "btn btn-danger me-2" %>
+          <button type="button" class="btn btn-secondary" id="noButton">No</button>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
 
-  addSpan.onclick = function() {
-    addModal.style.display = "none";
-  };
+<!-- Warning Modal -->
+<div id="warningModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h6 class="warning-message">Please delete the bins and the associated items before you delete this location.</h6>
+    <div class="mt-3 text-center">
+      <button type="button" class="btn btn-primary ok-delete" id="warningOkButton">OK</button>
+    </div>
+  </div>
+</div>
 
-  window.onclick = function(event) {
-    if (event.target == addModal) {
-      addModal.style.display = "none";
-    }
-  };
-}
-
-  function attachSearchEvent() {
-    searchIcon.addEventListener("click", function() {
-      const th = document.getElementById("name-header");
-      if (!document.getElementById("search-input")) {
-        th.innerHTML = '<input type="text" class="name-input" id="search-input" placeholder="Search by name...">';
-        const searchInput = document.getElementById("search-input");
-
-        let debounceTimeout;
-        searchInput.addEventListener("input", function() {
-          clearTimeout(debounceTimeout);
-          debounceTimeout = setTimeout(() => {
-            const query = searchInput.value;
-            const csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
-            const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute("content") : null;
-            fetch(`/locations?name=${query}`, {
-              headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRF-Token": csrfToken
-              },
-              credentials: "same-origin"
-            })
-            .then(response => response.text())
-            .then(html => {
-              locationsTable.innerHTML = html;
-            });
-          }, 300);
-        });
-
-        searchInput.addEventListener("blur", function() {
-          th.innerHTML = 'Name <i class="fa fa-search" id="search-icon" style="cursor: pointer; margin-left: 10px;"></i>';
-          attachSearchEvent();
-        });
-        searchInput.focus(); 
-      }
-    });
-  }
-
-  attachSearchEvent();
-  openAddModal();
-  });
-</script>
+<script src="<%= asset_path 'locations.js' %>"></script>
