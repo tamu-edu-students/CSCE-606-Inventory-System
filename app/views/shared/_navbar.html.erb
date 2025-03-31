@@ -21,19 +21,29 @@
       </div>
     </div>
     <div class="sale-dropdown">
-  <span><%= link_to "SALE", "", class: "nav-link", id: "sale-trigger" %></span>
-  <div class="sale-dropdown-content" id="sale-dropdown-content">
-    <div class="sale-input-group">
-      <%= form_with url: items_path, method: :get, local: true do %>
-        <input type="date" 
-               id="sale-date" 
-               name="sale_date" 
-               value="<%= params[:sale_date] || Date.today.strftime('%Y-%m-%d') %>">
-        <button type="submit" class="sale-search-btn">Search Items</button>
-      <% end %>
+      <span><%= link_to "SALE", "", class: "nav-link", id: "sale-trigger" %></span>
+      <div class="sale-dropdown-content" id="sale-dropdown-content">
+        <div class="sale-input-group">
+          <%= form_with url: items_path, method: :get, local: true do %>
+            <div class="mb-3">
+              <label for="sale-date" class="form-label">Created Before:</label>
+              <input type="date" 
+                     id="sale-date" 
+                     name="sale_date" 
+                     value="<%= params[:sale_date] || Date.today.strftime('%Y-%m-%d') %>"
+                     class="form-control">
+            </div>
+            <div class="mb-3">
+              <div class="form-check">
+                <%= check_box_tag :for_sale, "1", params[:for_sale] == "1", class: "form-check-input", id: "forSaleCheckbox" %>
+                <%= label_tag :for_sale, "Only Items For Sale", class: "form-check-label" %>
+              </div>
+            </div>
+            <button type="submit" class="sale-search-btn">Search Items</button>
+          <% end %>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
     </div>
 
   </div>

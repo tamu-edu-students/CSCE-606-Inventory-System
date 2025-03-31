@@ -20,7 +20,6 @@
     <%= form.text_area :description, rows: 3 %>
   </div>
 
-
   <div class="field">
     <%= form.label :value %>
     <%= form.number_field :value, step: :any %>
@@ -36,15 +35,40 @@
   </div>
 
   <div class="field" id="locationField">
-  <%= form.label :location_id, "Location" %>
-  <%= form.select :location_id,
-      @locations.map { |l| [l.name, l.id] },
-      { include_blank: true },
-      { class: "form-select", id: "locationSelect", disabled: item.bin_id.present? } %>
-</div>
+    <%= form.label :location_id, "Location" %>
+    <%= form.select :location_id,
+        @locations.map { |l| [l.name, l.id] },
+        { include_blank: true },
+        { class: "form-select", id: "locationSelect", disabled: item.bin_id.present? } %>
+  </div>
 
+  <div class="field">
+    <div class="form-check form-switch">
+      <%= form.check_box :for_sale, class: "form-check-input", id: "forSaleCheckbox" %>
+      <%= form.label :for_sale, "Mark for Sale", class: "form-check-label" %>
+    </div>
+    <small class="text-muted">Toggle this switch to mark the item as available for sale</small>
+  </div>
+
+  <div class="field">
+    <%= form.label :item_pictures %>
+    <%= form.file_field :item_pictures, multiple: true %>
+  </div>
+
+  <% if item.item_pictures.attached? %>
+    <div class="field">
+      <p><strong>Current Pictures:</strong></p>
+      <div class="image-preview">
+        <% item.item_pictures.each do |picture| %>
+          <div class="preview-container">
+            <%= image_tag picture, class: "img-thumbnail", style: "width: 100px; height: 100px; object-fit: cover;" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit class: "btn btn-primary" %>
   </div>
 <% end %>

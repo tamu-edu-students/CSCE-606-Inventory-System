@@ -1,36 +1,50 @@
 <%= stylesheet_link_tag "sessions", media: "all" %>
+<div class="background-image" style="background-image: url('/assets/login-bg.jpg')"></div>
 <div class="container">
-    <div class="form-container">
-        <h2>Login</h2>
+    <div class="brand">
+        <i class="fas fa-box-open me-2"></i>Inventory System
+    </div>
+    
+    <h2>Welcome Back</h2>
 
-        <%= form_with model: resource, url: user_session_path, method: :post, data: { turbo: false } do |f| %>
+    <%= form_with model: resource, url: user_session_path, method: :post, data: { turbo: false } do |f| %>
+        <!-- Email Field -->
+        <div class="form-group">
+            <label for="email">
+                <i class="fas fa-envelope me-2"></i>Email
+            </label>
+            <%= f.email_field :email, required: true, autofocus: true, placeholder: "Enter your email" %>
+        </div>
 
-
-            <!-- Email Field -->
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <%= f.email_field :email, required: true, autofocus: true %>
+        <!-- Error Message Display -->
+        <% if flash[:alert] %>
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle me-2"></i><%= flash[:alert] %>
             </div>
-
-            <!-- Error Message Display -->
-            <% if flash[:alert] %>
-                <div class="error-message">
-                    <%= flash[:alert] %>
-                </div>
-            <% end %>
-
-            <!-- Password Field -->
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <%= f.password_field :password, required: true %>
-            </div>
-
-            <%= link_to "Forgot your password?", forgot_password_path, class: "forgot-password" %>
-
-            <!-- Login Button -->
-            <%= f.submit "Login", class: "btn " %>
         <% end %>
 
-        <p>Don't have an account? <%= link_to "Sign up", signup_path %></p>
-    </div>
+        <!-- Password Field -->
+        <div class="form-group">
+            <label for="password">
+                <i class="fas fa-lock me-2"></i>Password
+            </label>
+            <%= f.password_field :password, required: true, placeholder: "Enter your password" %>
+        </div>
+
+        <%= link_to forgot_password_path, class: "forgot-password" do %>
+            <i class="fas fa-key me-2"></i>Forgot Password?
+        <% end %>
+
+        <!-- Login Button -->
+        <%= f.submit "Sign In", class: "btn" do %>
+            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+        <% end %>
+    <% end %>
+
+    <p class="mt-4">
+        Don't have an account? 
+        <%= link_to signup_path, class: "ms-1" do %>
+            <i class="fas fa-user-plus me-1"></i>Sign Up
+        <% end %>
+    </p>
 </div>

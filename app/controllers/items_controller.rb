@@ -8,10 +8,15 @@ class ItemsController < ApplicationController
     if params[:location_id]
       @items = current_user.items.where(location_id: params[:location_id])
     else
-      @items = current_user.items # Show only bins for the logged-in user
+      @items = current_user.items # Show only items for the logged-in user
     end
 
-    # Filter by created_at if sale_date is provided
+    # Filter by for_sale status if provided
+    if params[:for_sale].present?
+      @items = @items.for_sale
+    end
+    
+    # Filter by sale date if provided
     if params[:sale_date].present?
       @items = @items.where("created_at <= ?", params[:sale_date])
     end
@@ -124,7 +129,7 @@ class ItemsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_item
-      @item = Item.find(params.expect(:id))
+      @item = Item.find(params[:id])
     end
 
     def authorize_user
@@ -142,6 +147,7 @@ class ItemsController < ApplicationController
         :bin_id,
         :no_bin,
         :location_id,
+        :for_sale,
         item_pictures: []
       )
     

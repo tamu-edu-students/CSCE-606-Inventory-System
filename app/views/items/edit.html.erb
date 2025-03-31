@@ -2,70 +2,7 @@
 
 <h1>Editing item</h1>
 
-<%= form_with(model: @item, local: true) do |form| %>
-  <%= hidden_field_tag :bin_id, params[:bin_id] if params[:bin_id].present? %>
-  <% if @item.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@item.errors.count, "error") %> prohibited this item from being saved:</h2>
-
-      <ul>
-        <% @item.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_area :description, rows: 3 %>
-  </div>
-
-  <div class="field">
-    <%= form.label :value %>
-    <%= form.number_field :value %>
-  </div>
-
-    <div class="field">
-    <%= form.label :bin_id, "Select Bin" %>
-    <%= form.collection_select :bin_id, @bins, :id, :name, { prompt: "Choose a bin" }, { id: "binSelect", class: "form-select" } %>
-  </div>
-
-  <div class="field" id="locationField">
-    <%= form.label :location_id, "Location" %>
-    <%= form.collection_select :location_id, @locations, :id, :name,
-        { include_blank: true },
-        { class: "form-select", id: "locationSelect", disabled: @item.bin_id.present? } %>
-  </div>
-
-
-  <div class="field">
-    <%= form.label :item_pictures %>
-    <%= form.file_field :item_pictures, multiple: true %>
-  </div>
-
-  <% if @item.item_pictures.attached? %>
-    <div class="field">
-      <p><strong>Current Pictures:</strong></p>
-      <div class="image-preview">
-        <% @item.item_pictures.each do |picture| %>
-          <div class="preview-container">
-            <%= image_tag picture, class: "img-thumbnail", style: "width: 100px; height: 100px; object-fit: cover;" %>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-
-  <div class="actions mt-3">
-    <%= form.submit "Update Item", class: "btn btn-primary" %>
-  </div>
-<% end %>
+<%= render "form", item: @item %>
 
 <br>
 
@@ -132,7 +69,6 @@
 <script>
   const binLocationMap = <%= raw @bin_location_map.to_json %>;
 </script>
-
 
 <script>
   document.addEventListener("turbo:load", function () {

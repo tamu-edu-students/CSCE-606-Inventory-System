@@ -1,32 +1,42 @@
-
 <% content_for :title, "Bins" %>
 
 <h1>My Bins</h1>
-<!-- Create new bin buttom -->
+<!-- Create new bin button -->
 <div class="d-flex justify-content-start mb-3">
   <%= link_to "➕ Create New Bin", new_bin_path, class: "btn btn-primary" %>
 </div>
+
 <!-- Sorting & Filtering -->
-<div class="d-flex justify-content-between mb-3">
+<div class="d-flex justify-content-between align-items-center mb-3">
   <!-- Filter by Category -->
-  <select id="categoryFilter" class="form-select w-25">
-    <option value="">All Categories</option>
-    <% Bin.distinct.pluck(:category_name).each do |category| %>
-      <option value="<%= category %>"><%= category %></option>
-    <% end %>
-  </select>
+  <div class="d-flex align-items-center gap-2">
+    <label for="categoryFilter" class="form-label mb-0">Filter by Category:</label>
+    <select id="categoryFilter" class="form-select w-auto">
+      <option value="">All Categories</option>
+      <% categories = Bin.distinct.pluck(:category_name) %>
+      <% categories.each do |category| %>
+        <%# Debug: Log the category value %>
+        <% Rails.logger.debug "Category in dropdown: #{category}" %>
+        <option value="<%= category %>"><%= category %></option>
+      <% end %>
+    </select>
+  </div>
 
   <!-- Sorting Options -->
-  <button id="sortByName" class="btn btn-outline-primary">Sort by Name</button>
+  <button id="sortByName" class="btn btn-outline-primary">
+    Sort by Name ↑
+  </button>
 </div>
 
 <% if @bins.any? %>
   <div class="bins-container">
     <% @bins.each do |bin| %>
-      <div class="bin-card" data-name="<%= bin.name.downcase %>" data-category="<%= bin.category_name.downcase %>">
+      <%# Debug: Log the bin's category %>
+      <% Rails.logger.debug "Bin #{bin.name} category: #{bin.category_name}" %>
+      <div class="bin-card" data-category="<%= bin.category_name %>">
         <div class="bin-header">
           <h2 class="bin-title">
-          <%= link_to bin.name, bin_path(bin), class: "bin-link" %>
+            <%= link_to bin.name, bin_path(bin), class: "bin-link" %>
           </h2>
           <%= button_to bin_path(bin),
               method: :delete,
@@ -42,7 +52,7 @@
         <p class="bin-info">📍 <%= bin.location.name %></p>
         <p class="bin-info">📦 <%= bin.category_name %></p>
 
-            <!-- ⬇️ ADD ITEM LIST HERE -->
+        <!-- Items List -->
         <% if bin.items.any? %>
           <div class="bin-items-list mt-2">
             <p class="fw-bold mb-1">Items in this bin:</p>
@@ -55,7 +65,6 @@
         <% else %>
           <p class="text-muted small">No items in this bin.</p>
         <% end %>
-        
 
         <div class="bin-image-container">
           <% if bin.bin_picture.attached? %>
@@ -68,16 +77,18 @@
             class: "text-primary p-0 m-0 border-0 bg-transparent d-inline-block" do %>
             <i class="fa-solid fa-pen-to-square"></i>
           <% end %>
-
         </div>
       </div>
     <% end %>
   </div>
 <% else %>
-  <p>You have no bins yet.</p>
+  <div class="alert alert-info">
+    <i class="fas fa-info-circle me-2"></i>
+    You have no bins yet.
+  </div>
 <% end %>
 
-<div class="actions">
+<div class="actions mt-3">
   <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
 </div>
 

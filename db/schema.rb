@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_10_213600) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_31_181548) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -62,6 +62,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_10_213600) do
     t.boolean "no_bin"
     t.integer "location_id"
     t.integer "user_id", null: false
+    t.boolean "for_sale", default: false, null: false
     t.index ["bin_id"], name: "index_items_on_bin_id"
     t.index ["location_id"], name: "index_items_on_location_id"
     t.index ["user_id"], name: "index_items_on_user_id"

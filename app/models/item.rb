@@ -6,6 +6,7 @@ class Item < ApplicationRecord
   
   validates :name, presence: true
   validates :value, numericality: { greater_than_or_equal_to: 0 }
+  validates :for_sale, inclusion: { in: [true, false] }
   validate :validate_no_bin_status
 
 
@@ -13,6 +14,9 @@ class Item < ApplicationRecord
   scope :search_by_name, ->(query) {
     where("LOWER(name) LIKE ?", "%#{query.downcase}%") if query.present?
   }
+
+  # Scope for finding items for sale
+  scope :for_sale, -> { where(for_sale: true) }
 
   def unassigned?
     bin_id.nil? && no_bin?
