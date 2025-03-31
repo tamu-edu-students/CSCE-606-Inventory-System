@@ -1,6 +1,6 @@
 class LocationsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_location, only: [:update, :destroy]
+  before_action :set_location, only: [:show, :edit, :update, :destroy]
 
   # GET /locations
   def index
@@ -17,42 +17,36 @@ class LocationsController < ApplicationController
     end
   end
 
+  def new
+    @location = current_user.locations.build
+  end
+
   # POST /locations
   def create
-    @location = current_user.locations.new(location_params)
+    @location = current_user.locations.build(location_params)
     if @location.save
-      flash[:notice] = "Location created successfully!"
-      redirect_to locations_path
+      redirect_to bins_path, notice: 'Location was successfully created.'
     else
-      flash[:alert] = "Failed to create location"
-      redirect_to locations_path
+      render :new, status: :unprocessable_entity
     end
+  end
+
+  def edit
   end
 
   # PATCH/PUT /locations/:id
   def update
     if @location.update(location_params)
-      flash[:notice] = "Location updated successfully!"
-      redirect_to locations_path
+      redirect_to bins_path, notice: 'Location was successfully updated.'
     else
-      flash[:alert] = "Failed to update location"
-      redirect_to locations_path
+      render :edit, status: :unprocessable_entity
     end
   end
 
   # DELETE /locations/:id
   def destroy
-
-    Thread.current[:deletion_context] = :from_locations
-    
-    if @location.destroy
-      flash[:notice] = "Location deleted successfully!"
-    else
-      flash[:alert] = "Failed to delete location"
-    end
-
-    Thread.current[:deletion_context] = nil
-    redirect_to locations_path
+    @location.destroy
+    redirect_to bins_path, notice: 'Location was successfully deleted.'
   end
 
   private
@@ -62,6 +56,6 @@ class LocationsController < ApplicationController
   end
 
   def location_params
-    params.require(:location).permit(:name)
+    params.require(:location).permit(:name, :description)
   end
 end

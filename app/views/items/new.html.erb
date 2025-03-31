@@ -14,38 +14,167 @@
   <p>You can create an item without selecting a bin. If no bin is selected, it will be marked as unassigned.</p>
 </div>
 
-<script>
-  const binLocationMap = <%= raw @bin_location_map.to_json %>;
-</script>
-
-<script>
-  document.addEventListener("turbo:load", function () {
-    const binSelect = document.getElementById("binSelect");
-    const locationSelect = document.getElementById("locationSelect");
-
-    function toggleLocation() {
-      console.log("🔧 turbo:load fired!");
-      if (!binSelect || !locationSelect) return;
-
-      const selectedBinId = binSelect.value;
-
-      if (selectedBinId === "") {
-        // No bin selected → user can pick a location
-        locationSelect.disabled = false;
-      } else {
-        // Bin selected → set and disable location
-        const locationId = binLocationMap[selectedBinId];
-        if (locationId && locationSelect) {
-          locationSelect.value = locationId;
-        } else {
-          locationSelect.value = "";
-        }
-        locationSelect.disabled = true;
-      }
+<% content_for :styles do %>
+  <style>
+    .item-edit-container {
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      padding: 2rem 0;
     }
 
-    binSelect.addEventListener("change", toggleLocation);
-    toggleLocation(); // run once on page load
-  });
-</script>
+    .edit-card {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .edit-header {
+      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+      color: white;
+      padding: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .edit-header h1 {
+      margin: 0;
+      font-size: 1.75rem;
+      font-weight: 600;
+    }
+
+    .edit-body {
+      padding: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: #495057;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-control, .form-select {
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      border: 1px solid #dee2e6;
+      transition: all 0.2s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+
+    .form-text {
+      color: #6c757d;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .form-check {
+      margin: 1rem 0;
+      padding-left: 2rem;
+    }
+
+    .form-check-input {
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-top: 0.25rem;
+      margin-left: -2rem;
+    }
+
+    .form-check-label {
+      font-weight: 500;
+      color: #495057;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      border: none;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
+    }
+
+    .alert {
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .alert-danger {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      color: #721c24;
+    }
+
+    .alert ul {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+
+    .alert li {
+      margin: 0.25rem 0;
+    }
+
+    .image-upload-container {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .upload-area {
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .upload-area:hover {
+      border-color: #0d6efd;
+      background-color: rgba(13, 110, 253, 0.05);
+    }
+
+    .upload-area input[type="file"] {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+<% end %>
 

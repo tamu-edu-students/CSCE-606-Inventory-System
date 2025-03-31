@@ -1,12 +1,178 @@
 <% content_for :title, "Editing bin" %>
 
-<h1>Editing bin</h1>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="fas fa-edit me-2"></i>Edit Bin
+          </h4>
+        </div>
+        <div class="card-body">
+          <%= form_with(model: @bin, class: "needs-validation", local: true) do |f| %>
+            <% if @bin.errors.any? %>
+              <div class="alert alert-danger">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Please correct the following errors:</h5>
+                <ul>
+                  <% @bin.errors.full_messages.each do |message| %>
+                    <li><%= message %></li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
 
-<%= render "form", bin: @bin, locations: @locations %>
+            <div class="mb-4">
+              <div class="form-group">
+                <%= f.label :name, class: "form-label" do %>
+                  <i class="fas fa-box me-2"></i>Bin Name
+                <% end %>
+                <%= f.text_field :name, class: "form-control form-control-lg", placeholder: "Enter bin name" %>
+              </div>
+            </div>
 
-<br>
+            <div class="mb-4">
+              <div class="form-group">
+                <%= f.label :category_name, class: "form-label" do %>
+                  <i class="fas fa-tag me-2"></i>Category
+                <% end %>
+                <%= f.select :category_name, 
+                    options_for_select([
+                      ['IT', 'IT'],
+                      ['Electronics', 'Electronics'],
+                      ['Tools', 'Tools'],
+                      ['Office Supplies', 'Office Supplies'],
+                      ['Other', 'Other']
+                    ], @bin.category_name),
+                    { include_blank: 'Select a category' },
+                    { class: "form-select form-select-lg" } %>
+              </div>
+            </div>
 
-<div>
-  <%= link_to "Show this bin", @bin %> |
-  <%= link_to "Back to bins", bins_path %>
+            <div class="mb-4">
+              <div class="form-group">
+                <%= f.label :location_id, class: "form-label" do %>
+                  <i class="fas fa-map-marker-alt me-2"></i>Location
+                <% end %>
+                <%= f.collection_select :location_id, 
+                    @locations, 
+                    :id, 
+                    :name, 
+                    { include_blank: 'Select a location' },
+                    { class: "form-select form-select-lg" } %>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="form-group">
+                <%= f.label :picture, class: "form-label" do %>
+                  <i class="fas fa-image me-2"></i>Bin Picture
+                <% end %>
+                <div class="input-group">
+                  <%= f.file_field :picture, class: "form-control form-control-lg", accept: "image/*" %>
+                  <% if @bin.picture.attached? %>
+                    <div class="mt-2">
+                      <div class="current-image">
+                        <p class="text-muted">Current image:</p>
+                        <%= image_tag @bin.picture, class: "img-thumbnail", style: "max-height: 200px;" %>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <%= link_to bins_path, class: "btn btn-secondary btn-lg me-md-2" do %>
+                <i class="fas fa-arrow-left me-2"></i>Back to Bins
+              <% end %>
+              <%= f.submit class: "btn btn-primary btn-lg" do %>
+                <i class="fas fa-save me-2"></i>Update Bin
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+.card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.card-header {
+  border-bottom: none;
+  padding: 1.5rem;
+}
+
+.form-control, .form-select {
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+.btn {
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5c636a;
+  border-color: #565e64;
+  transform: translateY(-1px);
+}
+
+.alert {
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.current-image {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 10px;
+}
+
+.current-image p {
+  margin-bottom: 0.5rem;
+}
+
+.img-thumbnail {
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+</style>

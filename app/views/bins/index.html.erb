@@ -49,7 +49,7 @@
           <% end %>
         </div>
         
-        <p class="bin-info">📍 <%= bin.location.name %></p>
+        <p class="bin-info">📍 <%= bin.location&.name || 'No location' %></p>
         <p class="bin-info">📦 <%= bin.category_name %></p>
 
         <!-- Items List -->

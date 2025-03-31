@@ -1,11 +1,68 @@
 <% content_for :title, "New bin" %>
 
-<h1>New bin</h1>
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h1 class="card-title mb-0">New Bin</h1>
+    </div>
+    <div class="card-body">
+      <%= render "form", bin: @bin, locations: @locations %>
 
-<%= render "form", bin: @bin , locations: @locations %>
-
-<br>
-
-<div>
-  <%= link_to "Back to bins", bins_path %>
+      <div class="mt-4">
+        <%= link_to "Back to bins", bins_path, class: "btn btn-secondary" %>
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+  .card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .card-header {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    padding: 1.25rem;
+    border-bottom: none;
+  }
+  .card-title {
+    color: white;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  .card-body {
+    padding: 2rem;
+    background-color: #f8f9fa;
+  }
+  .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  .btn-secondary:hover {
+    background-color: #5a6268;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .form-control {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    padding: 0.75rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+  }
+  .form-label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 0.5rem;
+  }
+</style>

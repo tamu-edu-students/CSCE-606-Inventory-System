@@ -1,18 +1,20 @@
 class BinsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_bin, only: %i[show edit update destroy]
-  before_action :authorize_user, only: %i[show edit update destroy]
+  before_action :set_bin, only: %i[show edit update destroy share]
+  before_action :authorize_bin_access, only: %i[show edit update destroy share]
 
   # GET /bins or /bins.json
   def index
     puts "Params: #{params.inspect}"
-    @bins = current_user.bins
-    @bins = @bins.search_by_name(params[:name]) # ✅ Keeps user filtering + adds search
+    @bins = current_user.accessible_bins
+    
+    # Apply search by name
+    @bins = @bins.search_by_name(params[:name]) if params[:name].present?
 
     # Apply filtering by category
     @bins = @bins.where(category_name: params[:category]) if params[:category].present?
 
-     # ✅ Apply filtering by location
+    # Apply filtering by location
     @bins = @bins.where(location_id: params[:location_id]) if params[:location_id].present?
 
     # Apply sorting by name
@@ -43,78 +45,58 @@ class BinsController < ApplicationController
 
   # POST /bins or /bins.json
   def create
-    @bin = current_user.bins.build(bin_params.except(:location_id, :new_location))
-    # @bin = current_user.bins.build(bin_params.except(:location)) # Exclude location from direct params
-    # @bin.location = Location.find_by(name: bin_params[:location]) # Find the Location object
-    # Use existing location if selected
-    if bin_params[:location_id].present?
-      @bin.location = Location.find_by(id: bin_params[:location_id])
-    elsif bin_params[:new_location].present?
-      # Create a new location if none is selected
-      @bin.location = current_user.locations.create(name: bin_params[:new_location])
+    @bin = current_user.bins.build(bin_params)
+    
+    # Handle new location creation if no location_id is provided
+    if params[:bin][:new_location].present?
+      location = current_user.locations.create(name: params[:bin][:new_location])
+      @bin.location = location
     end
-
-    respond_to do |format|
-      if @bin.save
-        format.html { redirect_to @bin, notice: "Bin was successfully created." }
-        format.json { render :show, status: :created, location: @bin }
-      else
-        @locations = current_user.locations # Ensure dropdown is still populated on error
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @bin.errors, status: :unprocessable_entity }
-      end
+    
+    if @bin.save
+      redirect_to @bin, notice: 'Bin was successfully created.'
+    else
+      @locations = current_user.locations # Ensure dropdown is still populated on error
+      render :new, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /bins/1 or /bins/1.json
   def update
-    respond_to do |format|
-      # Remove location_id and new_location before updating other attributes
-      if @bin.update(bin_params.except(:location_id, :new_location))
-
-        # Handle location update logic
-        if bin_params[:location_id].present?
-          @bin.location = Location.find_by(id: bin_params[:location_id])
-        elsif bin_params[:new_location].present?
-          @bin.location = current_user.locations.create(name: bin_params[:new_location])
-        end
-
-        @bin.save # Save location changes
-
-        format.html { redirect_to @bin, notice: "Bin was successfully updated." }
-        format.json { render :show, status: :ok, location: @bin }
-      else
-        @locations = current_user.locations # Ensure dropdown is still populated on error
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @bin.errors, status: :unprocessable_entity }
-      end
+    if @bin.update(bin_params)
+      redirect_to @bin, notice: 'Bin was successfully updated.'
+    else
+      @locations = current_user.locations # Ensure dropdown is still populated on error
+      render :edit, status: :unprocessable_entity
     end
   end
 
-
   # DELETE /bins/1 or /bins/1.json
   def destroy
-    @bin.destroy!
+    @bin.destroy
+    redirect_to bins_url, notice: 'Bin was successfully deleted.'
+  end
 
-    respond_to do |format|
-      format.html { redirect_to bins_path, status: :see_other, notice: "Bin was successfully destroyed. The items Inside were Unassigned" }
-      format.json { head :no_content }
-    end
+  def share
+    @friends = current_user.all_friends
+    @shared_users = @bin.shared_with_users
   end
 
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_bin
-    @bin = Bin.find(params[:id]) # Fixed issue: params.expect → params[:id]
+    @bin = Bin.find(params[:id])
   end
 
-  def authorize_user
-    redirect_to bins_path, alert: "Not authorized" if @bin.user != current_user
+  def authorize_bin_access
+    unless @bin.accessible_by?(current_user)
+      redirect_to bins_path, alert: 'You do not have permission to access this bin.'
+    end
   end
 
   # Only allow a list of trusted parameters through.
   def bin_params
-    params.require(:bin).permit(:name, :location, :category_name, :bin_picture, :location_id, :new_location) # Fixed params.expect → params.require & permit
+    params.require(:bin).permit(:name, :location_id, :category_name, :bin_picture)
   end
 end

@@ -3,21 +3,24 @@
     <span><%= link_to "HOME", dashboard_path, class: "nav-link" %></span>
     <span><%= link_to "BINS", bins_path, class: "nav-link", data: { turbo: false } %></span>
     <span><%= link_to "ITEMS", items_path, class: "nav-link",  data: { turbo: false } %></span>
+    <span><%= link_to "FRIENDS", friendships_path, class: "nav-link" %></span>
     <!-- Always show LOG and SALE as text -->
     <div class="log-dropdown">
       <span>
         <%= link_to "LOG", "#", class: "nav-link", id: "log-trigger" %>
       </span>
       <div class="log-dropdown-content" id="log-dropdown-content">
-        <div class="date-input-group">
-          <label for="from-date">From:</label>
-          <input type="date" id="from-date" name="from-date">
-        </div>
-        <div class="date-input-group">
-          <label for="to-date">To:</label>
-          <input type="date" id="to-date" name="to-date">
-        </div>
-        <button class="date-search-btn">Search Logs</button>
+        <%= form_with url: log_items_path, method: :get, local: true do %>
+          <div class="date-input-group">
+            <label for="from-date">From:</label>
+            <input type="date" id="from-date" name="start_date">
+          </div>
+          <div class="date-input-group">
+            <label for="to-date">To:</label>
+            <input type="date" id="to-date" name="end_date">
+          </div>
+          <button type="submit" class="date-search-btn">Search Logs</button>
+        <% end %>
       </div>
     </div>
     <div class="sale-dropdown">
@@ -44,8 +47,6 @@
         </div>
       </div>
     </div>
-    </div>
-
   </div>
 
   <div class="nav-right">

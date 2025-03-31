@@ -98,3 +98,6 @@ end
 
 
 gem "rubyzip", "~> 2.3"
+
+# Pagination
+gem "kaminari"

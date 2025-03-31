@@ -55,9 +55,13 @@
               <% end %>
             </div>
 
-            <!-- Dummy Image -->
+            <!-- Item Image -->
             <div class="position-absolute bottom-0 start-0 mb-2 ms-2">
-              <%= image_tag("default-bin.jpg", width: 50, height: 50, class: "rounded shadow-sm") %>
+              <% if item.item_pictures.attached? %>
+                <%= image_tag item.item_pictures.first, width: 50, height: 50, class: "rounded shadow-sm", style: "object-fit: cover;" %>
+              <% else %>
+                <%= image_tag("default-bin.jpg", width: 50, height: 50, class: "rounded shadow-sm") %>
+              <% end %>
             </div>
 
             <!-- Main Body -->
