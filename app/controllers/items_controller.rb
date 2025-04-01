@@ -17,7 +17,7 @@ class ItemsController < ApplicationController
     end
     
     # Apply search filtering if a name is provided
-    @items = @items.search_by_name(params[:name])
+    @items = @items.search_by_name(params[:name]) if params[:name].present?
   end
 
   # GET /items/1 or /items/1.json

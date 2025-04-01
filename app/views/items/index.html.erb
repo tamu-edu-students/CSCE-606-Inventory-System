@@ -15,7 +15,7 @@
 
   <!-- 🔍 Filters -->
   <div class="d-flex flex-wrap justify-content-between gap-2 mb-4">
-    <input type="text" id="filterInput" class="form-control w-100 w-md-50" placeholder="🔍 Search items...">
+    <input type="text" id="filterInput" class="form-control w-100 w-md-50" placeholder="🔍 Search items by name...">
     <input type="number" id="valueFilter" class="form-control w-100 w-md-25" placeholder="Filter by value...">
     <button id="resetFilters" class="btn btn-outline-secondary mt-2 mt-md-1.5">Reset</button>
   </div>
@@ -56,12 +56,17 @@
                 <%= link_to item.name, item_path(item), class: "text-decoration-none fw-bold" %>
               </h5>
               <p class="mb-1">🗃 <%= item.bin&.name || "Unassigned" %></p>
-              <p class="mb-1">📍 <%= item.bin&.location&.name || item.location&.name || "–" %></p>
+              <p class="mb-1">📍 <%= item.bin&.location&.name || item.location&.name || "Unassigned" %></p>
               <p class="mb-1">💰 <%= number_to_currency(item.value) %></p>
             </div>
           </div>
         </div>
       <% end %>
+    </div>
+    <!-- Add this directly below the cards -->
+    <div id="noResultsMessage" class="text-center text-muted mt-4" style="display: none;">
+      <i class="fas fa-search fa-3x mb-2"></i>
+      <h5>No items to display</h5>
     </div>
   <% else %>
     <div class="text-center py-5">

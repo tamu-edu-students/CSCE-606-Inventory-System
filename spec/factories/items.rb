@@ -4,5 +4,6 @@ FactoryBot.define do
     description { "A test description" }
     value { 100 }
     association :bin
+    association :location
   end
 end

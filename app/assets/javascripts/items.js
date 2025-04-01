@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const valueFilter = document.getElementById("valueFilter");
   const resetButton = document.getElementById("resetFilters");
   const itemCards = document.querySelectorAll(".item-card");
+  const noResultsMessage = document.getElementById("noResultsMessage");
+
 
   function filterItems() {
     const nameQuery = filterInput.value.toLowerCase();
@@ -21,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
         card.style.display = "none";
       }
     });
+    const anyVisible = Array.from(itemCards).some(card => card.style.display !== "none");
+    noResultsMessage.style.display = anyVisible ? "none" : "block";
   }
 
   filterInput.addEventListener("input", filterItems);

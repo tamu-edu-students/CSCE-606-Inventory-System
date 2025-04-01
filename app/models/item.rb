@@ -11,8 +11,8 @@ class Item < ApplicationRecord
 
   # Scope for searching items by name
   scope :search_by_name, ->(query) {
-    where("LOWER(name) LIKE ?", "%#{query.downcase}%") if query.present?
-  }
+  where("LOWER(name) LIKE ?", "%#{query.downcase}%")
+}
 
   def unassigned?
     bin_id.nil? && no_bin?

@@ -49,6 +49,7 @@ gem "selenium-webdriver", "~> 4.0"  # Selenium for browser automation
 group :development, :test do
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
   gem "factory_bot_rails"
+  gem "launchy"  # Launchy for opening URLs in the browser
   gem "brakeman", require: false  # Security analysis
   gem "rubocop-rails-omakase", require: false  # Style guide
   gem "rack_session_access"
