@@ -1,39 +1,475 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <%= csrf_meta_tags %>
-  <%= csp_meta_tag %>
-   <!-- Load application-wide styles -->
-  <%= stylesheet_link_tag "application", media: "all" %>
+<% content_for :title do %>Dashboard<% end %>
 
-   <!-- Load dashboard-specific styles -->
-    <%= stylesheet_link_tag "dashboard", media: "all" %>
+<% content_for :styles do %>
+<style>
+.bg-primary-dark {
+  background-color: rgba(0, 0, 0, 0.1);
+}
 
-  <!-- Load dashboard-JS Aplications -->
-  <%= javascript_include_tag "application" %>
-</head>
-<body>
-  <h1>My Inventory</h1>
-  <div class="search-container">
-    <!-- Search Bin/Category -->
-    <div class="search-box">
-      <input type="text" id="search-inventory" placeholder="Search by Bin/Category..." autocomplete="off">
-      <button id="search-inventory-btn" tabindex="2">Search</button>
-    </div>
+.bg-success-dark {
+  background-color: rgba(0, 0, 0, 0.1);
+}
 
-    <!-- Search for Items -->
-    <div class="search-box">
-      <input type="text" id="search-items" placeholder="Search Items..." autocomplete="off">
-      <button id="search-items-btn" tabindex="4">Search</button>
+.bg-info-dark {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.bg-warning-dark {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  border: none;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.dashboard-illustration {
+  position: relative;
+  padding: 2rem;
+}
+
+.illustration-container {
+  position: relative;
+  display: inline-block;
+  padding: 3rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.illustration-container::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  bottom: -10px;
+  left: -10px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: rotate 30s linear infinite;
+}
+
+.illustration-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dashboard-stats {
+  margin-top: 2rem;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-icon {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-tag {
+  transition: all 0.2s ease;
+}
+
+.category-tag:hover {
+  transform: translateY(-2px);
+}
+
+.category-tag.active {
+  background-color: #0d6efd;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.input-group-text {
+  border: none;
+}
+
+.form-control {
+  border: none;
+  padding: 1rem;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #0d6efd;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+}
+
+.quick-categories .btn {
+  border-radius: 20px;
+}
+
+.card-footer {
+  border-top: none;
+}
+
+.rounded-circle {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-card {
+  cursor: pointer;
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.suggestions-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 250px;
+  overflow-y: auto;
+  display: none;
+}
+
+.suggestion-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: #f8fafc;
+}
+</style>
+<% end %>
+
+<div class="container-fluid py-4">
+  <!-- Hero Section -->
+  <div class="row mb-4">
+    <div class="col-lg-12">
+      <div class="card bg-primary text-white shadow-sm overflow-hidden">
+        <div class="card-body p-4">
+          <div class="row align-items-center">
+            <div class="col-lg-8 text-center mx-auto">
+              <h1 class="display-4 mb-3">Welcome to Your Inventory</h1>
+              <p class="lead mb-4">Manage your bins, items, and track your inventory efficiently.</p>
+              <div class="dashboard-stats d-flex justify-content-center gap-4">
+                <div class="stat-item">
+                  <div class="stat-icon mb-2">
+                    <i class="fas fa-box fa-2x text-white-50"></i>
+                  </div>
+                  <h3 class="h4 mb-1"><%= Bin.count %></h3>
+                  <p class="mb-0 text-white-50">Total Bins</p>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-icon mb-2">
+                    <i class="fas fa-cube fa-2x text-white-50"></i>
+                  </div>
+                  <h3 class="h4 mb-1"><%= Item.count %></h3>
+                  <p class="mb-0 text-white-50">Total Items</p>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-icon mb-2">
+                    <i class="fas fa-map-marker-alt fa-2x text-white-50"></i>
+                  </div>
+                  <h3 class="h4 mb-1"><%= Location.count %></h3>
+                  <p class="mb-0 text-white-50">Locations</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 text-end">
+              <div class="dashboard-illustration float-end">
+                <div class="illustration-container">
+                  <i class="fas fa-warehouse fa-6x mb-3 text-white-50"></i>
+                  <div class="illustration-overlay"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-primary-dark py-3">
+          <div class="text-center">
+            <p class="mb-0 text-white-50">
+              <i class="fas fa-info-circle me-2"></i>
+              Use the search boxes below to find your items and bins quickly
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Search by Location Button -->
-  <button id="search-location-btn" class="search-location-btn">Search by Location</button>
+  <!-- Search Section -->
+  <div class="row g-4 mb-4">
+    <!-- Bins Search -->
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title mb-4">
+            <i class="fas fa-search me-2"></i>Search Bins & Categories
+          </h4>
+          <div class="position-relative">
+            <div class="input-group input-group-lg mb-3">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-box"></i>
+              </span>
+              <input type="text" 
+                     id="search-inventory" 
+                     class="form-control" 
+                     placeholder="Search bins or categories..." 
+                     aria-label="Search bins and categories"
+                     autocomplete="off">
+              <button class="btn btn-primary" 
+                      type="button"
+                      id="bin-search-button">
+                <i class="fas fa-search me-2"></i>Search
+              </button>
+            </div>
+            <div id="bin-suggestions" class="suggestions-container"></div>
+          </div>
+          <div class="quick-categories mt-4">
+            <h6 class="text-muted mb-3">Quick Categories</h6>
+            <div class="d-flex flex-wrap gap-2">
+              <% Bin.distinct.pluck(:category_name).compact.uniq.each do |category| %>
+                <button class="btn btn-outline-primary btn-sm category-tag" data-category="<%= category %>">
+                  <i class="fas fa-<%= category.downcase == 'electronics' ? 'laptop' : 
+                                     category.downcase == 'tools' ? 'tools' :
+                                     category.downcase == 'clothing' ? 'tshirt' : 
+                                     category.downcase == 'books' ? 'book' : 'tag' %> me-1"></i>
+                  <%= category %>
+                </button>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Items Search -->
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-body p-4">
+          <h4 class="card-title mb-4">
+            <i class="fas fa-cube me-2"></i>Search Items
+          </h4>
+          <div class="position-relative">
+            <div class="input-group input-group-lg mb-3">
+              <span class="input-group-text bg-light">
+                <i class="fas fa-cube"></i>
+              </span>
+              <input type="text" 
+                     id="search-items" 
+                     class="form-control" 
+                     placeholder="Search items..." 
+                     aria-label="Search items"
+                     autocomplete="off">
+              <button class="btn btn-primary" 
+                      type="button"
+                      id="item-search-button">
+                <i class="fas fa-search me-2"></i>Search
+              </button>
+            </div>
+            <div id="item-suggestions" class="suggestions-container"></div>
+          </div>
+          <div class="location-search mt-4">
+            <h6 class="text-muted mb-3">Search by Location</h6>
+            <%= link_to locations_path, class: "btn btn-outline-primary w-100" do %>
+              <i class="fas fa-map-marker-alt me-2"></i>Browse by Location
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Quick Actions -->
+  <div class="row g-4">
+    <div class="col-md-3">
+      <%= link_to new_bin_path, class: "text-decoration-none" do %>
+        <div class="card bg-success text-white shadow-sm h-100 action-card">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-white p-3 me-3">
+                <i class="fas fa-plus text-success fa-2x"></i>
+              </div>
+              <div>
+                <h4 class="h5 mb-1">Add New Bin</h4>
+                <p class="mb-0">Create a new storage bin</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-success-dark text-white py-3">
+            Get Started <i class="fas fa-arrow-right ms-2"></i>
+          </div>
+        </div>
+      <% end %>
+    </div>
 
-</body>
-</html>
+    <div class="col-md-3">
+      <%= link_to new_item_path, class: "text-decoration-none" do %>
+        <div class="card bg-info text-white shadow-sm h-100 action-card">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-white p-3 me-3">
+                <i class="fas fa-cube text-info fa-2x"></i>
+              </div>
+              <div>
+                <h4 class="h5 mb-1">Add New Item</h4>
+                <p class="mb-0">Add a new item to your inventory</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-info-dark text-white py-3">
+            Add Item <i class="fas fa-arrow-right ms-2"></i>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="col-md-3">
+      <%= link_to friendships_path, class: "text-decoration-none" do %>
+        <div class="card bg-warning text-white shadow-sm h-100 action-card">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-white p-3 me-3">
+                <i class="fas fa-share-alt text-warning fa-2x"></i>
+              </div>
+              <div>
+                <h4 class="h5 mb-1">Share Items</h4>
+                <p class="mb-0">Share with friends</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-warning-dark text-white py-3">
+            Manage Friends <i class="fas fa-arrow-right ms-2"></i>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="col-md-3">
+      <%= link_to locations_path, class: "text-decoration-none" do %>
+        <div class="card bg-primary text-white shadow-sm h-100 action-card">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-white p-3 me-3">
+                <i class="fas fa-map-marker-alt text-primary fa-2x"></i>
+              </div>
+              <div>
+                <h4 class="h5 mb-1">Locations</h4>
+                <p class="mb-0">Manage storage locations</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-primary-dark text-white py-3">
+            View All <i class="fas fa-arrow-right ms-2"></i>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const filterInput = document.getElementById("filterInput");
+    const valueFilter = document.getElementById("valueFilter");
+    const forSaleFilter = document.getElementById("forSaleFilter");
+    const resetFilters = document.getElementById("resetFilters");
+    const itemCards = document.querySelectorAll(".item-card");
+    const categoryTags = document.querySelectorAll(".category-tag");
+
+    function filterItems() {
+      const searchTerm = filterInput.value.toLowerCase();
+      const maxValue = valueFilter.value ? parseFloat(valueFilter.value) : Infinity;
+      const showForSaleOnly = forSaleFilter.checked;
+      const selectedCategory = document.querySelector(".category-tag.active")?.dataset.category;
+
+      itemCards.forEach(card => {
+        const name = card.dataset.name;
+        const value = parseFloat(card.dataset.value);
+        const forSale = card.dataset.forSale === "true";
+        const binCategory = card.dataset.binCategory;
+
+        const matchesSearch = name.includes(searchTerm);
+        const matchesValue = value <= maxValue;
+        const matchesForSale = !showForSaleOnly || forSale;
+        const matchesCategory = !selectedCategory || binCategory === selectedCategory;
+
+        card.style.display = matchesSearch && matchesValue && matchesForSale && matchesCategory ? "" : "none";
+      });
+    }
+
+    filterInput.addEventListener("input", filterItems);
+    valueFilter.addEventListener("input", filterItems);
+    forSaleFilter.addEventListener("change", filterItems);
+
+    categoryTags.forEach(tag => {
+      tag.addEventListener("click", function() {
+        // Toggle active state
+        categoryTags.forEach(t => t.classList.remove("active"));
+        this.classList.toggle("active");
+        filterItems();
+      });
+    });
+
+    resetFilters.addEventListener("click", function() {
+      filterInput.value = "";
+      valueFilter.value = "";
+      forSaleFilter.checked = false;
+      categoryTags.forEach(tag => tag.classList.remove("active"));
+      filterItems();
+    });
+  });
+</script>

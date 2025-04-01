@@ -1,24 +1,40 @@
 class BinsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_bin, only: %i[show edit update destroy share]
-  before_action :authorize_bin_access, only: %i[show edit update destroy share]
+  before_action :set_bin, only: %i[show edit update destroy share update_sharing]
+  before_action :authorize_bin_access, only: %i[show]
+  before_action :authorize_bin_edit, only: %i[edit update destroy share update_sharing]
 
   # GET /bins or /bins.json
   def index
-    puts "Params: #{params.inspect}"
-    @bins = current_user.accessible_bins
+    # Start with the base query for current user's bins
+    @bins = current_user.bins.includes(:location)
     
-    # Apply search by name
-    @bins = @bins.search_by_name(params[:name]) if params[:name].present?
+    # Also include bins shared with the current user
+    shared_bins = Bin.joins(:shared_bins)
+                     .where(shared_bins: { shared_with_id: current_user.id })
+                     .includes(:location)
+    
+    # Combine user's bins with shared bins
+    @bins = (@bins + shared_bins).uniq
+    
+    # Apply search by name or category
+    search_query = params[:search] || params[:name]
+    if search_query.present?
+      search_query = search_query.downcase
+      @bins = @bins.select do |bin| 
+        bin.name.downcase.include?(search_query) || 
+        (bin.category_name && bin.category_name.downcase.include?(search_query))
+      end
+    end
 
-    # Apply filtering by category
-    @bins = @bins.where(category_name: params[:category]) if params[:category].present?
+    # Apply filtering by category (exact match)
+    if params[:category].present?
+      category = params[:category].strip
+      @bins = @bins.select { |bin| bin.category_name == category }
+    end
 
-    # Apply filtering by location
-    @bins = @bins.where(location_id: params[:location_id]) if params[:location_id].present?
-
-    # Apply sorting by name
-    @bins = @bins.order(:name) if params[:sort] == "name"
+    # Sort bins by created_at descending
+    @bins = @bins.sort_by { |bin| bin.created_at }.reverse
   end
 
   # GET /bins/delete-bins → Shows a page to select bins for deletion
@@ -82,6 +98,58 @@ class BinsController < ApplicationController
     @shared_users = @bin.shared_with_users
   end
 
+  # POST /bins/1/share
+  def update_sharing
+    unless @bin.is_shared
+      redirect_to edit_bin_path(@bin), alert: 'To share this bin with friends, please enable the "Allow sharing with friends" option in the bin settings.'
+      return
+    end
+
+    # Remove all existing shares
+    @bin.shared_bins.destroy_all
+    
+    # Add new shares
+    if params[:shared_with_ids].present?
+      params[:shared_with_ids].each do |user_id|
+        SharedBin.create(bin: @bin, shared_with_id: user_id)
+      end
+    end
+    
+    redirect_to @bin, notice: 'Bin sharing updated successfully.'
+  end
+
+  # GET /bins/suggestions
+  def suggestions
+    query = params[:query]&.downcase
+    return render json: [] if query.blank? || query.length < 2
+    
+    # Get user's own bins and shared bins
+    user_bins = current_user.bins
+    shared_bins = Bin.joins(:shared_bins)
+                     .where(shared_bins: { shared_with_id: current_user.id })
+    all_bins = (user_bins + shared_bins).uniq
+    
+    # Filter bins by name match
+    matching_bins = all_bins.select do |bin|
+      bin.name.downcase.include?(query)
+    end.first(5).map do |bin|
+      { id: bin.id, name: bin.name, type: 'bin' }
+    end
+    
+    # Find matching categories
+    all_categories = all_bins.map(&:category_name).compact.uniq
+    matching_categories = all_categories.select do |category|
+      category.downcase.include?(query)
+    end.first(3).map do |category|
+      { id: nil, name: category, type: 'category' }
+    end
+    
+    # Combine results
+    suggestions = (matching_bins + matching_categories).first(8)
+    
+    render json: suggestions
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -95,8 +163,14 @@ class BinsController < ApplicationController
     end
   end
 
+  def authorize_bin_edit
+    unless @bin.user == current_user
+      redirect_to bins_path, alert: 'You can only edit your own bins.'
+    end
+  end
+
   # Only allow a list of trusted parameters through.
   def bin_params
-    params.require(:bin).permit(:name, :location_id, :category_name, :bin_picture)
+    params.require(:bin).permit(:name, :location_id, :category_name, :bin_picture, :is_shared)
   end
 end

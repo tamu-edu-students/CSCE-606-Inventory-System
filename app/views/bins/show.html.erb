@@ -3,8 +3,14 @@
     .bin-show-container {
       position: relative;
       min-height: 100vh;
-      padding: 2rem;
+      padding: 1.5rem;
       background-color: #f8f9fa;
+    }
+
+    @media (min-width: 768px) {
+      .bin-show-container {
+        padding: 2rem;
+      }
     }
 
     .bin-background {
@@ -21,20 +27,26 @@
     }
 
     .content-wrapper {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      margin-bottom: 2rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
     }
 
     .bin-header {
       display: flex;
-      align-items: center;
-      gap: 2rem;
-      margin-bottom: 2rem;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
       padding-bottom: 1rem;
       border-bottom: 2px solid #e9ecef;
+    }
+
+    @media (min-width: 768px) {
+      .bin-header {
+        flex-direction: row;
+        gap: 2rem;
+      }
     }
 
     .bin-info {
@@ -42,317 +54,365 @@
     }
 
     .bin-title {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-      color: #2c3e50;
+      font-size: 1.5rem;
+      color: #1a1a1a;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .bin-title {
+        font-size: 2rem;
+      }
     }
 
     .bin-meta {
-      color: #6c757d;
-      font-size: 1.1rem;
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
     }
 
     .bin-meta p {
-      margin: 0.25rem 0;
+      margin: 0;
+      color: #4a5568;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bin-meta strong {
+      min-width: 80px;
+      color: #2d3748;
     }
 
     .section-header {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 1rem;
       margin-bottom: 1rem;
     }
 
     .section-header h3 {
+      font-size: 1.25rem;
+      color: #1a1a1a;
       margin: 0;
-    }
-
-    .table-responsive {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      padding: 1rem;
     }
 
     .table {
-      margin: 0;
+      width: 100%;
+      margin-bottom: 1rem;
+      background-color: transparent;
+      border-collapse: separate;
+      border-spacing: 0;
     }
 
     .table th {
       background-color: #f8f9fa;
-      border-bottom: 2px solid #dee2e6;
+      color: #2d3748;
       font-weight: 600;
-      color: #495057;
       padding: 0.75rem;
+      border-bottom: 2px solid #e2e8f0;
+      text-align: left;
+      font-size: 0.875rem;
     }
 
     .table td {
       padding: 0.75rem;
-      vertical-align: middle;
+      border-bottom: 1px solid #e2e8f0;
+      color: #4a5568;
+      font-size: 0.875rem;
     }
 
-    .table tbody tr {
-      transition: background-color 0.2s ease;
+    .table tr:last-child td {
+      border-bottom: none;
     }
 
-    .table tbody tr:hover {
-      background-color: #f8f9fa;
+    .table tr:hover td {
+      background-color: #f8fafc;
     }
 
     .badge {
-      font-size: 0.85em;
-      padding: 0.5em 0.8em;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
       font-weight: 500;
+      font-size: 0.75rem;
     }
 
-    .btn-sm {
-      padding: 0.25rem 0.5rem;
+    .badge.bg-success {
+      background-color: #10b981 !important;
+    }
+
+    .badge.bg-secondary {
+      background-color: #6b7280 !important;
+    }
+
+    .btn-success {
+      background-color: #10b981;
+      border-color: #10b981;
+      color: white;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-success:hover {
+      background-color: #059669;
+      border-color: #059669;
+      transform: translateY(-1px);
     }
 
     .item-name {
       color: #0d6efd;
       font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: color 0.2s ease;
     }
 
     .item-name:hover {
       color: #0a58ca;
+      text-decoration: underline;
     }
 
     .btn-link {
       text-decoration: none;
       transition: color 0.2s ease;
+      font-size: 0.75rem;
     }
 
     .btn-link:hover {
       color: #dc3545 !important;
     }
 
-    .alert {
-      border-radius: 8px;
-      padding: 1rem;
-    }
-
-    .qr-section {
-      background: white;
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-top: 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
     .action-buttons {
       display: flex;
-      gap: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
       margin-top: 1rem;
     }
 
+    @media (min-width: 768px) {
+      .action-buttons {
+        gap: 1rem;
+      }
+    }
+
+    .btn-outline-primary {
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .share-section {
+      background: #e8f4ff;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .share-section h4 {
+      color: #0d6efd;
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .share-section ol {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+
+    .share-section li {
+      margin-bottom: 0.5rem;
+    }
+
+    .share-section li:last-child {
+      margin-bottom: 0;
+    }
+
+    .qr-section {
+      margin-top: 2rem;
+    }
+
     .card {
-      border: none;
-      border-radius: 15px;
-      overflow: hidden;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      height: 100%;
     }
 
     .card-header {
-      border-bottom: none;
-      padding: 1.5rem;
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      background-color: #f8f9fa;
+    }
+
+    .card-header h4 {
+      margin: 0;
+      color: #2d3748;
+      font-size: 1rem;
+      font-weight: 600;
     }
 
     .qr-container {
-      background-color: #f8f9fa;
-      border-radius: 15px;
-      padding: 2rem;
+      padding: 1.5rem;
+      text-align: center;
     }
 
     .qr-code {
       display: inline-block;
       padding: 1rem;
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .qr-code svg {
-      max-width: 200px;
-      height: auto;
-    }
-
-    .bin-url {
-      max-width: 400px;
-      margin: 0 auto;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .info-card {
-      background-color: #f8f9fa;
-      padding: 1rem;
-      border-radius: 10px;
-      height: 100%;
+      padding: 1.5rem;
     }
 
-    .table {
-      margin-bottom: 0;
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
     }
 
-    .table th {
-      border-top: none;
-      font-weight: 600;
-      color: #495057;
+    .input-group .form-control {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.875rem;
     }
 
-    .table td {
-      vertical-align: middle;
+    .input-group .btn {
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
     }
 
-    .badge {
-      padding: 0.5em 0.75em;
-      font-weight: 500;
-    }
-
-    .btn-outline-primary {
-      border-radius: 8px;
-      padding: 0.375rem 0.75rem;
-    }
-
-    .btn-outline-primary:hover {
-      transform: translateY(-1px);
-    }
-
-    .form-control {
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-    }
-
-    .form-control:focus {
-      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    .text-muted {
+      color: #6b7280 !important;
     }
   </style>
 <% end %>
 
-<div class="container mt-4">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-          <h4 class="mb-0">
-            <i class="fas fa-box-open me-2"></i><%= @bin.name %>
-          </h4>
-          <div>
-            <%= link_to edit_bin_path(@bin), class: "btn btn-light btn-sm" do %>
-              <i class="fas fa-edit me-2"></i>Edit Bin
-            <% end %>
+<div class="bin-show-container">
+  <% if @bin.bin_picture.attached? %>
+    <div class="bin-background" style="background-image: url(<%= url_for(@bin.bin_picture) %>);"></div>
+  <% end %>
+
+  <div class="content-wrapper">
+    <div class="bin-header">
+      <div class="bin-info">
+        <h1 class="bin-title"><%= @bin.name %></h1>
+        <div class="bin-meta">
+          <p><strong>Location:</strong> <%= @bin.location.name %></p>
+          <p><strong>Category:</strong> <%= @bin.category_name.present? ? @bin.category_name : "Uncategorized" %></p>
+          <p><strong>Owner:</strong> <%= @bin.user.name %></p>
+        </div>
+      </div>
+      <div class="bin-actions">
+        <% if @bin.user == current_user %>
+          <%= link_to edit_bin_path(@bin), class: "btn btn-outline-primary" do %>
+            <i class="bi bi-pencil"></i> Edit
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @bin.user == current_user && !@bin.is_shared %>
+      <div class="share-section">
+        <h4><i class="bi bi-info-circle"></i> Sharing is Disabled</h4>
+        <p>To share this bin with your friends:</p>
+        <ol>
+          <li>Click the "Edit" button above</li>
+          <li>Enable the "Allow sharing with friends" option</li>
+          <li>Click "Update Bin"</li>
+        </ol>
+      </div>
+    <% end %>
+
+    <div class="section-header">
+      <h3>Items in this Bin</h3>
+      <% if @bin.user == current_user %>
+        <%= link_to new_bin_item_path(@bin), class: "btn btn-success" do %>
+          <i class="bi bi-plus-circle"></i> Add Item
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Value</th>
+            <th>For Sale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @bin.items.each do |item| %>
+            <tr>
+              <td><%= item.name %></td>
+              <td><%= item.description %></td>
+              <td><%= number_to_currency(item.value) if item.value %></td>
+              <td>
+                <% if item.for_sale %>
+                  <span class="badge bg-success">Yes</span>
+                <% else %>
+                  <span class="badge bg-secondary">No</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- QR Code and NFC URL Section -->
+  <div class="qr-section">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="mb-0"><i class="fas fa-qrcode me-2"></i>QR Code</h4>
+          </div>
+          <div class="card-body">
+            <div class="qr-container text-center">
+              <div class="qr-code">
+                <%= qr_code_as_svg(bin_url(@bin)) %>
+              </div>
+              <p class="mt-3 text-muted">Scan to view bin details</p>
+            </div>
           </div>
         </div>
-        
-        <div class="card-body">
-          <!-- QR Code Section -->
-          <div class="text-center mb-4">
-            <div class="qr-container p-4 bg-light rounded">
-              <h5 class="mb-3">Bin QR Code</h5>
-              <div class="qr-code mb-3">
-                <%= @bin.qr_code.html_safe %>
-              </div>
-              <div class="bin-url">
-                <p class="text-muted mb-2">Bin URL:</p>
-                <div class="input-group">
-                  <input type="text" class="form-control" value="<%= bin_url(@bin) %>" readonly>
-                  <button class="btn btn-outline-primary" onclick="copyToClipboard(this)">
-                    <i class="fas fa-copy"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="mb-0"><i class="fas fa-link me-2"></i>NFC Readable URL</h4>
           </div>
-
-          <!-- Bin Details -->
-          <div class="row mb-4">
-            <div class="col-md-6">
-              <div class="info-card">
-                <h6 class="text-muted mb-2">Location</h6>
-                <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i><%= @bin.location.name %></p>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="info-card">
-                <h6 class="text-muted mb-2">Category</h6>
-                <p class="mb-0"><i class="fas fa-tag me-2"></i><%= @bin.category_name %></p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Items Section -->
-          <div class="items-section">
-            <h5 class="mb-3">Items in Bin</h5>
-            
-            <!-- Items For Sale -->
-            <% if @bin.items_for_sale.any? %>
-              <div class="mb-4">
-                <h6 class="text-success mb-3">
-                  <i class="fas fa-tag me-2"></i>Items For Sale
-                </h6>
-                <div class="table-responsive">
-                  <table class="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <% @bin.items_for_sale.each do |item| %>
-                        <tr>
-                          <td><%= item.name %></td>
-                          <td><%= item.description %></td>
-                          <td>$<%= number_with_precision(item.value, precision: 2) %></td>
-                          <td>
-                            <%= link_to edit_item_path(item), class: "btn btn-sm btn-outline-primary" do %>
-                              <i class="fas fa-edit"></i>
-                            <% end %>
-                          </td>
-                        </tr>
-                      <% end %>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            <% end %>
-
-            <!-- All Items -->
-            <div class="mb-4">
-              <h6 class="text-primary mb-3">
-                <i class="fas fa-list me-2"></i>All Items
-              </h6>
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% @bin.items.each do |item| %>
-                      <tr>
-                        <td><%= item.name %></td>
-                        <td><%= item.description %></td>
-                        <td>
-                          <% if item.for_sale %>
-                            <span class="badge bg-success">For Sale</span>
-                          <% else %>
-                            <span class="badge bg-secondary">Not For Sale</span>
-                          <% end %>
-                        </td>
-                        <td>
-                          <%= link_to edit_item_path(item), class: "btn btn-sm btn-outline-primary" do %>
-                            <i class="fas fa-edit"></i>
-                          <% end %>
-                        </td>
-                      </tr>
-                    <% end %>
-                  </tbody>
-                </table>
+          <div class="card-body">
+            <div class="info-card">
+              <p class="text-muted mb-3">Use this URL for NFC tags or direct access:</p>
+              <div class="input-group bin-url">
+                <input type="text" class="form-control" value="<%= bin_url(@bin) %>" readonly>
+                <button class="btn btn-outline-primary" onclick="copyToClipboard(this)">
+                  <i class="fas fa-copy"></i>
+                </button>
               </div>
             </div>
           </div>

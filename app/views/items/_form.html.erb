@@ -70,6 +70,11 @@
     </div>
   <% end %>
 
+  <div class="form-group">
+    <%= form.label :is_shared, class: "form-label" %>
+    <%= form.check_box :is_shared, class: "form-check-input", id: "isSharedCheckbox" %>
+  </div>
+
   <div class="form-actions">
     <%= form.submit class: "btn btn-primary" %>
     <%= link_to "Cancel", items_path, class: "btn btn-secondary" %>

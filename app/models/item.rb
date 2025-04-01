@@ -7,13 +7,12 @@ class Item < ApplicationRecord
   validates :name, presence: true
   validates :value, numericality: { greater_than_or_equal_to: 0 }
   validates :for_sale, inclusion: { in: [true, false] }
+  validates :user_id, presence: true
   validate :validate_no_bin_status
 
 
   # Scope for searching items by name
-  scope :search_by_name, ->(query) {
-    where("LOWER(name) LIKE ?", "%#{query.downcase}%") if query.present?
-  }
+  scope :search_by_name, ->(name) { where("name LIKE ?", "%#{name}%") if name.present? }
 
   # Scope for finding items for sale
   scope :for_sale, -> { where(for_sale: true) }
@@ -31,6 +30,13 @@ class Item < ApplicationRecord
         false
       end
     end
+
+  def accessible_by?(user)
+    return true if user_id == user.id
+    return false unless is_shared
+    return true if bin&.accessible_by?(user)
+    false
+  end
 
   private
 

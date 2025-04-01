@@ -2,7 +2,7 @@ require "rqrcode"
 
 class Bin < ApplicationRecord
   belongs_to :user, counter_cache: true # counter cache for bin counts
-  belongs_to :location
+  belongs_to :location, optional: true
   has_many :items, dependent: :destroy
   has_many :shared_bins, dependent: :destroy
   has_many :shared_with_users, through: :shared_bins, source: :shared_with
@@ -12,16 +12,16 @@ class Bin < ApplicationRecord
   before_destroy :unassign_all_items
 
   validates :name, presence: true
-  validates :location, presence: true
+  validates :user_id, presence: true
   validates :category_name, presence: true
   
   # Scope to search bins by name or category
-  scope :search_by_name, ->(query) {
-    where("name LIKE ?", "%#{query}%")
-  }
+  scope :search_by_name, ->(name) { where("name LIKE ?", "%#{name}%") if name.present? }
 
   def accessible_by?(user)
-    user_id == user.id || shared_with_users.include?(user)
+    return true if user_id == user.id
+    return false unless is_shared
+    shared_with_users.include?(user)
   end
   
   def items_for_sale
@@ -35,6 +35,15 @@ class Bin < ApplicationRecord
   # query for items in bin, it will be use in bin/show view
   def items_in_bin
     Item.where(bin_id: self.id) # query item belonging to this bin
+  end
+
+  def share_with(user)
+    return false unless is_shared
+    shared_bins.create(shared_with: user)
+  end
+
+  def unshare_with(user)
+    shared_bins.where(shared_with: user).destroy_all
   end
 
   private

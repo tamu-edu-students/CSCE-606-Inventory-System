@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_31_192658) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_31_210318) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,6 +47,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_192658) do
     t.datetime "updated_at", null: false
     t.string "qr_code"
     t.integer "location_id"
+    t.boolean "is_shared", default: false, null: false
     t.index ["location_id"], name: "index_bins_on_location_id"
     t.index ["user_id"], name: "index_bins_on_user_id"
   end
@@ -73,6 +74,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_192658) do
     t.integer "location_id"
     t.boolean "for_sale", default: false, null: false
     t.integer "user_id", null: false
+    t.boolean "is_shared", default: false, null: false
     t.index ["bin_id"], name: "index_items_on_bin_id"
     t.index ["location_id"], name: "index_items_on_location_id"
     t.index ["user_id"], name: "index_items_on_user_id"
@@ -132,5 +134,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_192658) do
   add_foreign_key "locations", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "shared_bins", "bins"
-  add_foreign_key "shared_bins", "shared_withs"
+  add_foreign_key "shared_bins", "users", column: "shared_with_id"
 end

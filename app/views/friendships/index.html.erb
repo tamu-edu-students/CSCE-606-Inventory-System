@@ -1,43 +1,144 @@
 <div class="container mt-4">
-  <h2>My Friends</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="fas fa-user-friends me-2"></i>My Friends
+    </h2>
+  </div>
   
   <!-- Add Friend Form -->
-  <div class="card mb-4">
-    <div class="card-body">
-      <h5 class="card-title">Add Friend</h5>
-      <%= form_with url: friendships_path, method: :post, class: "row g-3" do |f| %>
-        <div class="col-md-8">
-          <%= f.email_field :email, class: "form-control", placeholder: "Enter friend's email" %>
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white py-3">
+      <h5 class="card-title mb-0">
+        <i class="fas fa-user-plus me-2"></i>Add New Friend
+      </h5>
+    </div>
+    <div class="card-body p-4">
+      <%= form_with url: friendships_path, method: :post, class: "row g-3 align-items-center" do |f| %>
+        <div class="col-md-9">
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <%= f.email_field :email, class: "form-control form-control-lg", placeholder: "Enter friend's email address" %>
+          </div>
         </div>
-        <div class="col-md-4">
-          <%= f.submit "Add Friend", class: "btn btn-primary" %>
+        <div class="col-md-3">
+          <%= button_tag type: 'submit', class: "btn btn-primary btn-lg w-100" do %>
+            <i class="fas fa-plus me-2"></i>Add Friend
+          <% end %>
         </div>
       <% end %>
     </div>
   </div>
   
   <!-- Friends List -->
-  <div class="card">
-    <div class="card-body">
-      <h5 class="card-title">Friends List</h5>
+  <div class="card shadow-sm">
+    <div class="card-header bg-light py-3">
+      <h5 class="card-title mb-0">
+        <i class="fas fa-address-book me-2"></i>Friends List
+      </h5>
+    </div>
+    <div class="card-body p-0">
       <% if @friends.any? %>
-        <div class="list-group">
+        <div class="list-group list-group-flush">
           <% @friends.each do |friend| %>
             <% friendship = current_user.friendships.find_by(friend: friend) || friend.friendships.find_by(user: friend, friend: current_user) %>
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-              <span><%= friend.email %></span>
-              <%= button_to friendship_path(friendship), 
-                          method: :delete, 
-                          class: "btn btn-danger btn-sm",
-                          data: { confirm: "Are you sure you want to remove this friend?" } do %>
-                <i class="fas fa-user-minus"></i> Remove
-              <% end %>
+            <div class="list-group-item p-4">
+              <div class="row align-items-center">
+                <div class="col-md-4">
+                  <div class="d-flex align-items-center">
+                    <div class="friend-icon me-3">
+                      <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="fas fa-user text-primary fa-lg"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <h6 class="mb-1"><%= friend.email %></h6>
+                      <span class="text-muted small">Friend</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-8">
+                  <div class="d-flex justify-content-end align-items-center gap-2">
+                    <%= link_to bins_path(user_id: friend.id), class: "btn btn-outline-primary" do %>
+                      <i class="fas fa-box me-2"></i>View Bins
+                    <% end %>
+                    <%= link_to items_path(user_id: friend.id), class: "btn btn-outline-info" do %>
+                      <i class="fas fa-cube me-2"></i>View Items
+                    <% end %>
+                    <%= button_to friendship_path(friendship), 
+                                method: :delete, 
+                                class: "btn btn-outline-danger",
+                                form: { data: { turbo_confirm: "Are you sure you want to remove this friend?" } } do %>
+                      <i class="fas fa-user-minus me-2"></i>Remove
+                    <% end %>
+                  </div>
+                </div>
+              </div>
             </div>
           <% end %>
         </div>
       <% else %>
-        <p class="text-muted">You haven't added any friends yet.</p>
+        <div class="text-center py-5">
+          <div class="display-1 text-muted mb-4">
+            <i class="fas fa-user-friends"></i>
+          </div>
+          <h3 class="h4 text-muted mb-4">You haven't added any friends yet</h3>
+          <p class="text-muted">Add friends using their email address to start sharing bins and items!</p>
+        </div>
       <% end %>
     </div>
   </div>
-</div> 
+</div>
+
+<style>
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+  border-width: 2px;
+}
+
+.btn-outline-info {
+  border-width: 2px;
+}
+
+.btn-outline-danger {
+  border-width: 2px;
+}
+
+.list-group-item {
+  transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+.friend-icon {
+  transition: all 0.2s ease;
+}
+
+.list-group-item:hover .friend-icon {
+  transform: scale(1.1);
+}
+
+.form-control-lg {
+  border-radius: 8px;
+}
+
+.input-group-text {
+  border-radius: 8px 0 0 8px;
+}
+
+.input-group .form-control {
+  border-radius: 0 8px 8px 0;
+}
+</style> 

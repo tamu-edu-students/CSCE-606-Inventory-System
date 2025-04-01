@@ -1,29 +1,39 @@
 class ItemsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_item, only: %i[ show edit update destroy ]
-  before_action :authorize_user, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_item_access, only: %i[show edit update destroy]
   before_action :set_bins_and_locations, only: [:new, :edit]
 
   # GET /items or /items.json
   def index
-    if params[:location_id]
-      @items = current_user.items.where(location_id: params[:location_id])
-    else
-      @items = current_user.items # Show only items for the logged-in user
-    end
-
-    # Filter by for_sale status if provided
-    if params[:for_sale].present?
-      @items = @items.for_sale
+    # Get all bins accessible to the user
+    user_bins = current_user.bins
+    
+    # Get bins shared with the user
+    shared_bins = Bin.joins(:shared_bins)
+                     .where(shared_bins: { shared_with_id: current_user.id })
+    
+    # Combine user's bins with shared bins
+    accessible_bins = (user_bins + shared_bins).uniq
+    
+    # Get all items from accessible bins
+    @items = Item.where(bin_id: accessible_bins.map(&:id))
+    
+    # Apply search filter if present
+    search_query = params[:search] || params[:name]
+    if search_query.present?
+      @items = @items.where("name LIKE ? OR description LIKE ?", 
+                           "%#{search_query}%", 
+                           "%#{search_query}%")
     end
     
-    # Filter by sale date if provided
-    if params[:sale_date].present?
-      @items = @items.where("created_at <= ?", params[:sale_date])
+    # Apply bin filter if present
+    if params[:bin_id].present?
+      @items = @items.where(bin_id: params[:bin_id])
     end
     
-    # Apply search filtering if a name is provided
-    @items = @items.search_by_name(params[:name])
+    # Apply sorting
+    @items = @items.order(created_at: :desc)
   end
 
   def log
@@ -44,11 +54,12 @@ class ItemsController < ApplicationController
   # GET /items/new
   def new
     @item = current_user.items.build
+    @bins = current_user.accessible_bins
   end
 
   # GET /items/1/edit
   def edit
-    @bins = current_user.bins  # Add this line to set @bins and have bin available for dropdown menu
+    @bins = current_user.accessible_bins
     @locations = current_user.locations
   end
 
@@ -62,6 +73,7 @@ class ItemsController < ApplicationController
     if @item.save
       redirect_to @item, notice: 'Item was successfully created.'
     else
+      @bins = current_user.accessible_bins
       set_bins_and_locations
       render :new, status: :unprocessable_entity
     end
@@ -71,6 +83,7 @@ class ItemsController < ApplicationController
     if @item.update(item_params)
       redirect_to @item, notice: 'Item was successfully updated.'
     else
+      @bins = current_user.accessible_bins
       set_bins_and_locations
       render :edit, status: :unprocessable_entity
     end
@@ -83,6 +96,30 @@ class ItemsController < ApplicationController
     redirect_to items_url, notice: 'Item was successfully deleted.'
   end
   
+  # GET /items/suggestions
+  def suggestions
+    query = params[:query]&.downcase
+    return render json: [] if query.blank? || query.length < 2
+    
+    # Get all bins accessible to the user
+    accessible_bins = current_user.bins +
+                     Bin.joins(:shared_bins).where(shared_bins: { shared_with_id: current_user.id })
+    
+    # Find matching items
+    all_items = Item.where(bin_id: accessible_bins.map(&:id))
+    
+    # Filter items by name or description match
+    matching_items = all_items.where("LOWER(name) LIKE ? OR LOWER(description) LIKE ?", 
+                                   "%#{query}%", 
+                                   "%#{query}%")
+                            .limit(8)
+                            .map do |item|
+      { id: item.id, name: item.name, bin_id: item.bin_id, bin_name: item.bin&.name }
+    end
+    
+    render json: matching_items
+  end
+  
   
   
   
@@ -90,12 +127,12 @@ class ItemsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_item
-      @item = current_user.items.find(params[:id])
+      @item = Item.find(params[:id])
     end
 
-    def authorize_user
-      if @item.bin.present? && @item.bin.user != current_user
-        redirect_to items_path, alert: "Not authorized"
+    def authorize_item_access
+      unless @item.accessible_by?(current_user)
+        redirect_to items_path, alert: 'You do not have permission to access this item.'
       end
     end
     
@@ -113,7 +150,10 @@ class ItemsController < ApplicationController
         :no_bin,
         :location_id,
         :for_sale,
-        item_pictures: []
+        item_pictures: [],
+        category_name: [],
+        price: [],
+        is_shared: []
       )
     
       if permitted[:item_pictures]&.all?(&:blank?)
