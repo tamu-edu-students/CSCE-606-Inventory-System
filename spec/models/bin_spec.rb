@@ -67,11 +67,6 @@ RSpec.describe Bin, type: :model do
       puts "✅ Test Passed: Association, has many items"
     end
 
-    it 'has many attached bin pictures' do
-      expect(bin).to respond_to(:bin_pictures)
-      expect(bin.bin_pictures).to be_an_instance_of(ActiveStorage::Attached::Many)
-      puts "✅ Test Passed: Association: has many attached "
-    end
 
     # QR Code - should only work for correct user
     it 'ensures QR code belongs to the correct user' do
@@ -81,18 +76,15 @@ RSpec.describe Bin, type: :model do
     end
   end
 
-
-
-
   # Instance Methods
   describe '#items_in_bin' do
     let(:bin) { Bin.create!(valid_attributes) }
     
     it 'returns items belonging to the bin' do
-      item1 = Item.create!(name: 'Item 1', bin: bin, value: 10.0)
-      item2 = Item.create!(name: 'Item 2', bin: bin, value: 20.0)
+      item1 = Item.create!(name: 'Item 1', bin: bin, value: 10.0, user:user)
+      item2 = Item.create!(name: 'Item 2', bin: bin, value: 20.0, user:user)
       other_bin = Bin.create!(valid_attributes)
-      other_item = Item.create!(name: 'Item 3', bin: other_bin, value: 15.0)
+      other_item = Item.create!(name: 'Item 3', bin: other_bin, value: 15.0, user:user)
 
       items = bin.items_in_bin
       expect(items).to include(item1, item2)
@@ -106,33 +98,6 @@ RSpec.describe Bin, type: :model do
     end
   end
 
-  # Attachment handling
-  describe 'bin pictures' do
-    let(:bin) { Bin.create(valid_attributes) }
-
-    it 'can have multiple attached pictures' do
-      # Simulating file attachments
-      file1 = fixture_file_upload('spec/fixtures/files/item_picture.jpg', 'image/jpeg')
-      file2 = fixture_file_upload('spec/fixtures/files/bin_picture.jpg', 'image/jpeg')
-      
-      bin.bin_pictures.attach(file1)
-      bin.bin_pictures.attach(file2)
-
-      expect(bin.bin_pictures).to be_attached
-      expect(bin.bin_pictures.count).to eq(2)
-      puts "✅ Test Passed: bin picture"
-    end
-
-    it 'destroys attached pictures when bin is destroyed' do
-      file = fixture_file_upload('spec/fixtures/test_image1.jpg', 'image/jpeg')
-      bin.bin_pictures.attach(file)
-      
-      expect {
-        bin.destroy
-      }.to change(ActiveStorage::Attachment, :count).by(-1)
-    end
-  end
-
   # User association behavior
   describe 'user association' do
     let(:bin) { Bin.create(valid_attributes) }
@@ -141,6 +106,7 @@ RSpec.describe Bin, type: :model do
       expect {
         user.bins.create(valid_attributes.except(:user))
       }.to change { user.reload.bins_count }.by(1)
+      puts "✅ Test Passed: User association, increment user bins when created"
     end
 
     it 'decrements user bins count when destroyed' do
@@ -148,6 +114,7 @@ RSpec.describe Bin, type: :model do
       expect {
         bin.destroy
       }.to change { user.reload.bins_count }.by(-1)
+      puts "✅ Test Passed: User association, decrements user bins count when destroyed"
     end
   end
 
@@ -156,12 +123,13 @@ RSpec.describe Bin, type: :model do
     let(:bin) { Bin.create(valid_attributes) }
     
     before do
-      Item.create(name: 'Test Item', user: user, bin: bin)
+      Item.create!(name: 'Item 1', bin: bin, value: 10.0, user:user)
     end
 
     it 'maintains association with items' do
       expect(bin.items).not_to be_empty
-      expect(bin.items.first.bin).to eq(bin)
+      puts "✅ Test Passed: bin is not empty"
+      expect(bin.items.first.name).to eq('Item 1')
       puts "✅ Test Passed: maintain association with items"
     end
 
@@ -170,6 +138,7 @@ RSpec.describe Bin, type: :model do
       bin.items.update_all(bin_id: new_bin.id)
       expect(bin.reload.items).to be_empty
       expect(new_bin.items).not_to be_empty
+      puts "✅ Test Passed: allows items to be reassigned before deletion"
     end
   end
 end

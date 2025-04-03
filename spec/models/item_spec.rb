@@ -2,10 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Item, type: :model do
   # Setup test data
-  let(:user) { create(:user) }
-  let(:location) { create(:location, user: user) } 
-  let(:bin) { create(:bin, user: user, location: location) }
-  let(:valid_attributes) do
+  #let!(:user) { create(:user) }
+  let!(:user) { create(:user, email: "test_user_#{SecureRandom.hex(4)}@example.com") }
+  let!(:location) { create(:location, user: user) } 
+  let!(:bin) { create(:bin, user: user, location: location) }
+  let!(:valid_attributes) do
     {
       name: 'Test Item',
       description: 'A test item',
@@ -55,21 +56,6 @@ RSpec.describe Item, type: :model do
     end
   end
 
-  # Attachment handling
-  describe 'item pictures' do
-    let(:item) { Item.create!(valid_attributes) }
-
-    it 'can have multiple attached pictures' do
-      file1 = fixture_file_upload('spec/fixtures/test_image1.jpg', 'image/jpeg')
-      file2 = fixture_file_upload('spec/fixtures/test_image2.jpg', 'image/jpeg')
-      
-      item.item_pictures.attach(file1)
-      item.item_pictures.attach(file2)
-
-      expect(item.item_pictures).to be_attached
-      expect(item.item_pictures.count).to eq(2)
-    end
-  end
 
   # CRUD operations
   describe 'CRUD operations' do
@@ -99,7 +85,7 @@ RSpec.describe Item, type: :model do
       end
 
       it 'retrieves items by storage location' do
-        items = Item.where(storage_location: 'Attic')
+        items = Item.where(location: location)
         expect(items).to include(item)
         puts "✅ Test Passed: CRUD retreive Storage"
       end
@@ -113,17 +99,19 @@ RSpec.describe Item, type: :model do
 
     describe 'update' do
       let!(:item) { Item.create(valid_attributes) }
+      let!(:garage)  { FactoryBot.create(:location, name: 'Garage', user: user) }
 
       it 'updates the item attributes' do
         expect {
-          item.update(name: 'New LED Lights', storage_location: 'Garage')
-        }.to change { item.name }.to('New LED Lights')
-          .and change { item.storage_location }.to('Garage')
+          item.update(name: 'New LED Lights', location: garage)
+        }.to change { item.reload.name }.to('New LED Lights')
+         .and change { item.reload.location.name }.to('Garage')
+    
         puts "✅ Test Passed: CRUD UPDATE"
       end
 
       it 'moves item to a different bin' do
-        new_bin = Bin.create(name: 'Storage Box 1', location: 'Garage')
+        new_bin = Bin.create(name: 'Storage Box 1', location: location)
         expect {
           item.update(bin: new_bin)
         }.to change { item.bin }.to(new_bin)

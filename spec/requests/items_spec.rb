@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Items", type: :request do
-  let(:user) { create(:user) }
+  let!(:user) { create(:user, email: "test_user_#{SecureRandom.hex(4)}@example.com") }
   let(:location) { create(:location, user: user) } 
   let(:bin) { create(:bin, user: user, location: location) }
   let(:item) { create(:item, bin: bin, location:location, user:user) }  # Ensures the item is associated with a bin
@@ -66,6 +66,33 @@ RSpec.describe "Items", type: :request do
       puts "✅ Test Passed: PATCH /update"
     end
   end
+  
+  describe 'PATCH /items/:id' do
+    let(:user)     { create(:user, email: "user_#{SecureRandom.hex(4)}@example.com") }
+    let(:location) { create(:location, user: user) }
+    let(:bin)      { create(:bin, user: user, location: location) }
+    let(:item)     { create(:item, user: user, bin: bin, location: location, name: "Original Name", value: 10.0) }
+  
+    before do
+      sign_in user
+    end
+  
+    it 'renders edit when update fails' do
+      patch item_path(item), params: {
+        item: {
+          name: '',           # Invalid: name can't be blank
+          value: '',          # Invalid: value can't be blank
+          bin_id: ''          # Should still hit the `else` path
+        }
+      }
+  
+      expect(response).to render_template(:edit) # ✅ we hit the else block
+      expect(response.body).to include("prohibited this item from being saved")
+      puts "✅ Test Passed: Hit the update failure path and rendered edit"
+    end
+  end
+
+
 
   describe "DELETE /destroy" do
     it "deletes an item and redirects to items list" do
