@@ -9,13 +9,14 @@ Feature: Prevent Item Deletion After Bin Removal
     And I have a bin named "Kitchen Stuff"
     And I have an item "Coffee Maker" in bin "Kitchen Stuff"
 
+  @javascript
   Scenario: Removing an item from a bin
     When I visit the edit page for item "Coffee Maker"
     And I remove the bin assignment
     Then I should see "Item was successfully updated"
     And the item "Coffee Maker" should be unassigned
 
-
+  @javascript
   Scenario: Reassigning an unassigned item
     Given I have an unassigned item "Blender"
     And I have a bin named "New Kitchen Bin"

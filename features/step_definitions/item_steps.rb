@@ -58,6 +58,7 @@ end
 Given('I have an item {string} in bin {string}') do |item_name, bin_name|
   bin = Bin.find_by!(name: bin_name)
   @item = Item.create!(
+    user: @user,
     name: item_name,
     value: 100.00,
     bin: bin,
