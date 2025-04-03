@@ -3,6 +3,7 @@ Feature: QR Code Scanning for Bins
   I want to scan a QR code
   So that I am redirected to the correct bin page
 
+  @javascript
   Scenario: User scans a QR code and is redirected to the bin
     Given I am a logged-in user
     And I have a valid location

@@ -4,7 +4,6 @@ World(FactoryBot::Syntax::Methods)
 
 Given('I am a logged-in user on the dashboard') do
   @user = User.create!(name: 'Test User', email: 'test@example.com', password: 'Password1!')
-
   visit new_user_session_path
   fill_in "user[email]", with: "test@example.com"
   fill_in "user[password]", with: "Password1!"

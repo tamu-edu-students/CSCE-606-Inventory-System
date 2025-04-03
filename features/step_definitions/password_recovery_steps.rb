@@ -11,7 +11,9 @@ When("I enter my email {string}") do |email|
 end
 
 When("I press the {string}") do |button|
+  sleep 2
   click_button button
+  sleep 2
 end
 
 Then("I should see the {string}") do |message|
@@ -70,11 +72,12 @@ When("I enter {string} as my new password") do |password|
 end
 
 When("I confirm {string} as my new password") do |password|
+  expect(page).to have_field("New Password", wait: 5)
   fill_in "Confirm Password", with: password
 end
 
 Then("I should be redirected to the password reset page") do
-  expect(current_path).to eq(new_password_reset_path)
+  expect(page).to have_current_path(new_password_reset_path, wait: 5)
 end
 
 Then("I should be redirected to the forgot password page") do

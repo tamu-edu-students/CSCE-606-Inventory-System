@@ -18,10 +18,13 @@ end
 When("I fill in the item-specific field {string} with {string}") do |field, value|
   case field
   when "Name"
+    expect(page).to have_field("item[name]", wait: 5)
     fill_in "item[name]", with: value
   when "Value"
+    expect(page).to have_field("item[value]", wait: 5)
     fill_in "item[value]", with: value
   else
+    expect(page).to have_field(field, wait: 5)
     fill_in field, with: value
   end
 end

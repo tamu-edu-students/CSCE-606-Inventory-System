@@ -12,6 +12,7 @@ When("I visit the new bin page") do
 end
 
 When(/^I fill in the bin "(.*)" with "(.*)"$/) do |field, value|
+  expect(page).to have_field(field, wait: 5)
   fill_in field, with: value
 end
 
@@ -43,9 +44,8 @@ Given(/^I have a bin named "(.*)" with a QR code$/) do |bin_name|
   @bin = Bin.create!(
     name: bin_name,
     location: location,
-    user:user,
     category_name: "Misc",
-    user: @user # Assuming @user is already set from a previous step
+    user: user # Assuming @user is already set from a previous step
   )
 
   # Ensure QR code is generated after creation

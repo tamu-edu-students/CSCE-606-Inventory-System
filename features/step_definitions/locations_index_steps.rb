@@ -4,6 +4,11 @@ Given("I am a logged in as a user") do
     login_as(@user, scope: :user) # using Warden or Devise helpers
   end
   
+Given("I am logged in as a user") do
+  @user = FactoryBot.create(:user)
+  login_as(@user, scope: :user) # using Warden or Devise helpers
+end
+
 Given("there are some locations created for me") do
 location = FactoryBot.create(:location, user: @user)
 bin = FactoryBot.create(:bin, user: @user, location: location)

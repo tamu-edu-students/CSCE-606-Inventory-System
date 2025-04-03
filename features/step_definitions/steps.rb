@@ -95,6 +95,7 @@ end
 
 When('I fill in the item field {string} with {string}') do |field, value|
   fill_in "item_#{field.downcase}", with: value
+  sleep 1
 end
 
 Then('I should be redirected to the item details page') do
@@ -129,4 +130,8 @@ end
 When('I select {string} from the bin dropdown') do |bin_name|
   find('select#item_bin_id', wait: 5) # Wait for the dropdown to appear
   select bin_name, from: 'item_bin_id'
+end
+
+Given('a location {string} exists') do |location_name|
+  @location = FactoryBot.create(:location, name: location_name, user: @user)
 end

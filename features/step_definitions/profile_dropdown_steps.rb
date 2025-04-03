@@ -1,14 +1,14 @@
+# factory bots requires
+require 'factory_bot_rails' 
+World(FactoryBot::Syntax::Methods)
+
 Given('I am a logged in user with email {string}') do |email|
-  @user = User.create!(
-    email: email,
-    password: 'Password1!',
-    name: 'Test User'
-  )
-  
+  @user = User.create!(name: 'Test User', email: "test@example.com", password: "Password1!")
   visit new_user_session_path
-  fill_in 'user[email]', with: email
-  fill_in 'user[password]', with: 'Password1!'
-  click_button 'Login'
+  fill_in "user[email]", with: "test@example.com"
+  fill_in "user[password]", with: "Password1!"
+  click_button "Login"
+  expect(page).to have_current_path(dashboard_path) # Ensure login redirects correctly
 end
 
 Given('I have logged in {int} times before') do |count|
@@ -22,6 +22,7 @@ Given('I have logged in {int} times before') do |count|
 end
 
 When('I click on the profile icon') do
+  expect(page).to have_no_selector('.flash-modal', wait: 5) # wait until it's gone
   find('#profile-trigger').click
 end
 

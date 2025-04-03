@@ -3,6 +3,7 @@ Feature: QR Code Generation for Bins
   I want to create a bin
   So that it generates a QR code automatically
 
+  @javascript
   Scenario: User creates a bin and sees the QR code
     Given I am a logged-in user
     When I visit the new bin page

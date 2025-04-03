@@ -3,6 +3,7 @@ Feature: Add Picture to an Item
   I want to upload a picture when creating an item
   So that I can associate an image with the item
 
+  @javascript
   Scenario: User successfully uploads a picture for an item
     Given I am a logged-in user for item creation
     When I visit the new item page to add a picture
