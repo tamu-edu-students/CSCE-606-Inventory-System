@@ -3,55 +3,74 @@
     <span><%= link_to "HOME", dashboard_path, class: "nav-link" %></span>
     <span><%= link_to "BINS", bins_path, class: "nav-link", data: { turbo: false } %></span>
     <span><%= link_to "ITEMS", items_path, class: "nav-link",  data: { turbo: false } %></span>
-    <!-- Always show LOG and SALE as text -->
+
+    <!-- LOG Dropdown with improved mobile responsiveness -->
     <div class="log-dropdown">
       <span>
-        <%= link_to "LOG", "#", class: "nav-link", id: "log-trigger" %>
+        <%= link_to "LOG", "#", class: "nav-link", id: "log-trigger", aria-label: "View logs" %>
       </span>
-      <div class="log-dropdown-content" id="log-dropdown-content">
-        <div class="date-input-group">
-          <label for="from-date">From:</label>
-          <input type="date" id="from-date" name="from-date">
+      <div class="popup-content log-dropdown-content" id="log-dropdown-content">
+        <div class="popup-header">
+          <h3>Log History</h3>
+          <button type="button" class="close-popup" aria-label="Close popup">&times;</button>
         </div>
-        <div class="date-input-group">
-          <label for="to-date">To:</label>
-          <input type="date" id="to-date" name="to-date">
-        </div>
-        <button class="date-search-btn">Search Logs</button>
+        <%= form_with url: log_history_path, method: :get, local: true, class: "popup-form" do %>
+          <div class="date-input-group">
+            <label for="from-date">From:</label>
+            <input type="date" id="from-date" name="from_date">
+          </div>
+          <div class="date-input-group">
+            <label for="to-date">To:</label>
+            <input type="date" id="to-date" name="to_date">
+          </div>
+          <button type="submit" class="date-search-btn">Search Logs</button>
+        <% end %>
       </div>
     </div>
-    <div class="sale-dropdown">
-  <span><%= link_to "SALE", "", class: "nav-link", id: "sale-trigger" %></span>
-  <div class="sale-dropdown-content" id="sale-dropdown-content">
-    <div class="sale-input-group">
-      <%= form_with url: items_path, method: :get, local: true do %>
-        <input type="date" 
-               id="sale-date" 
-               name="sale_date" 
-               value="<%= params[:sale_date] || Date.today.strftime('%Y-%m-%d') %>">
-        <button type="submit" class="sale-search-btn">Search Items</button>
-      <% end %>
-    </div>
-  </div>
-</div>
-    </div>
 
+    <!-- SALE Dropdown with improved mobile responsiveness -->
+    <div class="sale-dropdown">
+      <span><%= link_to "SALE", "#", class: "nav-link", id: "sale-trigger", aria-label: "View sales" %></span>
+      <div class="popup-content sale-dropdown-content" id="sale-dropdown-content">
+        <div class="popup-header">
+          <h3>Sale Items</h3>
+          <button type="button" class="close-popup" aria-label="Close popup">&times;</button>
+        </div>
+        <div class="sale-input-group">
+          <%= form_with url: items_path, method: :get, local: true, class: "popup-form" do %>
+            <div class="date-input-group">
+              <label for="sale-date">Sale Date:</label>
+              <input type="date"
+                    id="sale-date"
+                    name="sale_date"
+                    value="<%= params[:sale_date] || Date.today.strftime('%Y-%m-%d') %>">
+            </div>
+            <button type="submit" class="sale-search-btn">Search Items</button>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="nav-right">
+    <!-- Profile Dropdown with improved mobile responsiveness -->
     <div class="profile-dropdown">
-      <%= link_to current_user&.email&.first&.upcase || "A", "", class: "profile-icon", id: "profile-trigger" %>
-      <div class="profile-dropdown-content" id="profile-dropdown-content">
+      <%= link_to current_user&.email&.first&.upcase || "A", "#", class: "profile-icon", id: "profile-trigger", aria-label: "User profile" %>
+      <div class="popup-content profile-dropdown-content" id="profile-dropdown-content">
+        <div class="popup-header">
+          <h3>User Profile</h3>
+          <button type="button" class="close-popup" aria-label="Close popup">&times;</button>
+        </div>
         <div class="profile-info">
           <p><strong>Email:</strong> <%= current_user&.email %></p>
-          <p><strong>Last login:</strong> 
+          <p><strong>Last login:</strong>
             <%= Session.where(user: current_user).last&.login_time&.strftime("%Y-%m-%d %H:%M") || "Never" %>
           </p>
         </div>
         <div class="profile-actions">
-          <%= button_to "Logout", 
-              destroy_user_session_path, 
-              method: :delete, 
+          <%= button_to "Logout",
+              destroy_user_session_path,
+              method: :delete,
               class: "logout-button",
               data: { turbo_confirm: "Are you sure you want to log out?" } %>
         </div>
@@ -59,3 +78,6 @@
     </div>
   </div>
 </nav>
+
+<!-- Overlay for mobile popups -->
+<div id="popup-overlay" class="popup-overlay"></div>
