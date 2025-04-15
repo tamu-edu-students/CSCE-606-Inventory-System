@@ -1,0 +1,34 @@
+class SharedBinsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_bin
+  
+  def create
+    @shared_bin = @bin.shared_bins.build(shared_with_id: params[:shared_with_id])
+    
+    if @shared_bin.save
+      flash[:notice] = "Bin shared successfully"
+    else
+      flash[:alert] = @shared_bin.errors.full_messages.join(", ")
+    end
+    
+    redirect_to share_bin_path(@bin)
+  end
+  
+  def destroy
+    @shared_bin = @bin.shared_bins.find(params[:id])
+    
+    if @shared_bin.destroy
+      flash[:notice] = "Access removed successfully"
+    else
+      flash[:alert] = "Failed to remove access"
+    end
+    
+    redirect_to share_bin_path(@bin)
+  end
+  
+  private
+  
+  def set_bin
+    @bin = current_user.bins.find(params[:bin_id])
+  end
+end 

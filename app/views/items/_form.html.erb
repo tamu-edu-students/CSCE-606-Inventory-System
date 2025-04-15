@@ -1,7 +1,7 @@
-<%= form_with(model: item) do |form| %>
+<%= form_with(model: item, class: "item-form") do |form| %>
   <% if item.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>
+    <div class="alert alert-danger">
+      <h3><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h3>
       <ul>
         <% item.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -10,41 +10,199 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
+  <div class="form-group">
+    <%= form.label :name, class: "form-label" %>
+    <%= form.text_field :name, class: "form-control", placeholder: "Enter item name" %>
   </div>
 
-  <div class="field">
-    <%= form.label :description %>
-    <%= form.text_area :description, rows: 3 %>
+  <div class="form-group">
+    <%= form.label :description, class: "form-label" %>
+    <%= form.text_area :description, rows: 3, class: "form-control", placeholder: "Enter item description" %>
   </div>
 
-
-  <div class="field">
-    <%= form.label :value %>
-    <%= form.number_field :value, step: :any %>
+  <div class="form-group">
+    <%= form.label :value, class: "form-label" %>
+    <div class="input-group">
+      <span class="input-group-text">$</span>
+      <%= form.number_field :value, step: :any, class: "form-control", placeholder: "0.00" %>
+    </div>
   </div>
 
-  <div class="field">
-    <%= form.label :bin_id, "Bin" %>
+  <div class="form-group">
+    <%= form.label :bin_id, "Bin", class: "form-label" %>
     <%= form.select :bin_id, 
         [["No Bin", ""]] + @bins.map { |b| [b.name, b.id] },
         { selected: item.bin_id },
-        { class: "bin-dropdown", id: "binSelect" } %>
+        { class: "form-select", id: "binSelect" } %>
     <%= form.hidden_field :no_bin %>
   </div>
 
-  <div class="field" id="locationField">
-  <%= form.label :location_id, "Location" %>
-  <%= form.select :location_id,
-      @locations.map { |l| [l.name, l.id] },
-      { include_blank: true },
-      { class: "form-select", id: "locationSelect", disabled: item.bin_id.present? } %>
-</div>
+  <div class="form-group" id="locationField">
+    <%= form.label :location_id, "Location", class: "form-label" %>
+    <%= form.select :location_id,
+        @locations.map { |l| [l.name, l.id] },
+        { include_blank: true },
+        { class: "form-select", id: "locationSelect", disabled: item.bin_id.present? } %>
+  </div>
 
+  <div class="form-group">
+    <div class="form-check">
+      <%= form.check_box :for_sale, class: "form-check-input", id: "forSaleCheckbox" %>
+      <%= form.label :for_sale, "Mark for Sale", class: "form-check-label" %>
+    </div>
+  </div>
 
-  <div class="actions">
-    <%= form.submit %>
+  <div class="form-group">
+    <%= form.label :item_pictures, class: "form-label" %>
+    <%= form.file_field :item_pictures, multiple: true, class: "form-control" %>
+  </div>
+
+  <% if item.persisted? && item.item_pictures.attached? %>
+    <div class="form-group">
+      <p class="form-label"><strong>Current Pictures:</strong></p>
+      <div class="image-preview">
+        <% item.item_pictures.each do |picture| %>
+          <div class="preview-container">
+            <%= image_tag picture, class: "img-thumbnail", style: "width: 100px; height: 100px; object-fit: cover;" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :is_shared, class: "form-label" %>
+    <%= form.check_box :is_shared, class: "form-check-input", id: "isSharedCheckbox" %>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
+    <%= link_to "Cancel", items_path, class: "btn btn-secondary" %>
   </div>
 <% end %>
+
+<style>
+  .item-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #495057;
+  }
+
+  .form-control, .form-select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+  }
+
+  .input-group {
+    display: flex;
+    align-items: center;
+  }
+
+  .input-group-text {
+    padding: 0.5rem;
+    background: #e9ecef;
+    border: 1px solid #ced4da;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+  }
+
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .form-check-input {
+    margin: 0;
+  }
+
+  .form-check-label {
+    margin: 0;
+  }
+
+  .image-preview {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+
+  .preview-container {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 0.25rem;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: #007bff;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #0056b3;
+  }
+
+  .btn-secondary {
+    background: #6c757d;
+    color: white;
+  }
+
+  .btn-secondary:hover {
+    background: #545b62;
+  }
+
+  .alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+  }
+
+  .alert-danger {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+  }
+
+  .alert ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.5rem;
+  }
+</style>

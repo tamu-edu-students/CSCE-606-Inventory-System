@@ -7,7 +7,7 @@ class AddUserToItems < ActiveRecord::Migration[8.0]
       dir.up do
         Item.reset_column_information
         Item.find_each do |item|
-          item.update!(user_id: User.first.id) # Adjust this line as needed
+          item.update_columns(user_id: User.first.id, for_sale: false)
         end
       end
     end

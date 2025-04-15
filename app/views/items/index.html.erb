@@ -17,6 +17,10 @@
   <div class="d-flex flex-wrap justify-content-between gap-2 mb-4">
     <input type="text" id="filterInput" class="form-control w-100 w-md-50" placeholder="🔍 Search items by name...">
     <input type="number" id="valueFilter" class="form-control w-100 w-md-25" placeholder="Filter by value...">
+    <div class="form-check ms-2">
+      <%= check_box_tag :for_sale, "1", params[:for_sale] == "1", class: "form-check-input", id: "forSaleFilter" %>
+      <%= label_tag :for_sale, "For Sale Only", class: "form-check-label" %>
+    </div>
     <button id="resetFilters" class="btn btn-outline-secondary mt-2 mt-md-1.5">Reset</button>
   </div>
 
@@ -25,12 +29,28 @@
       <% @items.each do |item| %>
         <div class="col item-card"
             data-name="<%= item.name.downcase %>"
-            data-value="<%= item.value.to_f %>">
+            data-value="<%= item.value.to_f %>"
+            data-for-sale="<%= item.for_sale %>"
+            data-owner="<%= item.bin.user_id == current_user.id %>">
 
           <div class="card h-100 position-relative shadow-sm p-3">
+            <% if item.for_sale %>
+              <div class="position-absolute top-0 start-0 mt-2 ms-2">
+                <span class="badge bg-success">For Sale</span>
+              </div>
+            <% end %>
+
+            <!-- Ownership Badge -->
+            <div class="position-absolute top-0 end-0 mt-2 me-2">
+              <% if item.bin.user_id == current_user.id %>
+                <span class="badge bg-primary">Owned</span>
+              <% else %>
+                <span class="badge bg-info">Shared</span>
+              <% end %>
+            </div>
 
             <!-- 🗑 Delete Button -->
-            <div class="position-absolute top-0 end-0 mt-2 me-2">
+            <div class="position-absolute top-0 end-0 mt-2 me-2" style="margin-top: 2.5rem !important;">
               <%= button_to item_path(item), method: :delete,
                   class: "btn btn-sm btn-danger",
                   form: { class: "d-inline", data: { custom_confirm: "Delete this item?" } } do %>
@@ -45,9 +65,13 @@
               <% end %>
             </div>
 
-            <!-- Dummy Image -->
+            <!-- Item Image -->
             <div class="position-absolute bottom-0 start-0 mb-2 ms-2">
-              <%= image_tag("default-bin.jpg", width: 50, height: 50, class: "rounded shadow-sm") %>
+              <% if item.item_pictures.attached? %>
+                <%= image_tag item.item_pictures.first, width: 50, height: 50, class: "rounded shadow-sm", style: "object-fit: cover;" %>
+              <% else %>
+                <%= image_tag("default-bin.jpg", width: 50, height: 50, class: "rounded shadow-sm") %>
+              <% end %>
             </div>
 
             <!-- Main Body -->
@@ -84,4 +108,41 @@
 
 </div>
 
-<script src="<%= asset_path 'items.js' %>"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const filterInput = document.getElementById("filterInput");
+    const valueFilter = document.getElementById("valueFilter");
+    const forSaleFilter = document.getElementById("forSaleFilter");
+    const resetFilters = document.getElementById("resetFilters");
+    const itemCards = document.querySelectorAll(".item-card");
+
+    function filterItems() {
+      const searchTerm = filterInput.value.toLowerCase();
+      const maxValue = valueFilter.value ? parseFloat(valueFilter.value) : Infinity;
+      const showForSaleOnly = forSaleFilter.checked;
+
+      itemCards.forEach(card => {
+        const name = card.dataset.name;
+        const value = parseFloat(card.dataset.value);
+        const forSale = card.dataset.forSale === "true";
+
+        const matchesSearch = name.includes(searchTerm);
+        const matchesValue = value <= maxValue;
+        const matchesForSale = !showForSaleOnly || forSale;
+
+        card.style.display = matchesSearch && matchesValue && matchesForSale ? "" : "none";
+      });
+    }
+
+    filterInput.addEventListener("input", filterItems);
+    valueFilter.addEventListener("input", filterItems);
+    forSaleFilter.addEventListener("change", filterItems);
+
+    resetFilters.addEventListener("click", function() {
+      filterInput.value = "";
+      valueFilter.value = "";
+      forSaleFilter.checked = false;
+      filterItems();
+    });
+  });
+</script>

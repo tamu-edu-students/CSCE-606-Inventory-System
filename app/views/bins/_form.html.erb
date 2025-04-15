@@ -1,8 +1,7 @@
 <%= form_with(model: bin, html: { multipart: true }) do |form| %>
   <% if bin.errors.any? %>
-    <div style="color: red">
+    <div class="alert alert-danger">
       <h2><%= pluralize(bin.errors.count, "error") %> prohibited this bin from being saved:</h2>
-
       <ul>
         <% bin.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -11,38 +10,75 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Sharing Settings</h5>
+    </div>
+    <div class="card-body">
+      <div class="form-check">
+        <%= form.check_box :is_shared, class: "form-check-input form-check-input-lg", id: "isSharedCheckbox" %>
+        <%= form.label :is_shared, "Allow sharing with friends", class: "form-check-label fw-bold fs-5" %>
+        <div class="form-text text-muted mt-2">
+          When enabled, you can share this bin with your friends. When disabled, only you can see this bin.
+        </div>
+      </div>
+    </div>
   </div>
 
-  <% locations ||= [] %> <!-- Ensure locations is never nil -->
-
- <div>
-  <%= form.label :location_id, "Select Existing Location", style: "display: block" %>
-  <%= form.select :location_id, 
-        options_from_collection_for_select(locations, :id, :name, form.object.location_id), 
-        include_blank: "Choose a location" %>
-</div>
-
-
-  <!-- Input for adding a new location -->
-  <div>
-    <%= form.label :new_location, "Or Add a New Location", style: "display: block" %>
-    <%= form.text_field :new_location, placeholder: "Enter new location if not listed" %>
+  <div class="mb-3">
+    <%= form.label :name, class: "form-label" %>
+    <%= form.text_field :name, class: "form-control", required: true %>
   </div>
 
-  <div>
-    <%= form.label :category_name, style: "display: block" %>
-    <%= form.text_field :category_name %>
+  <% if locations.any? %>
+    <div class="mb-3">
+      <%= form.label :location_id, "Location", class: "form-label" %>
+      <%= form.select :location_id, 
+            options_from_collection_for_select(locations, :id, :name, form.object.location_id), 
+            { include_blank: "Choose a location" },
+            { class: "form-select", required: true } %>
+    </div>
+  <% else %>
+    <div class="mb-3">
+      <%= form.label :new_location, "Location", class: "form-label" %>
+      <%= form.text_field :new_location, class: "form-control", required: true, placeholder: "Enter location name" %>
+      <div class="form-text">Create a new location for this bin</div>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :category_name, class: "form-label" %>
+    <%= form.text_field :category_name, class: "form-control" %>
   </div>
 
-  <div>
-    <%= form.label :bin_picture, style: "display: block" %>
-    <%= form.file_field :bin_picture %>
+  <div class="mb-3">
+    <%= form.label :bin_picture, class: "form-label" %>
+    <%= form.file_field :bin_picture, class: "form-control" %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="mt-4">
+    <%= form.submit class: "btn btn-primary" %>
   </div>
 <% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const isSharedCheckbox = document.getElementById('isSharedCheckbox');
+  if (isSharedCheckbox) {
+    isSharedCheckbox.addEventListener('change', function() {
+      const card = this.closest('.card');
+      if (this.checked) {
+        card.classList.remove('border-primary');
+        card.classList.add('border-success');
+        card.querySelector('.card-header').classList.remove('bg-primary');
+        card.querySelector('.card-header').classList.add('bg-success');
+      } else {
+        card.classList.remove('border-success');
+        card.classList.add('border-primary');
+        card.querySelector('.card-header').classList.remove('bg-success');
+        card.querySelector('.card-header').classList.add('bg-primary');
+      }
+    });
+  }
+});
+</script>

@@ -1,12 +1,18 @@
-document.addEventListener('turbo:load', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Log dropdown script loaded');
+    
     const logTrigger = document.getElementById('log-trigger');
     const dropdownContent = document.getElementById('log-dropdown-content');
    
     if (logTrigger && dropdownContent) {
+      console.log('Log dropdown elements found');
+      
       // Toggle dropdown when clicking log link
       logTrigger.addEventListener('click', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         dropdownContent.classList.toggle('active');
+        console.log('Log dropdown toggled:', dropdownContent.classList.contains('active'));
       });
   
       // Close dropdown when clicking outside
@@ -20,6 +26,8 @@ document.addEventListener('turbo:load', function() {
       dropdownContent.addEventListener('click', function(e) {
         e.stopPropagation();
       });
+    } else {
+      console.log('Log dropdown elements not found');
     }
 
     // Sale dropdown functionality
@@ -27,11 +35,13 @@ document.addEventListener('turbo:load', function() {
     const saleDropdownContent = document.getElementById('sale-dropdown-content');
    
     if (saleTrigger && saleDropdownContent) {
+        console.log('Sale dropdown elements found');
+        
         saleTrigger.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             saleDropdownContent.classList.toggle('active');
-            console.log(saleDropdownContent.classList);
+            console.log('Sale dropdown toggled:', saleDropdownContent.classList.contains('active'));
         });
   
         document.addEventListener('click', function(e) {
@@ -43,5 +53,7 @@ document.addEventListener('turbo:load', function() {
         saleDropdownContent.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+    } else {
+      console.log('Sale dropdown elements not found');
     }
-  });
+});

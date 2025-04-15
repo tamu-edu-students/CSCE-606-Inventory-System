@@ -3,20 +3,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const locationCards = document.querySelectorAll(".location-card");
     const noMessage = document.getElementById("noLocationsMessage");
   
-    searchInput.addEventListener("input", () => {
-      const query = searchInput.value.toLowerCase();
-      let matches = 0;
-  
-      locationCards.forEach(card => {
-        const name = card.dataset.name;
-        const show = name.includes(query);
-        card.style.display = show ? "" : "none";
-        if (show) matches++;
-      });
-  
-      noMessage.style.display = matches === 0 ? "block" : "none";
-    });
-  });
+    // Function to perform search
+    const performSearch = () => {
+        const query = searchInput.value.toLowerCase().trim();
+        let matches = 0;
+    
+        locationCards.forEach(card => {
+            const name = card.querySelector(".card-body h5").textContent.toLowerCase();
+            const show = name.includes(query);
+            card.style.display = show ? "" : "none";
+            if (show) matches++;
+        });
+    
+        noMessage.style.display = matches === 0 ? "block" : "none";
+    };
+
+    // Add event listeners for both input and keyup events
+    searchInput.addEventListener("input", performSearch);
+    searchInput.addEventListener("keyup", performSearch);
+
+    // Initial search in case there's a value
+    performSearch();
+});
 
 var editModal = document.getElementById("editLocationModal");
 var deleteModal = document.getElementById("deleteLocationModal");

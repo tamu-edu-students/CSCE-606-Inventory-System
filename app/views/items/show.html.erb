@@ -26,6 +26,38 @@
 
             <dt class="col-sm-4">Created Date</dt>
             <dd class="col-sm-8"><%= @item.created_at&.strftime("%B %d, %Y") %></dd>
+
+            <dt class="col-sm-4">Value</dt>
+            <dd class="col-sm-8"><%= number_to_currency(@item.value) %></dd>
+
+            <dt class="col-sm-4">Status</dt>
+            <dd class="col-sm-8">
+              <% if @item.for_sale %>
+                <span class="badge bg-success">For Sale</span>
+              <% else %>
+                <span class="badge bg-secondary">Not for Sale</span>
+              <% end %>
+            </dd>
+
+            <dt class="col-sm-4">Location</dt>
+            <dd class="col-sm-8">
+              <% if @item.bin&.location %>
+                <%= @item.bin.location.name %>
+              <% elsif @item.location %>
+                <%= @item.location.name %>
+              <% else %>
+                <span class="text-muted">No location assigned</span>
+              <% end %>
+            </dd>
+
+            <dt class="col-sm-4">Bin</dt>
+            <dd class="col-sm-8">
+              <% if @item.bin %>
+                <%= @item.bin.name %>
+              <% else %>
+                <span class="text-muted">No bin assigned</span>
+              <% end %>
+            </dd>
           </dl>
         </div>
       </div>

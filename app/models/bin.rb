@@ -2,23 +2,48 @@ require "rqrcode"
 
 class Bin < ApplicationRecord
   belongs_to :user, counter_cache: true # counter cache for bin counts
-  belongs_to :location
-  has_many :items
+  belongs_to :location, optional: true
+  has_many :items, dependent: :destroy
+  has_many :shared_bins, dependent: :destroy
+  has_many :shared_with_users, through: :shared_bins, source: :shared_with
   has_one_attached :bin_picture, dependent: :destroy # bin with multiple pictures
+  has_one_attached :picture
   after_create :update_qr_code
   before_destroy :unassign_all_items
 
   validates :name, presence: true
+  validates :user_id, presence: true
+  validates :category_name, presence: true
   
   # Scope to search bins by name or category
-  scope :search_by_name, -> (query) {
-    where("LOWER(name) LIKE LOWER(?) OR LOWER(category_name) LIKE LOWER(?)", "%#{query}%", "%#{query}%") if query.present?
-  }
+  scope :search_by_name, ->(name) { where("name LIKE ?", "%#{name}%") if name.present? }
 
+  def accessible_by?(user)
+    return true if user_id == user.id
+    return false unless is_shared
+    shared_with_users.include?(user)
+  end
+  
+  def items_for_sale
+    items.where(for_sale: true)
+  end
+  
+  def items_not_for_sale
+    items.where(for_sale: false)
+  end
 
   # query for items in bin, it will be use in bin/show view
   def items_in_bin
     Item.where(bin_id: self.id) # query item belonging to this bin
+  end
+
+  def share_with(user)
+    return false unless is_shared
+    shared_bins.create(shared_with: user)
+  end
+
+  def unshare_with(user)
+    shared_bins.where(shared_with: user).destroy_all
   end
 
   private
@@ -33,22 +58,17 @@ class Bin < ApplicationRecord
   end
 
   def qr_code_data
-      host = Rails.env.production? ? ENV["APP_HOST"] : "http://127.0.0.1:3000"
-      "#{host}/bins/#{self.id}"
+    # Simple URL format for NFC compatibility
+    "http://localhost:3000/bins/#{id}"
   end
 
   # this function generate the qr code
   def generate_qr_code
-    base_url = qr_code_data # Generate URL dynamically
-    qr = RQRCode::QRCode.new(base_url) # generate unique QR code data
+    qr = RQRCode::QRCode.new(qr_code_data)
     qr.as_svg(
-      offset: 0,
-      color: "000",
-      shape_rendering: "crispEdges",
-      module_size: 6,
+      module_size: 4,
       standalone: true
     )
   end
-
 
 end

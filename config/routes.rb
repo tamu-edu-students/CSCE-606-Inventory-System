@@ -10,15 +10,30 @@ Rails.application.routes.draw do
   
   get "dashboard", to: "dashboard#index", as: "dashboard"
 
-  resources :items
+  resources :items do
+    collection do
+      get :log
+      get 'delete-items'
+      delete 'delete-selected'
+      get 'suggestions'
+    end
+  end
   resources :bins do
     collection do
       get "view", to: "bins#index", as: "view"
       get "add", to: "bins#new", as: "add"
+      get 'delete-bins'
+      delete 'delete-selected'
+      get 'delete_page'
+      get 'suggestions'
     end
     member do
       delete "delete", to: "bins#destroy", as: "delete"
+      get :share
+      post 'share', to: 'bins#update_sharing', as: 'update_sharing'
     end
+    resources :shared_bins, only: [:create, :destroy]
+    resources :items, only: [:new, :create, :edit, :update, :destroy]
   end
   
   get "delete-bins", to: "bins#delete_page", as: "delete_bins"
@@ -45,4 +60,8 @@ Rails.application.routes.draw do
     get "reset", to: "password#reset", as: "new_password_reset"
     post "update", to: "password#update",  as: "update_password"
   end
+
+  resources :friendships, only: [:index, :create, :destroy]
+  resources :shared_bins, only: [:create, :destroy]
+  root "bins#index"
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_10_213600) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_31_210318) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,8 +47,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_10_213600) do
     t.datetime "updated_at", null: false
     t.string "qr_code"
     t.integer "location_id"
+    t.boolean "is_shared", default: false, null: false
     t.index ["location_id"], name: "index_bins_on_location_id"
     t.index ["user_id"], name: "index_bins_on_user_id"
+  end
+
+  create_table "friendships", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "friend_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["friend_id"], name: "index_friendships_on_friend_id"
+    t.index ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", unique: true
+    t.index ["user_id"], name: "index_friendships_on_user_id"
   end
 
   create_table "items", force: :cascade do |t|
@@ -61,7 +72,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_10_213600) do
     t.datetime "updated_at", null: false
     t.boolean "no_bin"
     t.integer "location_id"
+    t.boolean "for_sale", default: false, null: false
     t.integer "user_id", null: false
+    t.boolean "is_shared", default: false, null: false
     t.index ["bin_id"], name: "index_items_on_bin_id"
     t.index ["location_id"], name: "index_items_on_location_id"
     t.index ["user_id"], name: "index_items_on_user_id"
@@ -84,6 +97,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_10_213600) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "shared_bins", force: :cascade do |t|
+    t.integer "bin_id", null: false
+    t.integer "shared_with_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bin_id"], name: "index_shared_bins_on_bin_id"
+    t.index ["shared_with_id"], name: "index_shared_bins_on_shared_with_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -104,9 +126,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_10_213600) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bins", "locations", on_delete: :cascade
   add_foreign_key "bins", "users"
+  add_foreign_key "friendships", "users"
+  add_foreign_key "friendships", "users", column: "friend_id"
   add_foreign_key "items", "bins", on_delete: :cascade
   add_foreign_key "items", "locations", on_delete: :cascade
   add_foreign_key "items", "users"
   add_foreign_key "locations", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "shared_bins", "bins"
+  add_foreign_key "shared_bins", "users", column: "shared_with_id"
 end

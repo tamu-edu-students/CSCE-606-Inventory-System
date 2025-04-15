@@ -1,84 +1,253 @@
-
 <% content_for :title, "Bins" %>
 
-<h1>My Bins</h1>
-<!-- Create new bin buttom -->
-<div class="d-flex justify-content-start mb-3">
-  <%= link_to "➕ Create New Bin", new_bin_path, class: "btn btn-primary" %>
-</div>
-<!-- Sorting & Filtering -->
-<div class="d-flex justify-content-between mb-3">
-  <!-- Filter by Category -->
-  <select id="categoryFilter" class="form-select w-25">
-    <option value="">All Categories</option>
-    <% Bin.distinct.pluck(:category_name).each do |category| %>
-      <option value="<%= category %>"><%= category %></option>
-    <% end %>
-  </select>
-
-  <!-- Sorting Options -->
-  <button id="sortByName" class="btn btn-outline-primary">Sort by Name</button>
-</div>
-
-<% if @bins.any? %>
-  <div class="bins-container">
-    <% @bins.each do |bin| %>
-      <div class="bin-card" data-name="<%= bin.name.downcase %>" data-category="<%= bin.category_name.downcase %>">
-        <div class="bin-header">
-          <h2 class="bin-title">
-          <%= link_to bin.name, bin_path(bin), class: "bin-link" %>
-          </h2>
-          <%= button_to bin_path(bin),
-              method: :delete,
-              form: {
-                class: "d-inline-block",
-                data: { custom_confirm: "Are you sure you want to delete this bin?" }
-              },
-              class: "border-0 bg-transparent text-danger p-0 m-0" do %>
-            <i class="fa-solid fa-trash"></i>
-          <% end %>
-        </div>
-        
-        <p class="bin-info">📍 <%= bin.location.name %></p>
-        <p class="bin-info">📦 <%= bin.category_name %></p>
-
-            <!-- ⬇️ ADD ITEM LIST HERE -->
-        <% if bin.items.any? %>
-          <div class="bin-items-list mt-2">
-            <p class="fw-bold mb-1">Items in this bin:</p>
-            <ul class="list-unstyled mb-0">
-              <% bin.items.each do |item| %>
-                <li> <%= item.name %></li>
-              <% end %>
-            </ul>
-          </div>
-        <% else %>
-          <p class="text-muted small">No items in this bin.</p>
-        <% end %>
-        
-
-        <div class="bin-image-container">
-          <% if bin.bin_picture.attached? %>
-            <%= image_tag bin.bin_picture.variant(resize_to_limit: [60, 60]).processed, class: "bin-image", alt: "Bin Picture" %>
-          <% else %>
-            <%= image_tag "default-bin.jpg", class: "bin-image", alt: "Default Bin Picture" %>
-          <% end %>
-
-          <%= link_to edit_bin_path(bin),
-            class: "text-primary p-0 m-0 border-0 bg-transparent d-inline-block" do %>
-            <i class="fa-solid fa-pen-to-square"></i>
-          <% end %>
-
-        </div>
-      </div>
+<div class="container-fluid py-4">
+  <!-- Header Section -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="display-4 mb-0">
+      <i class="fas fa-box-archive me-2"></i>My Bins
+    </h1>
+    <%= link_to new_bin_path, class: "btn btn-primary btn-lg" do %>
+      <i class="fas fa-plus me-2"></i>Create New Bin
     <% end %>
   </div>
-<% else %>
-  <p>You have no bins yet.</p>
-<% end %>
 
-<div class="actions">
-  <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
+  <!-- Filters and Search Section -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-search"></i>
+            </span>
+            <input type="text" id="binSearch" class="form-control" placeholder="Search bins...">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-light">
+              <i class="fas fa-filter"></i>
+            </span>
+            <select id="categoryFilter" class="form-select">
+              <option value="">All Categories</option>
+              <% categories = Bin.distinct.pluck(:category_name) %>
+              <% categories.each do |category| %>
+                <option value="<%= category %>"><%= category %></option>
+              <% end %>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4 text-end">
+          <button id="sortByName" class="btn btn-outline-primary">
+            <i class="fas fa-sort-alpha-down me-2"></i>Sort by Name
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bins Grid -->
+  <% if @bins.any? %>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+      <% @bins.each do |bin| %>
+        <div class="col">
+          <div class="card h-100 shadow-sm hover-shadow bin-card" data-category="<%= bin.category_name %>">
+            <div class="position-relative">
+              <% if bin.bin_picture.attached? %>
+                <%= image_tag bin.bin_picture.variant(resize_to_limit: [400, 300]).processed,
+                    class: "card-img-top bin-cover-image",
+                    style: "height: 200px; object-fit: cover;",
+                    alt: "#{bin.name} picture" %>
+              <% else %>
+                <div class="bin-cover-placeholder" style="height: 200px; background: linear-gradient(45deg, #f8f9fa, #e9ecef);">
+                  <i class="fas fa-box fa-3x text-muted"></i>
+                </div>
+              <% end %>
+              <div class="position-absolute top-0 end-0 p-2">
+                <div class="dropdown">
+                  <button class="btn btn-light btn-sm rounded-circle shadow-sm" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <%= link_to edit_bin_path(bin), class: "dropdown-item" do %>
+                        <i class="fas fa-edit me-2"></i>Edit
+                      <% end %>
+                    </li>
+                    <li>
+                      <%= link_to share_bin_path(bin), class: "dropdown-item" do %>
+                        <i class="fas fa-share-alt me-2"></i>Share
+                      <% end %>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <%= button_to bin_path(bin), method: :delete,
+                          class: "dropdown-item text-danger",
+                          form: { data: { turbo_confirm: "Are you sure you want to delete this bin?" } } do %>
+                        <i class="fas fa-trash-alt me-2"></i>Delete
+                      <% end %>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card-body">
+              <h5 class="card-title mb-2">
+                <%= link_to bin.name, bin_path(bin), class: "text-decoration-none text-dark" %>
+              </h5>
+              <div class="mb-2">
+                <span class="badge bg-primary">
+                  <i class="fas fa-tag me-1"></i><%= bin.category_name || 'Uncategorized' %>
+                </span>
+                <span class="badge bg-info">
+                  <i class="fas fa-map-marker-alt me-1"></i><%= bin.location&.name || 'No location' %>
+                </span>
+                <% if bin.is_shared %>
+                  <span class="badge bg-success">
+                    <i class="fas fa-share-alt me-1"></i>Shared
+                  </span>
+                <% end %>
+              </div>
+              
+              <div class="small text-muted">
+                <% if bin.items.any? %>
+                  <p class="mb-2"><strong><%= bin.items.count %> items</strong> in this bin</p>
+                  <div class="bin-items-preview">
+                    <% bin.items.first(3).each do |item| %>
+                      <div class="item-chip">
+                        <i class="fas fa-cube me-1"></i><%= item.name %>
+                      </div>
+                    <% end %>
+                    <% if bin.items.count > 3 %>
+                      <div class="item-chip more-items">
+                        +<%= bin.items.count - 3 %> more
+                      </div>
+                    <% end %>
+                  </div>
+                <% else %>
+                  <p class="mb-0">No items in this bin</p>
+                <% end %>
+              </div>
+            </div>
+            
+            <div class="card-footer bg-white border-top-0">
+              <div class="d-flex justify-content-between align-items-center">
+                <%= link_to bin_path(bin), class: "btn btn-outline-primary btn-sm" do %>
+                  <i class="fas fa-eye me-1"></i>View Details
+                <% end %>
+                <% if bin.is_shared %>
+                  <%= link_to share_bin_path(bin), class: "btn btn-outline-success btn-sm" do %>
+                    <i class="fas fa-user-friends me-1"></i>Manage Sharing
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-5">
+      <div class="display-1 text-muted mb-4">
+        <i class="fas fa-box-open"></i>
+      </div>
+      <h2 class="h4 text-muted mb-4">No bins yet</h2>
+      <%= link_to new_bin_path, class: "btn btn-primary btn-lg" do %>
+        <i class="fas fa-plus me-2"></i>Create Your First Bin
+      <% end %>
+    </div>
+  <% end %>
 </div>
 
-<script src="<%= asset_path 'bins.js' %>"></script>
+<style>
+.hover-shadow {
+  transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.bin-cover-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bin-items-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.item-chip {
+  background-color: #f8f9fa;
+  border-radius: 16px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.more-items {
+  background-color: #e9ecef;
+  color: #6c757d;
+}
+
+.dropdown-item {
+  cursor: pointer;
+}
+
+.badge {
+  padding: 0.5em 0.8em;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Search functionality
+  const searchInput = document.getElementById('binSearch');
+  searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    document.querySelectorAll('.bin-card').forEach(card => {
+      const binName = card.querySelector('.card-title').textContent.toLowerCase();
+      const category = card.dataset.category?.toLowerCase() || '';
+      const shouldShow = binName.includes(searchTerm) || category.includes(searchTerm);
+      card.closest('.col').style.display = shouldShow ? '' : 'none';
+    });
+  });
+
+  // Category filter
+  const categoryFilter = document.getElementById('categoryFilter');
+  categoryFilter.addEventListener('change', function() {
+    const selectedCategory = this.value.toLowerCase();
+    document.querySelectorAll('.bin-card').forEach(card => {
+      const cardCategory = card.dataset.category?.toLowerCase() || '';
+      const shouldShow = !selectedCategory || cardCategory === selectedCategory;
+      card.closest('.col').style.display = shouldShow ? '' : 'none';
+    });
+  });
+
+  // Sorting
+  const sortButton = document.getElementById('sortByName');
+  let ascending = true;
+  sortButton.addEventListener('click', function() {
+    const binsContainer = document.querySelector('.row-cols-1');
+    const bins = Array.from(binsContainer.children);
+    
+    bins.sort((a, b) => {
+      const nameA = a.querySelector('.card-title').textContent.toLowerCase();
+      const nameB = b.querySelector('.card-title').textContent.toLowerCase();
+      return ascending ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+    });
+
+    ascending = !ascending;
+    this.innerHTML = `<i class="fas fa-sort-alpha-${ascending ? 'down' : 'up'} me-2"></i>Sort by Name`;
+    
+    bins.forEach(bin => binsContainer.appendChild(bin));
+  });
+});
+</script>
