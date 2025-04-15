@@ -16,6 +16,9 @@
           </div>
 
           <div class="edit-body">
+            <script type="application/json" id="binLocationMap">
+              <%= @bins.map { |b| [b.id, b.location_id] }.to_h.to_json.html_safe %>
+            </script>
             <%= form_with(model: @item, local: true) do |f| %>
               <% if @item.errors.any? %>
                 <div class="alert alert-danger">
@@ -54,6 +57,23 @@
                 </div>
                 <div class="form-text">Enter the item's monetary value</div>
               </div>
+
+              <div class="form-group">
+                <%= f.label :bin_id, "Bin", class: "form-label" %>
+                <%= f.select :bin_id,
+                    [["No Bin", ""]] + @bins.map { |b| [b.name, b.id] },
+                    { selected: @item.bin_id },
+                    { class: "form-select", id: "binSelect" } %>
+              </div>
+
+              <div class="form-group" id="locationField">
+                <%= f.label :location_id, "Location", class: "form-label" %>
+                <%= f.select :location_id,
+                    @locations.map { |l| [l.name, l.id] },
+                    { include_blank: true },
+                    { class: "form-select", id: "locationSelect", disabled: @item.bin_id.present? } %>
+              </div>
+
 
               <div class="form-group">
                 <%= f.label :item_pictures, class: "form-label" do %>
@@ -267,3 +287,31 @@
     }
   </style>
 <% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const binSelect = document.getElementById("binSelect");
+    const locationSelect = document.getElementById("locationSelect");
+
+    if (!binSelect || !locationSelect) return;
+
+    const binLocationMap = JSON.parse(document.getElementById("binLocationMap").textContent || "{}");
+
+    function updateLocationField() {
+      const selectedBinId = binSelect.value;
+
+      if (!selectedBinId) {
+        locationSelect.disabled = false;
+      } else {
+        const locationId = binLocationMap[selectedBinId];
+        locationSelect.disabled = true;
+        if (locationId) {
+          locationSelect.value = locationId;
+        }
+      }
+    }
+
+    updateLocationField(); // Initial setup
+    binSelect.addEventListener("change", updateLocationField); // Dynamic update
+  });
+</script>
