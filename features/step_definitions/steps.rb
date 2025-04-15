@@ -36,6 +36,7 @@ end
 
 When('I press {string}') do |button|
   click_button button
+  sleep 1
 end
 
 Given('I am on the sign-up page') do
@@ -67,8 +68,7 @@ end
 When('I visit the edit page for {string}') do |bin_name|
   bin = Bin.find_by(name: bin_name)
   visit edit_bin_path(bin)
-
-  expect(page).to have_content("Editing bin") # Adjust based on your edit page title
+  expect(page).to have_content("Edit Bin") # Adjust based on your edit page title
 end
 
 When('I fill in the bin name with {string}') do |new_name|
@@ -87,6 +87,7 @@ end
 
 When('I visit the new item page') do
   visit new_item_path # Make sure this route exists in your `config/routes.rb`
+  sleep 1
 end
 
 When('I ended selecting {string} from {string}') do |option, field|
@@ -128,8 +129,8 @@ When('I fill in {string} with {string} s1') do |field, value|
 end
 
 When('I select {string} from the bin dropdown') do |bin_name|
-  find('select#item_bin_id', wait: 5) # Wait for the dropdown to appear
-  select bin_name, from: 'item_bin_id'
+  find('select#binSelect', wait: 5) # Wait for the dropdown to appear
+  select bin_name, from: 'binSelect'
 end
 
 Given('a location {string} exists') do |location_name|

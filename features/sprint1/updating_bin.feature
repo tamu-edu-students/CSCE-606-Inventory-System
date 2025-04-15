@@ -7,6 +7,7 @@
     Given I am a logged-in user
     And I have a bin named "Storage Bin"
 
+  @javascript
   Scenario: Updating the bins
     When I visit the edit page for "Storage Bin"
     And I fill in the bin name with "Updated Bin"

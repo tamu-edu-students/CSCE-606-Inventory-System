@@ -31,7 +31,7 @@
             data-name="<%= item.name.downcase %>"
             data-value="<%= item.value.to_f %>"
             data-for-sale="<%= item.for_sale %>"
-            data-owner="<%= item.bin.user_id == current_user.id %>">
+            data-owner="<%= item.bin&.user_id == current_user.id %>">
 
           <div class="card h-100 position-relative shadow-sm p-3">
             <% if item.for_sale %>
@@ -42,7 +42,7 @@
 
             <!-- Ownership Badge -->
             <div class="position-absolute top-0 end-0 mt-2 me-2">
-              <% if item.bin.user_id == current_user.id %>
+              <% if item.bin&.user_id == current_user.id %>
                 <span class="badge bg-primary">Owned</span>
               <% else %>
                 <span class="badge bg-info">Shared</span>

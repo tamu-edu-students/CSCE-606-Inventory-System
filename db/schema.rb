@@ -72,8 +72,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_210318) do
     t.datetime "updated_at", null: false
     t.boolean "no_bin"
     t.integer "location_id"
-    t.boolean "for_sale", default: false, null: false
     t.integer "user_id", null: false
+    t.boolean "for_sale", default: false, null: false
     t.boolean "is_shared", default: false, null: false
     t.index ["bin_id"], name: "index_items_on_bin_id"
     t.index ["location_id"], name: "index_items_on_location_id"

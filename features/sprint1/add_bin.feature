@@ -6,8 +6,8 @@ Feature: Adding Bins
   Background:
     Given I am a logged-in user
 
+  @javascript
   Scenario: Successfully adding a bin
-    When I visit the new bin page
     When I visit the new bin page
     And I fill in the bin "Name" with "Storage Bin"
     And I fill in the bin "Location" with "Garage"

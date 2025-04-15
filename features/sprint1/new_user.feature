@@ -3,6 +3,7 @@ Feature: User Registration and Login
   I want to register an account and log in
   So that I can access the system
 
+  @javascript
   Scenario: Successful registration and login
     Given I am on the sign-up page
     When I fill in "Name" with "New User"
@@ -13,5 +14,5 @@ Feature: User Registration and Login
     Then I should be on the login page
     And I fill in "Email" with "new_user@example.com"
     And I fill in "Password" with "Newpassword123!"
-    And I press "Login"
+    And I press "Sign In"
     Then I should see "Welcome"

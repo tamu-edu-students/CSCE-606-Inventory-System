@@ -382,45 +382,67 @@
     </div>
   </div>
 
-  <!-- QR Code and NFC URL Section -->
-  <div class="qr-section">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="mb-0"><i class="fas fa-qrcode me-2"></i>QR Code</h4>
-          </div>
-          <div class="card-body">
-            <div class="qr-container text-center">
-              <div class="qr-code">
-                <%= qr_code_as_svg(bin_url(@bin)) %>
-              </div>
-              <p class="mt-3 text-muted">Scan to view bin details</p>
+ <!-- QR Code, NFC URL, and Bin Picture Section -->
+<div class="qr-section">
+  <div class="row">
+    <!-- QR Code -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0"><i class="fas fa-qrcode me-2"></i>QR Code</h4>
+        </div>
+        <div class="card-body">
+          <div class="qr-container text-center">
+            <div class="qr-code">
+              <%= qr_code_as_svg(bin_url(@bin)) %>
             </div>
+            <p class="mt-3 text-muted">Scan to view bin details</p>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="mb-0"><i class="fas fa-link me-2"></i>NFC Readable URL</h4>
-          </div>
-          <div class="card-body">
-            <div class="info-card">
-              <p class="text-muted mb-3">Use this URL for NFC tags or direct access:</p>
-              <div class="input-group bin-url">
-                <input type="text" class="form-control" value="<%= bin_url(@bin) %>" readonly>
-                <button class="btn btn-outline-primary" onclick="copyToClipboard(this)">
-                  <i class="fas fa-copy"></i>
-                </button>
-              </div>
+    </div>
+
+    <!-- NFC URL -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0"><i class="fas fa-link me-2"></i>NFC Readable URL</h4>
+        </div>
+        <div class="card-body">
+          <div class="info-card">
+            <p class="text-muted mb-3">Use this URL for NFC tags or direct access:</p>
+            <div class="input-group bin-url">
+              <input type="text" class="form-control" value="<%= bin_url(@bin) %>" readonly>
+              <button class="btn btn-outline-primary" onclick="copyToClipboard(this)">
+                <i class="fas fa-copy"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Bin Picture -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="mb-0"><i class="fas fa-image me-2"></i>Bin Picture</h4>
+        </div>
+        <div class="card-body">
+          <% if @bin.bin_picture.attached? %>
+            <div class="text-center">
+              <%= image_tag @bin.bin_picture, class: "img-thumbnail", style: "max-height: 300px;" %>
+              <p class="mt-2 text-muted">This is the uploaded image for the bin.</p>
+            </div>
+          <% else %>
+            <p class="text-muted">No picture attached to this bin.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+
 
 <script>
 function copyToClipboard(button) {

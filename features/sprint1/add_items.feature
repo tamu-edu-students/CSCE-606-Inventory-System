@@ -7,6 +7,7 @@ Feature: Adding Items to Bin
     Given I am a logged-in user
     And I have a bin named "Storage Bin"
 
+  @javascript
   Scenario: Successfully adding an item to a bin
     When I visit the new item page
     And I fill in the item field "name" with "Item A"

@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  layout false, only: [:new]
   def new
     @user = User.new  # Initialize a new User object
   end

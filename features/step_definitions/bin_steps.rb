@@ -4,12 +4,14 @@ Given('I am logged in as {string} with password {string} on the new bin page') d
   visit new_user_session_path
   fill_in "user[email]", with: "test@example.com"
   fill_in "user[password]", with: "Password1!"
-  click_button "Login"
+  click_button "Sign In"
+  sleep 1
 end
 
 When("I visit the new bin page to add picture") do
   visit new_bin_path
-  expect(page).to have_content("New bin")  # Adjust if your page title is different
+  expect(page).to have_content("New Bin")  # Adjust if your page title is different
+  sleep 1
 end
 
 
@@ -25,17 +27,20 @@ When('I fill in the bin field {string} with {string}') do |field, value|
   else
     fill_in field, with: value
   end
+  sleep 1
 end
 
 
 # Step for attaching a picture
 When('I attach a bin picture {string} to the bin picture field') do |file_path|
   attach_file("bin[bin_picture]", Rails.root.join(file_path))
+  sleep 1
 end
 
 # Step for clicking buttons
 When("I press the bin button {string}") do |button|
   click_button(button)
+  sleep 1
 end
 
 # Step for checking success message

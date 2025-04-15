@@ -6,8 +6,8 @@ class Bin < ApplicationRecord
   has_many :items, dependent: :destroy
   has_many :shared_bins, dependent: :destroy
   has_many :shared_with_users, through: :shared_bins, source: :shared_with
-  has_one_attached :bin_picture, dependent: :destroy # bin with multiple pictures
-  has_one_attached :picture
+  has_one_attached :bin_picture, dependent: :destroy 
+  #has_one_attached :picture
   after_create :update_qr_code
   before_destroy :unassign_all_items
 

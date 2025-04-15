@@ -1,4 +1,5 @@
 class PasswordController < ApplicationController
+  layout false, only: [:forgot, :reset_code, :reset]
   skip_before_action :authenticate_user!, only: [
   :forgot, 
   :send_reset_code, 

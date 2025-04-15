@@ -4,7 +4,7 @@ Given("I am a logged-in user") do
   visit new_user_session_path
   fill_in "user[email]", with: "test@example.com"
   fill_in "user[password]", with: "Password1!"
-  click_button "Login"
+  click_button "Sign In"
 end
 
 When("I visit the new bin page") do
@@ -19,6 +19,7 @@ end
 
 When(/^I select "(.*)" from "(.*)"$/) do |value, field|
   select value, from: field
+  sleep 1
 end
 
 When("I click {string}") do |button|

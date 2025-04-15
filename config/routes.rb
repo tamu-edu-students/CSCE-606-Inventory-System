@@ -10,6 +10,10 @@ Rails.application.routes.draw do
   
   get "dashboard", to: "dashboard#index", as: "dashboard"
 
+  if Rails.env.test?
+    get '/favicon.ico', to: ->(_) { [204, {}, []] }
+  end
+
   resources :items do
     collection do
       get :log

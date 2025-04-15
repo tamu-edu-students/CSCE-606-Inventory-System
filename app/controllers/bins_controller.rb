@@ -57,6 +57,7 @@ class BinsController < ApplicationController
   def edit
     @bin = current_user.bins.find(params[:id])
     @locations = current_user.locations
+    @categories = current_user.bins.distinct.pluck(:category_name).compact
   end
 
   # POST /bins or /bins.json

@@ -33,19 +33,23 @@
 
             <div class="mb-4">
               <div class="form-group">
-                <%= f.label :category_name, class: "form-label" do %>
-                  <i class="fas fa-tag me-2"></i>Category
-                <% end %>
-                <%= f.select :category_name, 
-                    options_for_select([
-                      ['IT', 'IT'],
-                      ['Electronics', 'Electronics'],
-                      ['Tools', 'Tools'],
-                      ['Office Supplies', 'Office Supplies'],
-                      ['Other', 'Other']
-                    ], @bin.category_name),
-                    { include_blank: 'Select a category' },
-                    { class: "form-select form-select-lg" } %>
+             <%= f.label :category_name %>
+<input list="category-options"
+       name="bin[category_name]"
+       id="bin_category_name"
+       class="form-control"
+       value="<%= @bin.category_name %>"
+       onfocus="this.dataset.original = this.value; this.value='';"
+       onblur="if (this.value.trim() === '') { this.value = this.dataset.original; }">
+
+<datalist id="category-options">
+  <% @categories.each do |cat| %>
+    <option value="<%= cat %>"></option>
+  <% end %>
+</datalist>
+
+
+
               </div>
             </div>
 
@@ -65,16 +69,16 @@
 
             <div class="mb-4">
               <div class="form-group">
-                <%= f.label :picture, class: "form-label" do %>
+                <%= f.label :bin_picture, class: "form-label" do %>
                   <i class="fas fa-image me-2"></i>Bin Picture
                 <% end %>
                 <div class="input-group">
-                  <%= f.file_field :picture, class: "form-control form-control-lg", accept: "image/*" %>
-                  <% if @bin.picture.attached? %>
+                  <%= f.file_field :bin_picture, class: "form-control form-control-lg", accept: "image/*" %>
+                  <% if @bin.bin_picture.attached? %>
                     <div class="mt-2">
                       <div class="current-image">
                         <p class="text-muted">Current image:</p>
-                        <%= image_tag @bin.picture, class: "img-thumbnail", style: "max-height: 200px;" %>
+                        <%= image_tag @bin.bin_picture, class: "img-thumbnail", style: "max-height: 200px;" %>
                       </div>
                     </div>
                   <% end %>
