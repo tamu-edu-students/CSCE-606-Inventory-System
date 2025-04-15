@@ -1,3 +1,8 @@
+<script type="application/json" id="binLocationMap">
+  <%= @bins.map { |b| [b.id, b.location_id] }.to_h.to_json.html_safe %>
+</script>
+
+
 <%= form_with(model: item, class: "item-form") do |form| %>
   <% if item.errors.any? %>
     <div class="alert alert-danger">
@@ -206,3 +211,35 @@
     padding-left: 1.5rem;
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const binSelect = document.getElementById("binSelect");
+    const locationSelect = document.getElementById("locationSelect");
+
+    if (!binSelect || !locationSelect) return;
+
+    const binLocationMap = JSON.parse(document.getElementById("binLocationMap").textContent || "{}");
+
+    function updateLocationField() {
+      const selectedBinId = binSelect.value;
+
+      if (!selectedBinId) {
+        locationSelect.disabled = false;
+      } else {
+        const locationId = binLocationMap[selectedBinId];
+        locationSelect.disabled = true;
+
+        if (locationId) {
+          locationSelect.value = locationId;
+        }
+      }
+    }
+
+    // Initial check on page load
+    updateLocationField();
+
+    // Update on change
+    binSelect.addEventListener("change", updateLocationField);
+  });
+</script>
