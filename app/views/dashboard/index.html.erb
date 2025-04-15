@@ -209,21 +209,21 @@
                   <div class="stat-icon mb-2">
                     <i class="fas fa-box fa-2x text-white-50"></i>
                   </div>
-                  <h3 class="h4 mb-1"><%= Bin.count %></h3>
+                  <h3 class="h4 mb-1"><%= current_user.bins.count %></h3>
                   <p class="mb-0 text-white-50">Total Bins</p>
                 </div>
                 <div class="stat-item">
                   <div class="stat-icon mb-2">
                     <i class="fas fa-cube fa-2x text-white-50"></i>
                   </div>
-                  <h3 class="h4 mb-1"><%= Item.count %></h3>
+                  <h3 class="h4 mb-1"><%= current_user.items.count %></h3>
                   <p class="mb-0 text-white-50">Total Items</p>
                 </div>
                 <div class="stat-item">
                   <div class="stat-icon mb-2">
                     <i class="fas fa-map-marker-alt fa-2x text-white-50"></i>
                   </div>
-                  <h3 class="h4 mb-1"><%= Location.count %></h3>
+                  <h3 class="h4 mb-1"><%= current_user.locations.count %></h3>
                   <p class="mb-0 text-white-50">Locations</p>
                 </div>
               </div>
