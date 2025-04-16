@@ -77,19 +77,21 @@ class ItemsController < ApplicationController
   def update
     pp params[:item]
   
+    # Merge no_bin logic into the update in one shot
+    update_attrs = item_params.to_h
+  
+    if update_attrs["bin_id"].blank?
+      update_attrs["no_bin"] = true
+    else
+      update_attrs["no_bin"] = false
+  
+      # Inherit location from selected bin
+      bin = Bin.find_by(id: update_attrs["bin_id"])
+      update_attrs["location_id"] = bin.location_id if bin&.location_id
+    end
+  
     respond_to do |format|
-      if @item.update(item_params)
-        # Set no_bin flag
-        if params[:item][:bin_id].blank?
-          @item.update(no_bin: true)
-        else
-          @item.update(no_bin: false)
-  
-          # Inherit location from bin if bin is selected
-          bin = Bin.find_by(id: @item.bin_id)
-          @item.update(location_id: bin.location_id) if bin&.location_id
-        end
-  
+      if @item.update(update_attrs)
         format.html { redirect_to @item, notice: "Item was successfully updated." }
         format.json { render :show, status: :ok, location: @item }
       else
@@ -100,6 +102,7 @@ class ItemsController < ApplicationController
       end
     end
   end
+  
   
 
   # DESTROY
