@@ -8,6 +8,7 @@ end
 
 When("I enter my email {string}") do |email|
   find(:xpath, "//input[@type='email']").set(email)
+  sleep 2
 end
 
 When("I press the {string}") do |button|
@@ -19,36 +20,41 @@ Then("I should see the {string}") do |message|
 end
 
 Given("I have requested a password reset") do
-  User.find_by(email: "test@example.com")&.destroy # Remove existing user
-  
+  User.find_by(email: "test@example.com")&.destroy
+
   @user = User.create!(
     name: "Test User",
     email: "test@example.com",
-    password: "SecureP@ssw0rd!", # Ensure valid password
+    password: "SecureP@ssw0rd!",
     password_confirmation: "SecureP@ssw0rd!"
   )
-
-  @user.update!(reset_code: SecureRandom.hex(3), reset_sent_at: Time.now)
 
   visit forgot_password_path
   sleep 1
 
-  # Using XPath to find the email input field
+  # Fill and submit the form
   find(:xpath, "//input[@type='email']").set(@user.email)
-
   click_button "Send Reset Code"
+  sleep 2
+
+  # 🔁 Reload the user from DB to get the actual generated code
   @user.reload
+  @reset_code = @user.reset_code
 end
 
+
 Given("I press verify code") do
-  sleep 5
+  sleep 1
   click_button "Verify"
+  sleep 1
 end
 
 
 Given("I received a reset code via email") do
+  @user.reload
   @reset_code = @user.reset_code
 end
+
 
 When("I enter the reset code") do
   sleep 1
@@ -68,8 +74,7 @@ Given("I have entered a valid reset code") do
   step "I have requested a password reset"
   step "I received a reset code via email"
   step "I enter the reset code"
-  puts("I am here?")
-  step 'I press verify code"'
+  step 'I press verify code'
 end
 
 When("I enter {string} as my new password") do |password|

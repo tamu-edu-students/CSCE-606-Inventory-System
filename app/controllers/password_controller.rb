@@ -46,13 +46,17 @@ class PasswordController < ApplicationController
   end
 
   def verify_reset_code
-    if current_reset_user&.reset_sent_at&.>(15.minutes.ago) && current_reset_user&.reset_code == params[:reset_code]
+    code = params[:reset_code].to_s.strip
+  
+    if current_reset_user&.reset_sent_at&.>(15.minutes.ago) &&
+       current_reset_user&.reset_code == code
       redirect_to new_password_reset_path
     else
       flash[:console_alert] = "Invalid or expired reset code"
       redirect_to reset_code_path
     end
   end
+  
 
   def resend_reset_code
     if current_reset_user
