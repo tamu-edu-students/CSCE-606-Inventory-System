@@ -35,8 +35,9 @@ end
 
 
 When('I press {string}') do |button|
-  click_button button
   sleep 1
+  click_button button
+  sleep 2
 end
 
 Given('I am on the sign-up page') do

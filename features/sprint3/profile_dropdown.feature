@@ -23,6 +23,5 @@ Feature: Profile Dropdown
   Scenario: Logging out through the dropdown
     When I click on the profile icon
     And I click the logout button
-    And I confirm the logout
     Then I should be redirected to the log-in page
     And I should see "Signed out successfully"

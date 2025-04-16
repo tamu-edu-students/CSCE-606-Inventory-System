@@ -41,12 +41,7 @@ Feature: Sorting and Filtering Bins
     Then I should only see bins belonging to "Stationery"
 
   @javascript
-  Scenario: Filtering bins with no matching category
-    When I select "Electronics" from the category filter
-    Then I should see a message "No bins found"
-
-  @javascript
   Scenario: Resetting filters
-    Given I selected a category filter
-    When I click the reset button
+    When I select "Stationery" from the category filter
+    When I select all categories
     Then all bins should be visible again

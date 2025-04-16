@@ -7,7 +7,7 @@ Given('I am a logged-in user on the dashboard') do
   visit new_user_session_path
   fill_in "user[email]", with: "test@example.com"
   fill_in "user[password]", with: "Password1!"
-  click_button "Login"
+  click_button "Sign In"
 
   expect(page).to have_current_path(dashboard_path) # Ensure login redirects correctly
 end
@@ -30,7 +30,7 @@ When('I enter {string} in the bins search bar') do |search_term|
 end
 
 And('I click the bins search button') do
-  click_button 'search-inventory-btn'
+  click_button 'bin-search-button'
 end
 
 Then('I should see bins matching {string}') do |query|
@@ -41,7 +41,7 @@ Then('I should see categories matching {string}') do |query|
   expect(page).to have_content(query)  
 end
 
-Then('I should see a message {string}') do |query|
+Then('I should see the message on the screen {string}') do |query|
   expect(page).to have_content(query)  
 end
 
@@ -50,7 +50,7 @@ When('I enter {string} in the items search bar') do |search_term|
 end
 
 And('I click the items search button') do
-  click_button 'search-items-btn'
+  click_button 'item-search-button'
 end
 
 Then('I should see items matching {string}') do |query|

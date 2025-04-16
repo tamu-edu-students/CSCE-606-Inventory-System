@@ -16,6 +16,15 @@ When(/^I fill in the bin "(.*)" with "(.*)"$/) do |field, value|
   fill_in field, with: value
 end
 
+When(/^I fill on the bin "(.*)" with "(.*)"$/) do |field, value|
+  if field == "Location"
+    select value, from: "bin_location_id"
+  else
+    fill_in "bin_#{field.downcase}", with: value
+  end
+end
+
+
 
 When(/^I select "(.*)" from "(.*)"$/) do |value, field|
   select value, from: field

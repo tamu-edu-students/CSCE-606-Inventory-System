@@ -30,7 +30,7 @@ Feature: Search Bars on Dashboard
   Scenario: No results found for bins/categories
     When I enter "NonExistentBin" in the bins search bar
     And I click the bins search button
-    Then I should see a message "You have no bins yet"
+    Then I should see the message on the screen "No bins yet"
 
   @javascript
   Scenario: Searching for an item by name

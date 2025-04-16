@@ -7,7 +7,7 @@ Given('I am a logged in user with email {string}') do |email|
   visit new_user_session_path
   fill_in "user[email]", with: "test@example.com"
   fill_in "user[password]", with: "Password1!"
-  click_button "Login"
+  click_button "Sign In"
   expect(page).to have_current_path(dashboard_path) # Ensure login redirects correctly
 end
 
@@ -56,8 +56,4 @@ When('I click the logout button') do
   within('#profile-dropdown-content') do
     click_button 'Logout'
   end
-end
-
-When('I confirm the logout') do
-  accept_confirm
 end
