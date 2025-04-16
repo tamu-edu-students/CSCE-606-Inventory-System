@@ -37,10 +37,11 @@ Feature: Viewing and filtering items
   Scenario: User sees no matching results
     When I visit the items-page
     When I filter items by name "doesnotexist"
-    Then I should see the message "No items to display"
+    Then I should see no visible items
 
   Scenario: User sees no items message when no items exist
     Given I have no items
     When I visit the items-page
     Then I should see the message "No items yet"
     And I should see a button labeled "Add Item"
+

@@ -25,7 +25,7 @@ class LocationsController < ApplicationController
   def create
     @location = current_user.locations.build(location_params)
     if @location.save
-      redirect_to bins_path, notice: 'Location was successfully created.'
+      redirect_to request.referer.include?("/locations") ? locations_path : bins_path, notice: 'Location was successfully created.'
     else
       render :new, status: :unprocessable_entity
     end
@@ -37,7 +37,7 @@ class LocationsController < ApplicationController
   # PATCH/PUT /locations/:id
   def update
     if @location.update(location_params)
-      redirect_to bins_path, notice: 'Location was successfully updated.'
+      redirect_to locations_path, notice: 'Location was successfully updated.'
     else
       render :edit, status: :unprocessable_entity
     end
@@ -46,7 +46,7 @@ class LocationsController < ApplicationController
   # DELETE /locations/:id
   def destroy
     @location.destroy
-    redirect_to bins_path, notice: 'Location was successfully deleted.'
+    redirect_to locations_path, notice: 'Location was successfully deleted.'
   end
 
   private

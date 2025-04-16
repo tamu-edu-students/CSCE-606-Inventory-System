@@ -18,7 +18,7 @@ Feature: Password Recovery
     Given I have requested a password reset
     And I received a reset code via email
     When I enter the reset code
-    And I press "Verify"
+    And I press verify code
     Then I should be redirected to the password reset page
     And I should see "New Password"
 
@@ -35,7 +35,7 @@ Feature: Password Recovery
   Scenario: Entering an invalid reset code
     Given I have requested a password reset
     When I enter an invalid reset code
-    And I press "Verify"
+    And I press verify code
     Then I should see the "Invalid or expired reset code" s2
 
   @javascript
@@ -43,7 +43,7 @@ Feature: Password Recovery
     Given I have requested a password reset
     And my reset code has expired
     When I enter the reset code
-    And I press "Verify"
+    And I press verify code
     Then I should see the "Invalid or expired reset code" s2
     And I should be redirected to the forgot password page
 

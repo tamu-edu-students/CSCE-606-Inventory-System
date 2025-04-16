@@ -11,14 +11,11 @@ When("I enter my email {string}") do |email|
 end
 
 When("I press the {string}") do |button|
-  sleep 2
   click_button button
-  sleep 2
 end
 
 Then("I should see the {string}") do |message|
   expect(page).to have_content(message)
-  sleep 1
 end
 
 Given("I have requested a password reset") do
@@ -41,48 +38,47 @@ Given("I have requested a password reset") do
 
   click_button "Send Reset Code"
   @user.reload
-  sleep 1
 end
 
-
+Given("I press verify code") do
+  sleep 5
+  click_button "Verify"
+end
 
 
 Given("I received a reset code via email") do
   @reset_code = @user.reset_code
-  sleep 1
 end
 
 When("I enter the reset code") do
+  sleep 1
   fill_in "Reset Code", with: @reset_code
   sleep 1
 end
 
 When("I enter an invalid reset code") do
   fill_in "Reset Code", with: "wrongcode"
-  sleep 1
 end
 
 Given("my reset code has expired") do
   @user.update(reset_sent_at: 1.hour.ago)
-  sleep 1
 end
 
 Given("I have entered a valid reset code") do
   step "I have requested a password reset"
-  sleep 2
   step "I received a reset code via email"
-  sleep 2
   step "I enter the reset code"
-  sleep 2
-  step 'I press "Verify"'
-  sleep 2
+  puts("I am here?")
+  step 'I press verify code"'
 end
 
 When("I enter {string} as my new password") do |password|
-  expect(page).to have_field("New Password", wait: 5) # waits until the field is present
-  fill_in "New Password", with: password
+  field = find_field("New Password", wait: 10, visible: :visible)
+  expect(field.disabled?).to be false
+  field.fill_in(with: password)
   sleep 1
 end
+
 
 When("I confirm {string} as my new password") do |password|
   expect(page).to have_field("New Password", wait: 5)
@@ -102,16 +98,13 @@ end
 
 Then("I should be redirected to the login page1") do
   expect(current_path).to eq(new_user_session_path)
-  sleep 1
 end
 
 Then("I should see the {string} s2") do |message|
   expect(page.all(:xpath, "//*[contains(text(), '#{message}')]").size)
-  sleep 1
 end
 
 Then("I should see the {string} s2.1") do |message|
   escaped_message = "concat('#{message.gsub("'", "',\"'\",'")}')"
   expect(page).to have_xpath("//*[contains(text(), #{escaped_message})]", count: 1)
-  sleep 1
 end

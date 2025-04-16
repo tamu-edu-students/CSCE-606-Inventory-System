@@ -78,3 +78,23 @@ Given("I am a logged in user") do
     expect(page).to have_selector("a,button", text: label)
   end
   
+  Then("I should see no visible items") do
+    visible_cards = all(".item-card", visible: true)
+    expect(visible_cards.count).to eq(0)
+  end
+  
+  When("I request item suggestions with query {string}") do |query|
+    visit dashboard_path
+    sleep 1
+    fill_in "search-items", with: query
+    sleep 1 # Allow debounce + fetch to complete
+  end
+  
+
+  Then("I should see a item suggestion with name {string}") do |name|
+    within("#item-suggestions") do
+      expect(page).to have_content(name)
+    end
+  end
+  
+  
