@@ -17,7 +17,9 @@ class ItemsController < ApplicationController
     end
     
     # Apply search filtering if a name is provided
-    @items = @items.search_by_name(params[:name]) if params[:name].present?
+    search_query = params[:search] || params[:name]
+    @items = @items.search_by_name(search_query) if search_query.present?
+
   end
 
   # GET /items/1 or /items/1.json
@@ -121,6 +123,22 @@ class ItemsController < ApplicationController
   end
   
   
+  # GET /items/suggestions
+  def suggestions
+    query = params[:query]&.downcase
+    return render json: [] if query.blank? || query.length < 2
+
+    # Only search user's own items
+    matching_items = current_user.items
+      .where("LOWER(name) LIKE ?", "%#{query}%")
+      .limit(8)
+      .map do |item|
+        { id: item.id, name: item.name, type: "item" }
+      end
+
+    render json: matching_items
+  end
+
   
   
 

@@ -143,6 +143,10 @@
       valueFilter.value = "";
       forSaleFilter.checked = false;
       filterItems();
+
+      // 👇 Replace current search param & force reload
+      const url = new URL(window.location.origin + window.location.pathname); 
+      window.location.href = url.toString();  // ✅ Reloads page without ?search
     });
   });
 </script>
