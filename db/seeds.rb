@@ -12,12 +12,12 @@
 # Find or create the user
 # Clear existing records in the correct order
 puts "Destroying existing records..."
-ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
+#ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
 Item.destroy_all
 Bin.destroy_all
 Location.destroy_all
 User.destroy_all
-ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
+#ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = ON")
 
 puts "Running seed..."
 # Helper method to create users with unique bins and items
