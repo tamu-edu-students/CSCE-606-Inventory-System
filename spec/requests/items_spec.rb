@@ -75,23 +75,41 @@ RSpec.describe "Items", type: :request do
   
     before do
       sign_in user
+
     end
   
-    it 'renders edit when update fails' do
+    it "renders edit when update fails" do
       patch item_path(item), params: {
-        item: {
-          name: '',           # Invalid: name can't be blank
-          value: '',          # Invalid: value can't be blank
-          bin_id: ''          # Should still hit the `else` path
-        }
+        item: { name: "", value: nil }  # invalid input
       }
-  
-      expect(response).to render_template(:edit) # ✅ we hit the else block
-      expect(response.body).to include("prohibited this item from being saved")
+    
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include("Please correct the following errors")
       puts "✅ Test Passed: Hit the update failure path and rendered edit"
     end
   end
 
+  describe "GET /edit" do
+    it "returns http success and loads bins, locations, and bin_location_map" do
+      get edit_item_path(item)
+
+      expect(response).to have_http_status(:success)
+
+      # Basic check to confirm the form rendered
+      expect(response.body).to include("Edit Item")
+
+      # Optional: verify dropdowns are populated
+      expect(response.body).to include(bin.name)
+      expect(response.body).to include(location.name)
+
+      # Optional: verify JSON for bin-location map is rendered
+      expect(response.body).to include("binLocationMap")
+      expect(response.body).to include(bin.id.to_s)
+      expect(response.body).to include(location.id.to_s)
+
+      puts "✅ Test Passed: GET /edit loads form with bin and location info"
+    end
+  end
 
 
   describe "DELETE /destroy" do
@@ -105,4 +123,29 @@ RSpec.describe "Items", type: :request do
       puts "✅ Test Passed: DELETE /destroy"
     end
   end
+
+  describe "POST /items" do
+    context "when the item fails validation" do
+      let!(:bin1) { create(:bin, user: user) }
+      let!(:location1) { create(:location, user: user) }
+
+      it "renders the :new template with bins and locations and status 422" do
+        post items_path, params: {
+          item: {
+            name: "",            # invalid
+            value: "",           # invalid
+            bin_id: bin1.id,
+            location_id: location1.id
+          }
+        }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include("prohibited this item from being saved")
+
+        # Check if known bin/location names are present in the rendered form
+        expect(response.body).to include(bin1.name)
+        expect(response.body).to include(location1.name)
+      end
+    end
+  end
+
 end

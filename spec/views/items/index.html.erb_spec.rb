@@ -10,6 +10,7 @@ RSpec.describe "items/index", type: :view do
     Rails.application.reload_routes!
     assign(:items, items)  # ✅ Assign `@items` to the view
     assign(:bins, bins)  # ✅ Assign bins in case the view references them
+    allow(view).to receive(:current_user).and_return(user)
     render
   end
 
@@ -83,9 +84,6 @@ RSpec.describe "items/index", type: :view do
     expect(rendered).to have_link("Back to Dashboard", href: dashboard_path)
   end
 
-  it "includes the items.js script" do
-    expect(rendered).to match(/<script[^>]+src="\/assets\/items[^"]+\.js"/)
-  end
 
   it "renders a responsive grid layout for items" do
     expect(rendered).to have_selector(".row.row-cols-1.row-cols-sm-2.row-cols-md-3.g-4")

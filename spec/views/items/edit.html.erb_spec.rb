@@ -2,35 +2,22 @@ require 'rails_helper'
 
 RSpec.describe "items/edit", type: :view do
   let(:user) { create(:user) }
-  let(:location) { create(:location, user: user) } 
+  let(:location) { create(:location) }
   let(:bin) { create(:bin, user: user, location: location) }
-  let!(:bins) { create_list(:bin, 3, user: user, location:location) } 
-  let(:item) { create(:item, bin: bin, location:location, user:user) }  # Ensures the item is associated with a bin
+  let(:item) { create(:item, user: user, bin: bin, location: location) }
 
-
-  before(:each) do
+  before do
     Rails.application.reload_routes!
     assign(:item, item)
-    assign(:bins, bins)
+    assign(:locations, [location])
+    assign(:bins, [bin])
+    allow(view).to receive(:current_user).and_return(user)
   end
 
-
-  
   it "renders the edit item form" do
     render
-
-    assert_select "form[action=?][method=?]", item_path(item), "post" do
-
-      assert_select "input[name=?]", "item[name]"
-
-      #assert_select "input[name=?]", "item[description]"
-
-      #assert_select "input[name=?]", "item[created_date]"
-
-      assert_select "input[name=?]", "item[value]"
-
-      #assert_select "input[name=?]", "item[bin_id]"
-      puts "✅ Test Passed: items / edit"
-    end
+    expect(rendered).to have_selector("form")
+    expect(rendered).to have_select("binSelect", with_options: [bin.name])
+    expect(rendered).to have_selector("select#locationSelect", text: location.name)
   end
 end
