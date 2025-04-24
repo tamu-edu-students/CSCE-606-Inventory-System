@@ -8,6 +8,7 @@ class LogsController < ApplicationController
       start_date = Date.parse(params[:from_date])
       end_date = Date.parse(params[:to_date])
       @logs = @logs.date_range(start_date, end_date)
+      @logs = @logs.order(action_date: :desc)
     end
 
     respond_to do |format|
