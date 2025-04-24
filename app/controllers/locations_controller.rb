@@ -17,9 +17,9 @@ class LocationsController < ApplicationController
     end
   end
 
-  def new
-    @location = current_user.locations.build
-  end
+  #def new
+  #  @location = current_user.locations.build
+  #end
 
   # POST /locations
   def create

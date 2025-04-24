@@ -147,4 +147,19 @@ RSpec.describe "/bins", type: :request do
       puts "✅ Test Passed: Delete bin"
     end
   end
+
+  describe "GET /bins with category filter" do
+    it "returns bins matching the category" do
+      Bin.create!(valid_attributes.merge(name: "Tool Bin", category_name: "Tools"))
+      Bin.create!(valid_attributes.merge(name: "Toy Bin", category_name: "Toys"))
+      
+      get bins_path, params: { category: "Tools" }
+  
+      expect(response.body).to include("Tool Bin")
+      expect(response.body).not_to include("Toy Bin")
+      puts "✅ Test Passed: GET /bins with category filter"
+    end
+  end
+  
+  
 end

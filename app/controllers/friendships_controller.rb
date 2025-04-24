@@ -17,7 +17,7 @@ class FriendshipsController < ApplicationController
         flash[:alert] = friendship.errors.full_messages.join(", ")
       end
     else
-      flash[:alert] = "User not found"
+      #flash[:alert] = "User not found" Change by rafael
     end
     
     redirect_to friendships_path
@@ -30,7 +30,7 @@ class FriendshipsController < ApplicationController
     if friendship.destroy
       flash[:notice] = "Removed #{friend_email} from friends"
     else
-      flash[:alert] = "Failed to remove friend"
+      #flash[:alert] = "Failed to remove friend" Change by rafael
     end
     
     redirect_to friendships_path

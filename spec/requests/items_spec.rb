@@ -124,6 +124,24 @@ RSpec.describe "Items", type: :request do
     end
   end
 
+  describe "GET /items with sale_date param" do
+    it "filters items created before or on the sale_date" do
+      old_item = create(:item, user: user, bin: bin, location: location, created_at: 5.days.ago)
+      recent_item = create(:item, user: user, bin: bin, location: location, created_at: Time.current)
+  
+      get items_path, params: { sale_date: 3.days.ago.to_date }
+  
+      expect(response).to have_http_status(:success)
+  
+      # Only the old item should appear
+      expect(response.body).to include(old_item.name)
+      expect(response.body).not_to include(recent_item.name)
+  
+      puts "✅ Test Passed: GET /items filtered by sale_date"
+    end
+  end
+
+
   describe "POST /items" do
     context "when the item fails validation" do
       let!(:bin1) { create(:bin, user: user) }

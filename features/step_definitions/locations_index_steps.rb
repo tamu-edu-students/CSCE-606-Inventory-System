@@ -108,10 +108,14 @@ When("I visit the locations page") do
   end
   
   When("I confirm the delete action") do
-    within("#deleteLocationModal", visible: :all) do
-      click_button "Yes"
+    using_wait_time 5 do
+      within("#deleteLocationModal", visible: true) do
+        click_button "Yes"
+      end
     end
+    sleep 1 
   end
+  
   
   Then("I should not see the deleted location on the page") do
     expect(page).not_to have_selector(".location-card", count: Location.count + 1)
@@ -131,4 +135,29 @@ When("I visit the locations page") do
     expect(page).to have_selector("#warningModal", visible: true)
   end
   
+  Then("I should see the edit location form again") do
+    expect(page).to have_selector("form.edit_location") # Adjust selector if needed
+  end
   
+  Then("I should see the error {string}xx") do |message|
+    expect(page).to have_text(message)
+  end
+
+  Given('there is a location named {string} for me') do |name|
+    @location = FactoryBot.create(:location, name: name, user: @user)
+  end
+  
+  
+  When("I visit the edit page for the location named {string}") do |name|
+    location = Location.find_by!(name: name)
+    visit edit_location_path(location)
+    sleep 30
+  end
+  
+  When("I update the location name to {string}") do |new_name|
+    fill_in "location_name", with: new_name
+  end
+  
+  Then("I should be redirected to the locations page") do
+    expect(current_path).to eq(locations_path)
+  end

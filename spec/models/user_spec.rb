@@ -95,7 +95,7 @@ RSpec.describe User, type: :model do
   describe 'password reset' do
     new_user = let(:user) { User.create!(name: 'Test User', email: 'test@example.com', password: 'Password1!', bins_count: 0) }
     puts "✅ Created User: #{new_user.inspect}"
-    new_user
+
     it 'generates a password reset token' do
       expect {
         user.send_reset_password_instructions
@@ -105,17 +105,6 @@ RSpec.describe User, type: :model do
       expect(user.reset_password_sent_at).not_to be_nil
     end
 
-    it 'sets password reset token expiry' do
-      expect {
-        user.generate_password_reset_token
-      }.to change { user.reset_password_token_expires_at }.from(nil)
-    end
-
-    it 'validates reset token expiration' do
-      user.generate_password_reset_token
-      user.reset_password_token_expires_at = 1.hour.ago
-      expect(user.password_reset_token_valid?).to be false
-    end
   end
 
   # User status

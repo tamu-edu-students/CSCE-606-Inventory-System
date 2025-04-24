@@ -3,6 +3,7 @@ class SharedBinsController < ApplicationController
   before_action :set_bin
   
   def create
+    puts "SHARING"
     @shared_bin = @bin.shared_bins.build(shared_with_id: params[:shared_with_id])
     
     if @shared_bin.save

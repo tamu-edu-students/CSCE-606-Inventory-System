@@ -20,18 +20,15 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     context "when not logged in" do
-      it "redirects to the login page" do
+      it "redirects to the login page with alert message" do
         get dashboard_path
         expect(response).to redirect_to("/users/sign_in")
         follow_redirect!
-
-        # Check for a visible element from the login page
-        expect(response.body).to include("Sign up")
-        #expect(response.body).to include("Don't have an account?") # Adjust to actual login page text
-        #expect(response.body).to match(/Sign up/i) # Case-insensitive check for "Sign up"
-        #expect(response.body).to include('<form') # Ensures a login form exists
-        puts "✅ Test Passed: Redirect to Login"
+    
+        expect(response.body).to include("You need to sign in or sign up before continuing.")
+        puts "✅ Test Passed: Redirect to login page with Devise alert"
       end
     end
+    
   end
 end
