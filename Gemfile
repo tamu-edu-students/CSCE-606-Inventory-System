@@ -43,7 +43,7 @@ gem "kamal", require: false  # Docker-based deployment
 gem "thruster", require: false  # HTTP asset caching/compression
 
 #selenium driver
-gem "selenium-webdriver", "~> 4.0"  # Selenium for browser automation
+gem "selenium-webdriver", "~> 4.31" # Selenium for browser automation
 
 # Development and Test Group Gems
 group :development, :test do
