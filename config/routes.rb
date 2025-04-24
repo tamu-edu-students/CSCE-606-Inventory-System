@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :logs, only: [:index]
   devise_for :users, controllers: { sessions: "sessions" }, skip: [:registrations]
   
   devise_scope :user do
@@ -16,7 +17,6 @@ Rails.application.routes.draw do
 
   resources :items do
     collection do
-      get :log
       get 'delete-items'
       delete 'delete-selected'
       get 'suggestions'

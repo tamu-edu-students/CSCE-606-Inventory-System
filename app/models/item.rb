@@ -8,6 +8,9 @@ class Item < ApplicationRecord
   validates :value, numericality: { greater_than_or_equal_to: 0 }
   validate :validate_no_bin_status
 
+  after_create :log_creation
+  after_update :log_update
+  after_destroy :log_deletion
 
   # Scope for searching items by name
   scope :search_by_name, ->(query) {
@@ -23,7 +26,10 @@ class Item < ApplicationRecord
       if unassigned?
         destroy
       else
+        was_bin_id = bin_id
+        was_location = location_id
         update_columns(bin_id: nil, no_bin: true)
+        Log.log_item_action(user, self, 'move', "Unassigned from bin ID: #{was_bin_id}")
         false
       end
     end
@@ -34,7 +40,22 @@ class Item < ApplicationRecord
     self.location_id = bin.location_id if bin.present?
   end
 
+  def log_creation
+    Log.log_item_action(user, self, 'create', "Created item: #{name}")
+  end
 
+  def log_update
+    if saved_changes.present?
+      changes_desc = saved_changes.except('updated_at').map do |attr, changes|
+        "#{attr}: #{changes[0]} → #{changes[1]}"
+      end.join(', ')
+      Log.log_item_action(user, self, 'update', "Updated: #{changes_desc}")
+    end
+  end
+
+  def log_deletion
+    Log.log_item_action(user, self, 'delete', "Deleted item: #{name}")
+  end
 
   def validate_no_bin_status
     if bin_id.nil? && !no_bin?

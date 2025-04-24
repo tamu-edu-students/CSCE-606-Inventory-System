@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_31_210318) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_24_191724) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -88,6 +88,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_210318) do
     t.index ["user_id"], name: "index_locations_on_user_id"
   end
 
+  create_table "logs", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "item_id"
+    t.integer "bin_id"
+    t.string "action_type", null: false
+    t.datetime "action_date", null: false
+    t.string "from_location"
+    t.string "to_location"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action_date"], name: "index_logs_on_action_date"
+    t.index ["action_type"], name: "index_logs_on_action_type"
+    t.index ["bin_id"], name: "index_logs_on_bin_id"
+    t.index ["item_id"], name: "index_logs_on_item_id"
+    t.index ["user_id"], name: "index_logs_on_user_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.datetime "login_time"
@@ -132,6 +150,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_31_210318) do
   add_foreign_key "items", "locations", on_delete: :cascade
   add_foreign_key "items", "users"
   add_foreign_key "locations", "users"
+  add_foreign_key "logs", "bins"
+  add_foreign_key "logs", "items"
+  add_foreign_key "logs", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "shared_bins", "bins"
   add_foreign_key "shared_bins", "users", column: "shared_with_id"

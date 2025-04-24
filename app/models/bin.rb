@@ -10,6 +10,9 @@ class Bin < ApplicationRecord
   #has_one_attached :picture
   after_create :update_qr_code
   before_destroy :unassign_all_items
+  after_create :log_creation
+  after_update :log_update
+  after_destroy :log_deletion
 
   validates :name, presence: true
   validates :user_id, presence: true
@@ -69,6 +72,23 @@ class Bin < ApplicationRecord
       module_size: 4,
       standalone: true
     )
+  end
+
+  def log_creation
+    Log.log_bin_action(user, self, 'create', "Created bin: #{name}")
+  end
+
+  def log_update
+    if saved_changes.present?
+      changes_desc = saved_changes.except('updated_at').map do |attr, changes|
+        "#{attr}: #{changes[0]} → #{changes[1]}"
+      end.join(', ')
+      Log.log_bin_action(user, self, 'update', "Updated: #{changes_desc}")
+    end
+  end
+
+  def log_deletion
+    Log.log_bin_action(user, self, 'delete', "Deleted bin: #{name}")
   end
 
 end

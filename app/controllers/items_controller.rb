@@ -1,7 +1,7 @@
 class ItemsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_item, only: %i[ show edit update destroy ]
-  before_action :authorize_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_item, only: [:show, :edit, :update, :destroy] # Specify exactly which actions need @item
+  before_action :authorize_user, only: [:edit, :update, :destroy]
 
   # GET /items or /items.json
   def index
@@ -145,7 +145,7 @@ class ItemsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_item
-      @item = Item.find(params.expect(:id))
+      @item = Item.find(params[:id])  # Fix: params.expect -> params[:id]
     end
 
     def authorize_user

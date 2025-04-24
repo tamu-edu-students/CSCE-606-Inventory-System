@@ -1,0 +1,38 @@
+<div class="container mt-4">
+  <h1>Inventory Log History</h1>
+  
+  <% if @logs.any? %>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Action</th>
+            <th>Item</th>
+            <th>Bin</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @logs.each do |log| %>
+            <tr>
+              <td><%= log.action_date.strftime("%Y-%m-%d %H:%M") %></td>
+              <td><%= log.action_type.titleize %></td>
+              <td><%= log.item&.name || 'N/A' %></td>
+              <td><%= log.bin&.name || 'N/A' %></td>
+              <td><%= log.from_location %></td>
+              <td><%= log.to_location %></td>
+              <td><%= log.description %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      No logs found for the selected date range.
+    </div>
+  <% end %>
+</div>
