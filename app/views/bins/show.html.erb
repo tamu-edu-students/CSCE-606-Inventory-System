@@ -426,12 +426,12 @@
         <div class="card-body">
           <div class="info-card">
             <p class="text-muted mb-3">Use this URL for NFC tags or direct access:</p>
-            <div class="input-group bin-url">
-              <input type="text" class="form-control" value="<%= bin_url(@bin) %>" readonly>
-              <button class="btn btn-outline-primary" onclick="copyToClipboard(this)">
-                <i class="fas fa-copy"></i>
-              </button>
-            </div>
+              <div class="input-group bin-url-group">
+                <input id="bin-url" type="text" class="form-control" value="<%= bin_url(@bin) %>" readonly>
+                <button class="btn btn-outline-primary" onclick="copyToClipboard(this)">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
           </div>
         </div>
       </div>

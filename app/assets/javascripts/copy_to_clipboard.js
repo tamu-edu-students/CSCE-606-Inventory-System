@@ -1,33 +1,34 @@
-function getBinUrl() {
-    const urlElement = document.getElementById('bin-url');
-    if (!urlElement) return null;
+function copyToClipboard(button) {
+  const input = button.parentElement.querySelector("input");
 
-    let binPath = urlElement.textContent.trim(); // Get the bin path
-
-    // Ensure binPath only contains the relative path (if needed)
-    if (binPath.startsWith("http")) {
-        const url = new URL(binPath);
-        binPath = url.pathname; // Extracts only the `/bins/16` part
-    }
-  
-    /// Get the full base URL dynamically
-    const baseUrl = window.location.origin; // Includes protocol (http/https) and host
-
-    return baseUrl + binPath; // Construct the correct full URL
-}
-  
-  function copyToClipboard() {
-    const textToCopy = getBinUrl();
-    if (!textToCopy) return;
-  
-    // Use the Clipboard API (modern approach)
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      alert('Bin URL copied to clipboard!');
-    }).catch(err => {
-      console.error('Failed to copy text: ', err);
-    });
+  if (!input) {
+    console.error("No input field found to copy.");
+    return;
   }
-  
-  // Make function globally available
-  window.copyToClipboard = copyToClipboard;
-  
+
+  const valueToCopy = input.value;
+
+  navigator.clipboard
+    .writeText(valueToCopy)
+    .then(() => {
+      console.log("Copied:", valueToCopy);
+
+      // Change the icon to a checkmark
+      const icon = button.querySelector("i");
+      if (icon) {
+        icon.classList.remove("fa-copy");
+        icon.classList.add("fa-check");
+      }
+
+      // Restore the copy icon after 2 seconds
+      setTimeout(() => {
+        if (icon) {
+          icon.classList.remove("fa-check");
+          icon.classList.add("fa-copy");
+        }
+      }, 2000);
+    })
+    .catch((err) => {
+      console.error("Failed to copy text: ", err);
+    });
+}
