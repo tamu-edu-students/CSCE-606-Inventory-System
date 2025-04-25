@@ -1,5 +1,7 @@
 class SessionsController < Devise::SessionsController
-
+  layout ->(controller) {
+  controller.action_name.in?(%w[new create]) ? false : 'application'
+}
   before_action :redirect_if_authenticated, only: [:new]
   skip_before_action :require_no_authentication, only: [:new]
 
