@@ -89,7 +89,7 @@ Rails.application.configure do
   # Use SMTP for email delivery
 
   # Default host for email links
-  config.action_mailer.default_url_options = { host: 'yourdomain.com', protocol: 'https' }
+  config.action_mailer.default_url_options = { host: "https://robert-inventory-f91e26f91bb2.herokuapp.com", protocol: "https" }
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
@@ -104,7 +104,7 @@ Rails.application.configure do
     password: ENV["GMAIL_PASSWORD"],  # Use Heroku env variable
   }
 
-  config.action_mailer.default_url_options = { host: "https://robert-inventory-f91e26f91bb2.herokuapp.com", protocol: "https" }
+  
 
 
 end
