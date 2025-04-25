@@ -1,23 +1,36 @@
-<%= stylesheet_link_tag "passwords", media: "all" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <%= stylesheet_link_tag "passwords", media: "all" %> 
+  <title>Forgot Password</title>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h2>Forgot Password</h2>
 
-<div class="form-container">
-    <h2>Forgot Password</h2>
-
-
-    <%= form_with url: send_reset_code_path, method: :post, data: { turbo: false } do |f| %>
+      <%= form_with url: send_reset_code_path, method: :post, data: { turbo: false }, local: true do |f| %>
         <label for="email">Enter your registered email:</label>
-        <%# Flash Message for Errors %>
+
         <% if flash[:error] %>
-            <div class="flash-error">
-                <%= flash[:error] %>
-            </div>
+          <div class="flash-error">
+            <%= flash[:error] %>
+          </div>
         <% end %>
+
         <%= f.email_field :email, id: "email", required: true %>
 
-        <%= f.submit "Send Reset Code", class: "btn"%>
-    <% end %>
+        <div class="actions">
+          <%= f.submit "Send Reset Code", class: "btn btn-green" %>
+        </div>
+      <% end %>
 
-    <p id="back_to_login">
+      <p id="back_to_login" class="text-center mt-4">
         <%= link_to "Back to Login", unauthenticated_root_path %>
-    </p>
-</div>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

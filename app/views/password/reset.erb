@@ -1,54 +1,62 @@
-<%= stylesheet_link_tag "passwords", media: "all" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <%= stylesheet_link_tag "passwords", media: "all" %> 
+  <title>Reset Password</title>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h2>Reset Password</h2>
 
-<div class="form-container-spl">
-    <h2>Reset Password</h2>
-
-    <% if @user.errors.any? %>
+      <% if @user.errors.any? %>
         <div id="error_explanation">
-            <h3><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h3>
-            <ul>
+          <h3><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h3>
+          <ul>
             <% @user.errors.to_hash.each do |attribute, messages| %>
-                <% if attribute == :password_confirmation %>
-                <!-- For password_confirmation, show only the message -->
-                    <% messages.each do |message| %>
-                        <li><%= message %></li>
-                    <% end %>
-                <% else %>
-                <!-- For all other attributes, include the attribute name -->
-                    <% messages.each do |message| %>
-                        <li><%= attribute.to_s.humanize + " " %><%= message %><br></li>
-                    <% end %>
-                <% end %>
+              <% messages.each do |message| %>
+                <li>
+                  <%= attribute == :password_confirmation ? message : "#{attribute.to_s.humanize} #{message}" %>
+                </li>
+              <% end %>
             <% end %>
-            </ul>
+          </ul>
         </div>
-    <% end %>
+      <% end %>
 
-    <%= form_with model: @user, url: update_password_path, method: :post, data: { turbo: false } do |f| %>
+      <%= form_with model: @user, url: update_password_path, method: :post, data: { turbo: false }, local: true do |f| %>
+        <div class="form-group">
+          <label for="password">
+            New Password
+            <span class="tooltip">❓
+              <span class="tooltip-text">
+                Your password must:
+                <ul>
+                  <li>Be at least 8 characters long</li>
+                  <li>Include at least one uppercase letter</li>
+                  <li>Include at least one lowercase letter</li>
+                  <li>Include at least one special character</li>
+                </ul>
+              </span>
+            </span>
+          </label>
+          <div class="input-wrapper">
+            <%= f.password_field :password, id: "password", required: true %>
+          </div>
+        </div>
 
         <div class="form-group">
-            <label for="password">
-                New Password
-                <span class="tooltip">❓
-                    <span class="tooltip-text">
-                        Your password must:
-                        <ul>
-                            <li>Be at least 8 characters long</li>
-                            <li>Include at least one uppercase letter</li>
-                            <li>Include at least one lowercase letter</li>
-                            <li>Include at least one special character</li>
-                        </ul>
-                    </span>
-                </span>
-            </label>
-            <div class="input-wrapper">
-               <%= f.password_field :password, id: "password", required: true %>
-            </div>
+          <label for="password_confirmation">Confirm Password:</label>
+          <%= f.password_field :password_confirmation, id: "password_confirmation", required: true %>
         </div>
-        
-        <label for="password_confirmation">Confirm Password:</label>
-        <%= f.password_field :password_confirmation, id: "password_confirmation", required: true %>
 
-        <%= f.submit "Reset Password", class: "btn" %>
-    <% end %>
-</div>
+        <div class="actions">
+          <%= f.submit "Reset Password", class: "btn btn-green" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</body>
+</html>

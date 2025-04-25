@@ -1,35 +1,47 @@
-<%= stylesheet_link_tag "passwords", media: "all" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <%= stylesheet_link_tag "passwords", media: "all" %> 
+  <title>Enter Reset Code</title>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h2>Enter Reset Code</h2>
 
-<div class="form-container">
-    <h2>Enter Reset Code</h2>
-
-    <%= form_with url: verify_reset_code_path, method: :post, data: { turbo: false } do |f| %>
+      <%= form_with url: verify_reset_code_path, method: :post, data: { turbo: false }, local: true do |f| %>
         <label for="reset_code">Reset Code:</label>
         <%= f.text_field :reset_code, id: "reset_code", required: true %>
 
-        <%= f.submit "Verify", class: "btn" %>
-    <% end %>
+        <div class="actions">
+          <%= f.submit "Verify", class: "btn btn-green" %>
+        </div>
+      <% end %>
 
-    <p id="resend_text">
+      <p id="resend_text" class="text-center mt-4">
         Resend in <span id="timer">30</span> seconds
-    </p>
-</div>
+      </p>
+    </div>
+  </div>
 
-<script>
+  <script>
     let countdown = 30;
     let timer = document.getElementById("timer");
     let resendText = document.getElementById("resend_text");
 
     function updateTimer() {
-        countdown--;
-        if (countdown > 0) {
-            timer.textContent = countdown;
-            setTimeout(updateTimer, 1000);
-        } else {
-            resendText.innerHTML = `<a href="<%= resend_reset_code_path %>" id="resend_link" class= "resend_link">Resend in 0 seconds</a>`;
-        }
+      countdown--;
+      if (countdown > 0) {
+        timer.textContent = countdown;
+        setTimeout(updateTimer, 1000);
+      } else {
+        resendText.innerHTML = `<a href="<%= resend_reset_code_path %>" id="resend_link" class="resend_link">Resend Code</a>`;
+      }
     }
 
-    // Start the countdown when the page loads
     setTimeout(updateTimer, 1000);
-</script>
+  </script>
+</body>
+</html>
