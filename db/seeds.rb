@@ -11,9 +11,13 @@
 
 # Find or create the user
 # Clear existing records in the correct order
-puts "Destroying existing records..."
 #ActiveRecord::Base.connection.execute("PRAGMA foreign_keys = OFF")
+puts "Destroying existing records..."
+Log.destroy_all
+Friendship.destroy_all
 Item.destroy_all
+SharedBin.destroy_all
+ActiveStorage::Attachment.destroy_all
 Bin.destroy_all
 Location.destroy_all
 User.destroy_all

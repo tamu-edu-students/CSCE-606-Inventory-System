@@ -20,8 +20,8 @@
             <tr>
               <td><%= log.action_date.strftime("%Y-%m-%d %H:%M") %></td>
               <td><%= log.action_type.titleize %></td>
-              <td><%= log.item&.name || 'N/A' %></td>
-              <td><%= log.bin&.name || 'N/A' %></td>
+              <td><%= log.item_name || 'N/A' %></td> <!-- 🔵 Changed here -->
+              <td><%= log.bin_name || 'N/A' %></td>   <!-- 🔵 Changed here -->
               <td><%= log.from_location %></td>
               <td><%= log.to_location %></td>
               <td><%= log.description %></td>

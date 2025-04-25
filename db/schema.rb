@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_24_191724) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_25_144728) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -99,6 +99,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_191724) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "bin_name"
+    t.string "item_name"
     t.index ["action_date"], name: "index_logs_on_action_date"
     t.index ["action_type"], name: "index_logs_on_action_type"
     t.index ["bin_id"], name: "index_logs_on_bin_id"
@@ -150,8 +152,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_24_191724) do
   add_foreign_key "items", "locations", on_delete: :cascade
   add_foreign_key "items", "users"
   add_foreign_key "locations", "users"
-  add_foreign_key "logs", "bins"
-  add_foreign_key "logs", "items"
   add_foreign_key "logs", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "shared_bins", "bins"
