@@ -13,9 +13,9 @@
   opacity: 0.6; /* Dim the text slightly */
 }
 
-/* NAV BAR */
 .navbar {
   display: flex;
+  flex-wrap: wrap; /* 🔧 allows content to wrap when needed */
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
@@ -35,9 +35,11 @@
 
 /* Right-aligned icons & links */
 .nav-right {
+  margin-left: auto; /* ✅ Push to right when wrapping */
   display: flex;
   align-items: center;
   gap: 15px;
+  margin-top: 10px; /* ✅ Tightens the row when wrapped */
 }
 
 /* Links (remove underline by default, only show on hover) */
