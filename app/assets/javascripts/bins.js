@@ -64,40 +64,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener('turbo:load', function() {
   // Log dropdown functionality
-  const logTrigger = document.getElementById('log-trigger');
-  const logDropdown = document.getElementById('log-dropdown-content');
+  // const logTrigger = document.getElementById('log-trigger');
+  // const logDropdown = document.getElementById('log-dropdown-content');
 
-  if (logTrigger && logDropdown) {
-    logTrigger.addEventListener('click', function(e) {
-      e.preventDefault();
-      logDropdown.classList.toggle('show');
-    });
+  // if (logTrigger && logDropdown) {
+  //   logTrigger.addEventListener('click', function(e) {
+  //     e.preventDefault();
+  //     logDropdown.classList.toggle('show');
+  //   });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!logTrigger.contains(e.target) && !logDropdown.contains(e.target)) {
-        logDropdown.classList.remove('show');
-      }
-    });
-  }
+  //   // Close dropdown when clicking outside
+  //   document.addEventListener('click', function(e) {
+  //     if (!logTrigger.contains(e.target) && !logDropdown.contains(e.target)) {
+  //       logDropdown.classList.remove('show');
+  //     }
+  //   });
+  // }
 
-  // Sale dropdown functionality
-  const saleTrigger = document.getElementById('sale-trigger');
-  const saleDropdown = document.getElementById('sale-dropdown-content');
+  // // Sale dropdown functionality
+  // const saleTrigger = document.getElementById('sale-trigger');
+  // const saleDropdown = document.getElementById('sale-dropdown-content');
 
-  if (saleTrigger && saleDropdown) {
-    saleTrigger.addEventListener('click', function(e) {
-      e.preventDefault();
-      saleDropdown.classList.toggle('show');
-    });
+  // if (saleTrigger && saleDropdown) {
+  //   saleTrigger.addEventListener('click', function(e) {
+  //     e.preventDefault();
+  //     saleDropdown.classList.toggle('show');
+  //   });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-      if (!saleTrigger.contains(e.target) && !saleDropdown.contains(e.target)) {
-        saleDropdown.classList.remove('show');
-      }
-    });
-  }
+  //   // Close dropdown when clicking outside
+  //   document.addEventListener('click', function(e) {
+  //     if (!saleTrigger.contains(e.target) && !saleDropdown.contains(e.target)) {
+  //       saleDropdown.classList.remove('show');
+  //     }
+  //   });
+  // }
 
   // Profile dropdown functionality
   const profileTrigger = document.getElementById('profile-trigger');

@@ -1,5 +1,6 @@
 /*
  *= require_self
+ *= require_tree .
  */
 
 /* Base styling */
@@ -307,6 +308,7 @@ img {
 }
 .log-dropdown-content.active {
   display: block;
+  right: 0;
 }
 
 /* Add this after your existing navbar styles */
@@ -319,7 +321,7 @@ img {
   display: none;
   position: absolute;
   left: 100%;
-  top: 0;
+  top: -8px;
   background-color: white;
   min-width: 200px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -341,6 +343,8 @@ img {
 
 .sale-dropdown-content.active {
   display: block;
+  left: -200px;
+  top: 20px;
 }
 
 .sale-input-group {
