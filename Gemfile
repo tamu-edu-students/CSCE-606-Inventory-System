@@ -78,7 +78,7 @@ end
 
 # Benchmarking and interactive Ruby console (included explicitly)
 gem "benchmark", "0.4.0"
-gem "irb", "1.15.1"
+gem "irb", "1.15.2"
 gem "devise"
 
 # QR code generator
