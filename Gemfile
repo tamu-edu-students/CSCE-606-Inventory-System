@@ -2,7 +2,7 @@ source "https://rubygems.org"
 ruby "3.3.4"
 
 # Rails Framework
-gem "rails", "~> 8.0.1"
+gem "rails", "~> 8.0.2"
 
 # Asset Pipeline for Rails
 gem "propshaft"
